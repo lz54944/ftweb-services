@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hhwy.activiti.core.mapper.ActiTaskConfigMapper">
+    <resultMap type="com.hhwy.activiti.core.domain.po.ActiTaskConfig" id="ActiTaskConfigResult">
+        <result property="id"    column="id"    />
+        <result property="procDefId"    column="proc_def_id"    />
+        <result property="procDefKey"    column="proc_def_key"    />
+        <result property="taskNodeId"    column="task_node_id"    />
+        <result property="taskNodeName"    column="task_node_name"    />
+        <result property="formUrl"    column="form_url"    />
+        <result property="assigneeType"    column="assignee_type"    />
+        <result property="assignees"    column="assignees"    />
+        <result property="sameAssigneesNode"    column="same_assignees_node"    />
+        <result property="assigneesScope"    column="assignees_scope"    />
+        <result property="createUser"    column="create_user"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateUser"    column="update_user"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="tenantKey"    column="tenant_key"    />
+    </resultMap>
+
+    <sql id="selectActiTaskConfigVo">
+        select `id`, `proc_def_id`, `proc_def_key`, `task_node_id`, `task_node_name`, `form_url`, `assignee_type`, `assignees`, `same_assignees_node`, `assignees_scope`, `create_user`, `create_time`, `update_user`, `update_time`, `remark`, `tenant_key` from `acti_task_config`
+    </sql>
+
+    <select id="selectActiTaskConfigList" resultMap="ActiTaskConfigResult">
+        <include refid="selectActiTaskConfigVo"/>
+        <where>
+            <if test="actiTaskconfig.procDefId != null  and actiTaskconfig.procDefId != ''"> and `proc_def_id` = #{actiTaskconfig.procDefId}</if>
+            <if test="actiTaskconfig.procDefKey != null  and actiTaskconfig.procDefKey != ''"> and `proc_def_key` = #{actiTaskconfig.procDefKey}</if>
+            <if test="actiTaskconfig.taskNodeId != null  and actiTaskconfig.taskNodeId != ''"> and `task_node_id` = #{actiTaskconfig.taskNodeId}</if>
+            <if test="actiTaskconfig.taskNodeName != null  and actiTaskconfig.taskNodeName != ''"> and `task_node_name` like concat('%', #{actiTaskconfig.taskNodeName}, '%')</if>
+            <if test="actiTaskconfig.formUrl != null  and actiTaskconfig.formUrl != ''"> and `form_url` = #{actiTaskconfig.formUrl}</if>
+            <if test="actiTaskconfig.assigneeType != null  and actiTaskconfig.assigneeType != ''"> and `assignee_type` = #{actiTaskconfig.assigneeType}</if>
+            <if test="actiTaskconfig.assignees != null  and actiTaskconfig.assignees != ''"> and `assignees` = #{actiTaskconfig.assignees}</if>
+            <if test="actiTaskconfig.sameAssigneesNode != null  and actiTaskconfig.sameAssigneesNode != ''"> and `same_assignees_node` = #{actiTaskconfig.sameAssigneesNode}</if>
+            <if test="actiTaskconfig.assigneesScope != null  and actiTaskconfig.assigneesScope != ''"> and `assignees_scope` = #{actiTaskconfig.assigneesScope}</if>
+            <if test="actiTaskconfig.createUser != null  and actiTaskconfig.createUser != ''"> and `create_user` = #{actiTaskconfig.createUser}</if>
+            <if test="actiTaskconfig.updateUser != null  and actiTaskconfig.updateUser != ''"> and `update_user` = #{actiTaskconfig.updateUser}</if>
+            <if test="tenantKey != null  and tenantKey != ''"> and `tenant_key` = #{tenantKey}</if>
+        </where>
+        order by `create_time` desc
+    </select>
+    
+    <select id="selectActiTaskConfigById" resultMap="ActiTaskConfigResult">
+        <include refid="selectActiTaskConfigVo"/>
+        where `id` = #{id}
+    </select>
+
+    <select id="selectLatestActiTaskConfigByProcDefKeyAndTaskNodeId" resultMap="ActiTaskConfigResult">
+        <include refid="selectActiTaskConfigVo"/>
+        where `proc_def_key` = #{procDefKey} and `task_node_id` = #{taskNodeId} and `tenant_key` = #{tenantKey}
+        ORDER BY create_time DESC
+        LIMIT 1
+    </select>
+
+    <select id="selectActiTaskConfigByProcDefIdAndTaskNodeId" resultMap="ActiTaskConfigResult">
+        <include refid="selectActiTaskConfigVo"/>
+        where `proc_def_id` = #{procDefId} and `task_node_id` = #{taskNodeId} and `tenant_key` = #{tenantKey}
+    </select>
+
+    <insert id="insertActiTaskConfig" parameterType="com.hhwy.activiti.core.domain.po.ActiTaskConfig">
+        insert into `acti_task_config`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">`id`,</if>
+            <if test="procDefId != null">`proc_def_id`,</if>
+            <if test="procDefKey != null">`proc_def_key`,</if>
+            <if test="taskNodeId != null">`task_node_id`,</if>
+            <if test="taskNodeName != null">`task_node_name`,</if>
+            <if test="formUrl != null">`form_url`,</if>
+            <if test="assigneeType != null">`assignee_type`,</if>
+            <if test="assignees != null">`assignees`,</if>
+            <if test="sameAssigneesNode != null">`same_assignees_node`,</if>
+            <if test="assigneesScope != null">`assignees_scope`,</if>
+            <if test="createUser != null">`create_user`,</if>
+            <if test="createTime != null">`create_time`,</if>
+            <if test="updateUser != null">`update_user`,</if>
+            <if test="updateTime != null">`update_time`,</if>
+            <if test="remark != null">`remark`,</if>
+            <if test="tenantKey != null">`tenant_key`,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="procDefId != null">#{procDefId},</if>
+            <if test="procDefKey != null">#{procDefKey},</if>
+            <if test="taskNodeId != null">#{taskNodeId},</if>
+            <if test="taskNodeName != null">#{taskNodeName},</if>
+            <if test="formUrl != null">#{formUrl},</if>
+            <if test="assigneeType != null">#{assigneeType},</if>
+            <if test="assignees != null">#{assignees},</if>
+            <if test="sameAssigneesNode != null">#{sameAssigneesNode},</if>
+            <if test="assigneesScope != null">#{assigneesScope},</if>
+            <if test="createUser != null">#{createUser},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateUser != null">#{updateUser},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="tenantKey != null">#{tenantKey},</if>
+         </trim>
+    </insert>
+
+    <insert id="batchInsertActiTaskConfig">
+        insert into acti_task_config
+            (`proc_def_id`,`proc_def_key`,`task_node_id`,`task_node_name`,`form_url`,`assignee_type`,`assignees`,`same_assignees_node`,`assignees_scope`,
+            `create_user`,`create_time`,`update_user`,`update_time`,`remark`,`tenant_key`)
+        values
+        <foreach collection="actiTaskConfigList" item="item" index="index" separator=",">
+            (#{item.procDefId},#{item.procDefKey},#{item.taskNodeId},#{item.taskNodeName},#{item.formUrl},#{item.assigneeType},#{item.assignees},#{item.sameAssigneesNode},
+            #{item.assigneesScope},#{item.createUser},sysdate(),#{item.updateUser},#{item.updateTime},#{item.remark},#{tenantKey})
+        </foreach>
+    </insert>
+
+    <update id="updateActiTaskConfig" parameterType="com.hhwy.activiti.core.domain.po.ActiTaskConfig">
+        update `acti_task_config`
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="procDefId != null">`proc_def_id` = #{procDefId},</if>
+            <if test="procDefKey != null">`proc_def_key` = #{procDefKey},</if>
+            <if test="taskNodeId != null">`task_node_id` = #{taskNodeId},</if>
+            <if test="taskNodeName != null">`task_node_name` = #{taskNodeName},</if>
+            <if test="formUrl != null">`form_url` = #{formUrl},</if>
+            <if test="assigneeType != null">`assignee_type` = #{assigneeType},</if>
+            <if test="assignees != null">`assignees` = #{assignees},</if>
+            <if test="sameAssigneesNode != null">`same_assignees_node` = #{sameAssigneesNode},</if>
+            <if test="assigneesScope != null">`assignees_scope` = #{assigneesScope},</if>
+            <if test="createUser != null">`create_user` = #{createUser},</if>
+            <if test="createTime != null">`create_time` = #{createTime},</if>
+            <if test="updateUser != null">`update_user` = #{updateUser},</if>
+            <if test="updateTime != null">`update_time` = sysdate(),</if>
+            <if test="remark != null">`remark` = #{remark},</if>
+            <if test="tenantKey != null">`tenant_key` = #{tenantKey},</if>
+        </trim>
+        where `id` = #{id}
+    </update>
+
+    <delete id="deleteActiTaskConfigById" parameterType="Long">
+        delete from `acti_task_config` where `id` = #{id}
+    </delete>
+
+    <delete id="deleteActiTaskConfigByProcDefId" >
+        delete from `acti_task_config` where `proc_def_id` = #{procDefId} and tenant_key = #{tenantKey}
+    </delete>
+
+    <delete id="deleteActiTaskConfigByIds" >
+        delete from `acti_task_config` where `id` in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+</mapper>

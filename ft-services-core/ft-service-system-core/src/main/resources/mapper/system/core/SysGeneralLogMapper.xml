@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hhwy.system.core.mapper.SysGeneralLogMapper">
+    <resultMap type="com.hhwy.system.api.domain.SysGeneralLog" id="SysGeneralLogResult">
+        <result property="logId"    column="log_id"    />
+        <result property="logTitle"    column="log_title"    />
+        <result property="logType"    column="log_type"    />
+        <result property="triggerType"    column="trigger_type"    />
+        <result property="requestMethod"    column="request_method"    />
+        <result property="requestUrl"    column="request_url"    />
+        <result property="requestParam"    column="request_param"    />
+        <result property="requestResult"    column="request_result"    />
+        <result property="resultStatus"    column="result_status"    />
+        <result property="operateUser"    column="operate_user"    />
+        <result property="operateIp"    column="operate_ip"    />
+        <result property="operateLocation"    column="operate_location"    />
+        <result property="errorMsg"    column="error_msg"    />
+        <result property="triggerTime"    column="trigger_time"    />
+        <result property="createUser"    column="create_user"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateUser"    column="update_user"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="tenantKey"    column="tenant_key"    />
+        <result property="var1"    column="var1"    />
+        <result property="var2"    column="var2"    />
+        <result property="var3"    column="var3"    />
+        <result property="var4"    column="var4"    />
+        <result property="var5"    column="var5"    />
+    </resultMap>
+
+    <sql id="selectSysGeneralLogVo">
+        select `log_id`, `log_title`, `log_type`, `trigger_type`, `request_method`, `request_url`, `request_param`, `request_result`, `result_status`, `operate_user`, `operate_ip`, `operate_location`, `error_msg`, `trigger_time`, `create_user`, `create_time`, `update_user`, `update_time`, `remark`, `tenant_key`, `var1`, `var2`, `var3`, `var4`, `var5` from `sys_general_log`
+    </sql>
+
+    <select id="selectSysGeneralLogList" parameterType="com.hhwy.system.api.domain.SysGeneralLog" resultMap="SysGeneralLogResult">
+        <include refid="selectSysGeneralLogVo"/>
+        <where>
+            <if test="logTitle != null  and logTitle != ''"> and `log_title` = #{logTitle}</if>
+            <if test="logType != null "> and `log_type` = #{logType}</if>
+            <if test="triggerType != null "> and `trigger_type` = #{triggerType}</if>
+            <if test="requestMethod != null  and requestMethod != ''"> and `request_method` = #{requestMethod}</if>
+            <if test="requestUrl != null  and requestUrl != ''"> and `request_url` = #{requestUrl}</if>
+            <if test="requestParam != null  and requestParam != ''"> and `request_param` = #{requestParam}</if>
+            <if test="requestResult != null  and requestResult != ''"> and `request_result` = #{requestResult}</if>
+            <if test="resultStatus != null "> and `result_status` = #{resultStatus}</if>
+            <if test="operateUser != null  and operateUser != ''"> and `operate_user` = #{operateUser}</if>
+            <if test="operateIp != null  and operateIp != ''"> and `operate_ip` = #{operateIp}</if>
+            <if test="operateLocation != null  and operateLocation != ''"> and `operate_location` = #{operateLocation}</if>
+            <if test="errorMsg != null  and errorMsg != ''"> and `error_msg` = #{errorMsg}</if>
+            <if test="triggerTime != null "> and `trigger_time` = #{triggerTime}</if>
+            <if test="createUser != null  and createUser != ''"> and `create_user` = #{createUser}</if>
+            <if test="updateUser != null  and updateUser != ''"> and `update_user` = #{updateUser}</if>
+            <if test="tenantKey != null  and tenantKey != ''"> and `tenant_key` = #{tenantKey}</if>
+            <if test="var1 != null  and var1 != ''"> and `var1` = #{var1}</if>
+            <if test="var2 != null  and var2 != ''"> and `var2` = #{var2}</if>
+            <if test="var3 != null  and var3 != ''"> and `var3` = #{var3}</if>
+            <if test="var4 != null  and var4 != ''"> and `var4` = #{var4}</if>
+            <if test="var5 != null  and var5 != ''"> and `var5` = #{var5}</if>
+        </where>
+        order by `log_id` desc
+    </select>
+    
+    <select id="selectSysGeneralLogById" parameterType="Long" resultMap="SysGeneralLogResult">
+        <include refid="selectSysGeneralLogVo"/>
+        where `log_id` = #{logId}
+    </select>
+    <insert id="insertSysGeneralLog" parameterType="com.hhwy.system.api.domain.SysGeneralLog" useGeneratedKeys="true" keyProperty="logId">
+        insert into `sys_general_log`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="logTitle != null">`log_title`,</if>
+            <if test="logType != null">`log_type`,</if>
+            <if test="triggerType != null">`trigger_type`,</if>
+            <if test="requestMethod != null">`request_method`,</if>
+            <if test="requestUrl != null">`request_url`,</if>
+            <if test="requestParam != null">`request_param`,</if>
+            <if test="requestResult != null">`request_result`,</if>
+            <if test="resultStatus != null">`result_status`,</if>
+            <if test="operateUser != null">`operate_user`,</if>
+            <if test="operateIp != null">`operate_ip`,</if>
+            <if test="operateLocation != null">`operate_location`,</if>
+            <if test="errorMsg != null">`error_msg`,</if>
+            <if test="triggerTime != null">`trigger_time`,</if>
+            <if test="createUser != null">`create_user`,</if>
+            <if test="createTime != null">`create_time`,</if>
+            <if test="updateUser != null">`update_user`,</if>
+            <if test="updateTime != null">`update_time`,</if>
+            <if test="remark != null">`remark`,</if>
+            <if test="tenantKey != null">`tenant_key`,</if>
+            <if test="var1 != null">`var1`,</if>
+            <if test="var2 != null">`var2`,</if>
+            <if test="var3 != null">`var3`,</if>
+            <if test="var4 != null">`var4`,</if>
+            <if test="var5 != null">`var5`,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="logTitle != null">#{logTitle},</if>
+            <if test="logType != null">#{logType},</if>
+            <if test="triggerType != null">#{triggerType},</if>
+            <if test="requestMethod != null">#{requestMethod},</if>
+            <if test="requestUrl != null">#{requestUrl},</if>
+            <if test="requestParam != null">#{requestParam},</if>
+            <if test="requestResult != null">#{requestResult},</if>
+            <if test="resultStatus != null">#{resultStatus},</if>
+            <if test="operateUser != null">#{operateUser},</if>
+            <if test="operateIp != null">#{operateIp},</if>
+            <if test="operateLocation != null">#{operateLocation},</if>
+            <if test="errorMsg != null">#{errorMsg},</if>
+            <if test="triggerTime != null">#{triggerTime},</if>
+            <if test="createUser != null">#{createUser},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateUser != null">#{updateUser},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="tenantKey != null">#{tenantKey},</if>
+            <if test="var1 != null">#{var1},</if>
+            <if test="var2 != null">#{var2},</if>
+            <if test="var3 != null">#{var3},</if>
+            <if test="var4 != null">#{var4},</if>
+            <if test="var5 != null">#{var5},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysGeneralLog" parameterType="com.hhwy.system.api.domain.SysGeneralLog">
+        update `sys_general_log`
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="logTitle != null">`log_title` = #{logTitle},</if>
+            <if test="logType != null">`log_type` = #{logType},</if>
+            <if test="triggerType != null">`trigger_type` = #{triggerType},</if>
+            <if test="requestMethod != null">`request_method` = #{requestMethod},</if>
+            <if test="requestUrl != null">`request_url` = #{requestUrl},</if>
+            <if test="requestParam != null">`request_param` = #{requestParam},</if>
+            <if test="requestResult != null">`request_result` = #{requestResult},</if>
+            <if test="resultStatus != null">`result_status` = #{resultStatus},</if>
+            <if test="operateUser != null">`operate_user` = #{operateUser},</if>
+            <if test="operateIp != null">`operate_ip` = #{operateIp},</if>
+            <if test="operateLocation != null">`operate_location` = #{operateLocation},</if>
+            <if test="errorMsg != null">`error_msg` = #{errorMsg},</if>
+            <if test="triggerTime != null">`trigger_time` = #{triggerTime},</if>
+            <if test="createUser != null">`create_user` = #{createUser},</if>
+            <if test="createTime != null">`create_time` = #{createTime},</if>
+            <if test="updateUser != null">`update_user` = #{updateUser},</if>
+            <if test="updateTime != null">`update_time` = #{updateTime},</if>
+            <if test="remark != null">`remark` = #{remark},</if>
+            <if test="tenantKey != null">`tenant_key` = #{tenantKey},</if>
+            <if test="var1 != null">`var1` = #{var1},</if>
+            <if test="var2 != null">`var2` = #{var2},</if>
+            <if test="var3 != null">`var3` = #{var3},</if>
+            <if test="var4 != null">`var4` = #{var4},</if>
+            <if test="var5 != null">`var5` = #{var5},</if>
+        </trim>
+        where `log_id` = #{logId}
+    </update>
+
+    <delete id="deleteSysGeneralLogById" parameterType="Long">
+        delete from `sys_general_log` where `log_id` = #{logId}
+    </delete>
+
+    <delete id="deleteSysGeneralLogByIds" parameterType="String">
+        delete from `sys_general_log` where `log_id` in
+        <foreach item="logId" collection="array" open="(" separator="," close=")">
+            #{logId}
+        </foreach>
+    </delete>
+
+
+</mapper>

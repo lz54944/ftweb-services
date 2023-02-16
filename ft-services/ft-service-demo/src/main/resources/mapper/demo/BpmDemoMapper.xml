@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hhwy.demo.mapper.BpmDemoMapper">
+   <resultMap type="com.hhwy.demo.domain.BpmDemo" id="BpmDemoResult">
+      <result property="id"    column="id"    />
+      <result property="number"    column="number"    />
+      <result property="title"    column="title"    />
+      <result property="content"    column="content"    />
+      <result property="delFlag"    column="del_flag"    />
+      <result property="createUser"    column="create_user"    />
+      <result property="createTime"    column="create_time"    />
+      <result property="updateUser"    column="update_user"    />
+      <result property="updateTime"    column="update_time"    />
+      <result property="remark"    column="remark"    />
+   </resultMap>
+
+   <sql id="selectBpmDemoVo">
+        select `id`, `number`, `title`, `content`, `del_flag`, `create_user`, `create_time`, `update_user`, `update_time`, `remark` from `t_bpm_demo`
+    </sql>
+
+   <select id="selectBpmDemoList" parameterType="com.hhwy.demo.domain.BpmDemo" resultMap="BpmDemoResult">
+      <include refid="selectBpmDemoVo"/>
+      <where>
+         `del_flag` = 0
+         <if test="number != null  and number != ''"> and `number` = #{number}</if>
+         <if test="title != null  and title != ''"> and `title` = #{title}</if>
+         <if test="content != null  and content != ''"> and `content` = #{content}</if>
+         <if test="createUser != null  and createUser != ''"> and `create_user` = #{createUser}</if>
+         <if test="updateUser != null  and updateUser != ''"> and `update_user` = #{updateUser}</if>
+      </where>
+      order by `id` desc
+   </select>
+
+   <select id="selectBpmDemoById" parameterType="Long" resultMap="BpmDemoResult">
+      <include refid="selectBpmDemoVo"/>
+      where `id` = #{id}
+   </select>
+
+   <insert id="insertBpmDemo" parameterType="com.hhwy.demo.domain.BpmDemo" useGeneratedKeys="true" keyProperty="id">
+      insert into `t_bpm_demo`
+      <trim prefix="(" suffix=")" suffixOverrides=",">
+         <if test="number != null">`number`,</if>
+         <if test="title != null">`title`,</if>
+         <if test="content != null">`content`,</if>
+         <if test="delFlag != null">`del_flag`,</if>
+         <if test="createUser != null">`create_user`,</if>
+         <if test="createTime != null">`create_time`,</if>
+         <if test="updateUser != null">`update_user`,</if>
+         <if test="updateTime != null">`update_time`,</if>
+         <if test="remark != null">`remark`,</if>
+      </trim>
+      <trim prefix="values (" suffix=")" suffixOverrides=",">
+         <if test="number != null">#{number},</if>
+         <if test="title != null">#{title},</if>
+         <if test="content != null">#{content},</if>
+         <if test="delFlag != null">#{delFlag},</if>
+         <if test="createUser != null">#{createUser},</if>
+         <if test="createTime != null">#{createTime},</if>
+         <if test="updateUser != null">#{updateUser},</if>
+         <if test="updateTime != null">#{updateTime},</if>
+         <if test="remark != null">#{remark},</if>
+      </trim>
+   </insert>
+
+   <update id="updateBpmDemo" parameterType="com.hhwy.demo.domain.BpmDemo">
+      update `t_bpm_demo`
+      <trim prefix="SET" suffixOverrides=",">
+         <if test="number != null">`number` = #{number},</if>
+         <if test="title != null">`title` = #{title},</if>
+         <if test="content != null">`content` = #{content},</if>
+         <if test="delFlag != null">`del_flag` = #{delFlag},</if>
+         <if test="createUser != null">`create_user` = #{createUser},</if>
+         <if test="createTime != null">`create_time` = #{createTime},</if>
+         <if test="updateUser != null">`update_user` = #{updateUser},</if>
+         <if test="updateTime != null">`update_time` = #{updateTime},</if>
+         <if test="remark != null">`remark` = #{remark},</if>
+      </trim>
+      where `id` = #{id}
+   </update>
+
+   <update id="deleteBpmDemoById" parameterType="Long">
+        update `t_bpm_demo` set del_flag = 1 where `id` = #{id}
+    </update>
+
+   <update id="deleteBpmDemoByIds" parameterType="String">
+      update `t_bpm_demo` set del_flag = 1 where `id` in
+      <foreach item="id" collection="array" open="(" separator="," close=")">
+         #{id}
+      </foreach>
+   </update>
+
+
+</mapper>

@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hhwy.system.core.mapper.SysTenantResourceMapper">
+    <resultMap type="com.hhwy.system.core.domain.SysTenantResource" id="SysTenantResourceResult">
+        <result property="id"    column="id"    />
+        <result property="resourceId"    column="resource_id"    />
+        <result property="resourceTable"    column="resource_table"    />
+        <result property="tenantKey"    column="tenant_key"    />
+        <result property="mistyFlag"    column="misty_flag"    />
+        <result property="resourceOriginalId"    column="resource_original_id"    />
+    </resultMap>
+
+    <sql id="selectSysTenantResourceVo">
+        select `id`, `resource_id`, `resource_table`, `tenant_key`, `misty_flag`, `resource_original_id` from `sys_tenant_resource`
+    </sql>
+
+    <select id="selectSysTenantResourceList" parameterType="com.hhwy.system.core.domain.SysTenantResource" resultMap="SysTenantResourceResult">
+        <include refid="selectSysTenantResourceVo"/>
+        <where>
+            <if test="resourceId != null "> and `resource_id` = #{resourceId}</if>
+            <if test="resourceTable != null  and resourceTable != ''"> and `resource_table` = #{resourceTable}</if>
+            <if test="tenantKey != null  and tenantKey != ''"> and `tenant_key` = #{tenantKey}</if>
+        </where>
+        order by `id` desc
+    </select>
+
+    <select id="selectSysTenantResourceListByTenantKeyAndTableName" resultMap="SysTenantResourceResult">
+        <include refid="selectSysTenantResourceVo"/>
+        <where>
+            resource_table = #{tableName} AND tenant_key = #{tenantKey}
+        </where>
+    </select>
+
+    <select id="selectResourceOriginalIdListByTenantKeyAndTableName" resultType="long">
+       SELECT resource_original_id FROM `sys_tenant_resource` WHERE resource_table = #{tableName} AND tenant_key = #{tenantKey}
+    </select>
+
+    <select id="selectMenuIdListByTenantKey" resultType="long">
+       SELECT resource_id FROM `sys_tenant_resource` WHERE resource_table = 'sys_menu' AND tenant_key = #{tenantKey}
+    </select>
+
+    <select id="selectUserIdListByTenantKey" resultType="long">
+       SELECT resource_id FROM `sys_tenant_resource` WHERE resource_table = 'sys_user' AND tenant_key = #{tenantKey}
+    </select>
+
+    <select id="selectRoleIdListByTenantKey" resultType="long">
+       SELECT resource_id FROM `sys_tenant_resource` WHERE resource_table = 'sys_role' AND tenant_key = #{tenantKey}
+    </select>
+
+    <select id="selectPostIdListByTenantKey" resultType="long">
+       SELECT resource_id FROM `sys_tenant_resource` WHERE resource_table = 'sys_post' AND tenant_key = #{tenantKey}
+    </select>
+
+    <select id="selectDeptIdListByTenantKey" resultType="long">
+       SELECT resource_id FROM `sys_tenant_resource` WHERE resource_table = 'sys_dept' AND tenant_key = #{tenantKey}
+    </select>
+
+    <select id="selectMenuListByTenantKey" resultType="com.hhwy.system.api.domain.SysMenu">
+       SELECT resource_id menuId FROM `sys_tenant_resource` WHERE resource_table = 'sys_menu' AND tenant_key = #{tenantKey}
+    </select>
+
+    <select id="selectSysTenantResourceById" parameterType="Long" resultMap="SysTenantResourceResult">
+        <include refid="selectSysTenantResourceVo"/>
+        where `id` = #{id}
+    </select>
+
+    <select id="selectResourceIdByResourceTableAndOriginalIdList" resultType="string">
+        SELECT resource_id resourceId
+        FROM `sys_tenant_resource`
+        where tenant_key = #{tenantKey} AND resource_table = #{tableName} AND `resource_original_id` in
+        <foreach item="originalId" collection="originalIdList" open="(" separator="," close=")">
+            #{originalId}
+        </foreach>
+    </select>
+
+    <insert id="insertSysTenantResource" parameterType="com.hhwy.system.core.domain.SysTenantResource" useGeneratedKeys="true" keyProperty="id">
+        insert into `sys_tenant_resource`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="resourceId != null">`resource_id`,</if>
+            <if test="resourceTable != null and resourceTable != ''">`resource_table`,</if>
+            <if test="tenantKey != null and tenantKey != ''">`tenant_key`,</if>
+            <if test="mistyFlag != null and mistyFlag != ''">`misty_flag`,</if>
+            <if test="resourceOriginalId != null">`resource_original_id`,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="resourceId != null">#{resourceId},</if>
+            <if test="resourceTable != null and resourceTable != ''">#{resourceTable},</if>
+            <if test="tenantKey != null and tenantKey != ''">#{tenantKey},</if>
+            <if test="mistyFlag != null and mistyFlag != ''">#{mistyFlag},</if>
+            <if test="resourceOriginalId != null">#{resourceOriginalId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysTenantResource" parameterType="com.hhwy.system.core.domain.SysTenantResource">
+        update `sys_tenant_resource`
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="resourceId != null">`resource_id` = #{resourceId},</if>
+            <if test="resourceTable != null and resourceTable != ''">`resource_table` = #{resourceTable},</if>
+            <if test="tenantKey != null tenantKey != ''">`tenant_key` = #{tenantKey},</if>
+            <if test="mistyFlag != null mistyFlag != ''">`misty_flag` = #{mistyFlag},</if>
+            <if test="resourceOriginalId != null">`resource_original_id` = #{resourceOriginalId},</if>
+        </trim>
+        where `id` = #{id}
+    </update>
+
+    <delete id="deleteSysTenantResourceById" parameterType="Long">
+        delete from `sys_tenant_resource` where `id` = #{id}
+    </delete>
+
+    <delete id="deleteSysTenantResourceByIds" parameterType="String">
+        delete from `sys_tenant_resource` where `id` in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteSysTenantResourceByIdArr" parameterType="String">
+        delete from `sys_tenant_resource` where `id` in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteSysTenantResourceMenuByTenantKey">
+        delete from `sys_tenant_resource` where `tenant_key` = #{tenantKey} and resource_table = 'sys_menu'
+    </delete>
+
+    <delete id="deleteSysTenantResourceDeptByTenantKey">
+        delete from `sys_tenant_resource` where `tenant_key` = #{tenantKey} and resource_table = 'sys_dept'
+    </delete>
+
+    <delete id="deleteSysTenantResourceRoleByTenantKey">
+        delete from `sys_tenant_resource` where `tenant_key` = #{tenantKey} and resource_table = 'sys_role'
+    </delete>
+
+    <delete id="deleteSysTenantResourcePostByTenantKey">
+        delete from `sys_tenant_resource` where `tenant_key` = #{tenantKey} and resource_table = 'sys_post'
+    </delete>
+
+    <delete id="deleteSysTenantResourceUserByTenantKey">
+        delete from `sys_tenant_resource` where `tenant_key` = #{tenantKey} and resource_table = 'sys_user'
+    </delete>
+
+    <insert id="insertSysTenantResourceMenuList">
+        insert into sys_tenant_resource
+            (`resource_id`,`resource_table`,`tenant_key`,`misty_flag`,`resource_original_id`)
+        values
+        <foreach collection="menuList" item="menu" index="index" separator=",">
+            (#{menu.params.resourceId},"sys_menu",#{tenantKey},#{menu.mistyFlag},#{menu.menuId})
+        </foreach>
+    </insert>
+
+    <insert id="insertSysTenantResourceDeptList">
+        insert into sys_tenant_resource
+            (`resource_id`,`resource_table`,`tenant_key`,`misty_flag`,`resource_original_id`)
+        values
+        <foreach collection="deptList" item="dept" index="index" separator=",">
+            (#{dept.params.resourceId},"sys_dept",#{tenantKey},#{dept.mistyFlag},#{dept.deptId})
+        </foreach>
+    </insert>
+
+    <insert id="insertSysTenantResourceRoleList">
+        insert into sys_tenant_resource
+            (`resource_id`,`resource_table`,`tenant_key`,`resource_original_id`)
+        values
+        <foreach collection="roleList" item="role" index="index" separator=",">
+            (#{role.params.resourceId},"sys_role",#{tenantKey},#{role.roleId})
+        </foreach>
+    </insert>
+
+    <insert id="insertSysTenantResourcePostList">
+        insert into sys_tenant_resource
+            (`resource_id`,`resource_table`,`tenant_key`,`resource_original_id`)
+        values
+        <foreach collection="postList" item="post" index="index" separator=",">
+            (#{post.params.resourceId},"sys_post",#{tenantKey},#{post.postId})
+        </foreach>
+    </insert>
+
+    <insert id="insertSysTenantResourceUserList">
+        insert into sys_tenant_resource
+            (`resource_id`,`resource_table`,`tenant_key`,`resource_original_id`)
+        values
+        <foreach collection="userList" item="user" index="index" separator=",">
+            (#{user.params.resourceId},"sys_user",#{tenantKey},#{user.userId})
+        </foreach>
+    </insert>
+</mapper>

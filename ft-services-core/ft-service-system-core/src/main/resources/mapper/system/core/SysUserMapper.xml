@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hhwy.system.core.mapper.SysUserMapper">
+
+	<resultMap type="com.hhwy.system.api.domain.SysUser" id="SysUserResult">
+		<id     property="userId"       column="user_id"        />
+		<result property="deptId"       column="dept_id"        />
+		<result property="userName"     column="user_name"      />
+		<result property="nickName"     column="nick_name"      />
+		<result property="email"        column="email"          />
+		<result property="phoneNumber"  column="phone_number"   />
+		<result property="sex"          column="sex"            />
+		<result property="idCard"          column="id_card"     />
+		<result property="avatar"       column="avatar"         />
+		<result property="password"     column="password"       />
+		<result property="status"       column="status"         />
+		<result property="delFlag"      column="del_flag"       />
+		<result property="superFlag"      column="super_flag"   />
+		<result property="loginIp"      column="login_ip"       />
+		<result property="loginDate"    column="login_date"     />
+		<result property="createUser"     column="create_user"  />
+		<result property="createTime"   column="create_time"    />
+		<result property="updateUser"     column="update_user"  />
+		<result property="updateTime"   column="update_time"    />
+		<result property="remark"       column="remark"         />
+		<!--<association property="dept"    column="dept_id" javaType="com.hhwy.system.api.domain.SysDept" resultMap="deptResult" />
+		<collection  property="roleList"  column="user_id" select="com.hhwy.system.core.mapper.SysRoleMapper.selectRoleListByUserId" />
+		<collection  property="roleIds"  column="user_id" select="com.hhwy.system.core.mapper.SysRoleMapper.selectRoleIdListByUserId" />
+		<collection property="partDeptList" column="user_id" select="com.hhwy.system.core.mapper.SysDeptMapper.selectPartDeptListByUserId" />
+		<collection property="partDeptIds" column="user_id" select="com.hhwy.system.core.mapper.SysDeptMapper.selectPartDeptIdListByUserId" />
+		<collection property="postList" column="user_id" select="com.hhwy.system.core.mapper.SysPostMapper.selectPostListByUserId" />
+		<collection property="postIds" column="user_id" select="com.hhwy.system.core.mapper.SysPostMapper.selectPostIdListByUserId" />-->
+	</resultMap>
+
+	<resultMap type="com.hhwy.system.api.domain.SysUser" id="SysUserPartResult">
+		<id     property="userId"       column="user_id"       />
+		<result property="deptId"       column="dept_id"       />
+		<result property="userName"     column="user_name"     />
+		<result property="nickName"     column="nick_name"     />
+		<result property="email"        column="email"         />
+		<result property="phoneNumber"  column="phone_number"  />
+		<result property="sex"          column="sex"           />
+		<result property="idCard"          column="id_card"    />
+		<result property="avatar"       column="avatar"        />
+		<result property="password"     column="password"      />
+		<result property="status"       column="status"        />
+		<result property="delFlag"      column="del_flag"      />
+		<result property="superFlag"      column="super_flag"  />
+		<result property="loginIp"      column="login_ip"      />
+		<result property="loginDate"    column="login_date"    />
+		<result property="createUser"     column="create_user" />
+		<result property="createTime"   column="create_time"   />
+		<result property="updateUser"     column="update_user" />
+		<result property="updateTime"   column="update_time"   />
+		<result property="remark"       column="remark"        />
+	</resultMap>
+
+	<resultMap id="deptResult" type="com.hhwy.system.api.domain.SysDept">
+		<id     property="deptId"   column="dept_id"     />
+		<result property="parentId" column="parent_id"   />
+		<result property="deptName" column="dept_name"   />
+		<result property="orderNum" column="order_num"   />
+		<result property="leader"   column="leader"      />
+		<result property="status"   column="dept_status" />
+	</resultMap>
+
+    <select id="selectUserList" resultMap="SysUserResult">
+		select u.user_id, u.dept_id, u.nick_name, u.user_name, u.email, u.phone_number, u.password, u.sex, u.id_card, u.status, u.del_flag, u.super_flag, u.login_ip, u.login_date, u.create_user, u.create_time, u.remark, d.dept_name, d.leader
+		from sys_user u left join sys_dept d on u.dept_id = d.dept_id
+		where u.del_flag = '0' and
+		<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
+			u.tenant_key = #{tenantKey}
+		</foreach>
+		<if test="sysUser.userName != null and sysUser.userName != ''">
+			AND u.user_name like concat('%', #{sysUser.userName}, '%')
+		</if>
+		<if test="sysUser.status != null and sysUser.status != ''">
+			AND u.status = #{sysUser.status}
+		</if>
+		<if test="sysUser.phoneNumber != null and sysUser.phoneNumber != ''">
+			AND u.phone_number like concat('%', #{sysUser.phoneNumber}, '%')
+		</if>
+		<if test="sysUser.params.beginTime != null and sysUser.params.beginTime != ''"><!-- 开始时间检索 -->
+			AND date_format(u.create_time,'%y%m%d') &gt;= date_format(#{sysUser.params.beginTime},'%y%m%d')
+		</if>
+		<if test="sysUser.params.endTime != null and sysUser.params.endTime != ''"><!-- 结束时间检索 -->
+			AND date_format(u.create_time,'%y%m%d') &lt;= date_format(#{sysUser.params.endTime},'%y%m%d')
+		</if>
+		<if test="sysUser.deptId != null and sysUser.deptId != 0">
+			AND (u.dept_id = #{sysUser.deptId} OR u.dept_id IN ( SELECT t.dept_id FROM sys_dept t WHERE find_in_set(#{sysUser.deptId}, ancestors) ))
+		</if>
+		<!-- 数据范围过滤 -->
+		${sysUser.params.dataScope}
+	</select>
+
+    <select id="selectUserListAll" resultMap="SysUserPartResult">
+		select u.user_id, u.dept_id, u.nick_name, u.user_name, u.email, u.phone_number, u.password, u.sex, u.id_card, u.status, u.del_flag, u.super_flag, u.login_ip, u.login_date, u.create_user, u.create_time, u.remark
+		from sys_user u
+		where u.del_flag = '0' and
+		<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
+			u.tenant_key = #{tenantKey}
+		</foreach>
+		<if test="sysUser.userName != null and sysUser.userName != ''">
+			AND u.user_name like concat('%', #{sysUser.userName}, '%')
+		</if>
+		<if test="sysUser.status != null and sysUser.status != ''">
+			AND u.status = #{sysUser.status}
+		</if>
+		<if test="sysUser.phoneNumber != null and sysUser.phoneNumber != ''">
+			AND u.phone_number like concat('%', #{sysUser.phoneNumber}, '%')
+		</if>
+		<if test="sysUser.params.beginTime != null and sysUser.params.beginTime != ''"><!-- 开始时间检索 -->
+			AND date_format(u.create_time,'%y%m%d') &gt;= date_format(#{sysUser.params.beginTime},'%y%m%d')
+		</if>
+		<if test="sysUser.params.endTime != null and sysUser.params.endTime != ''"><!-- 结束时间检索 -->
+			AND date_format(u.create_time,'%y%m%d') &lt;= date_format(#{sysUser.params.endTime},'%y%m%d')
+		</if>
+	</select>
+
+	<select id="selectUserByUserName" resultMap="SysUserResult">
+		select u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.avatar, u.phone_number, u.password, u.sex, u.id_card, u.status, u.del_flag, u.super_flag, u.login_ip, u.login_date, u.create_user, u.create_time, u.remark,
+			d.dept_id, d.parent_id, d.dept_name, d.order_num, d.leader, d.status as dept_status
+		from sys_user u
+		left join sys_dept d on u.dept_id = d.dept_id
+		where u.del_flag = '0' and u.user_name = #{userName} and
+		<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
+			u.tenant_key = #{tenantKey}
+		</foreach>
+	</select>
+
+	<select id="selectUserById" resultMap="SysUserResult">
+		select u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.avatar, u.phone_number, u.password, u.sex, u.id_card, u.status, u.del_flag, u.super_flag, u.login_ip, u.login_date, u.create_user, u.create_time, u.remark,
+			d.dept_id, d.parent_id, d.dept_name, d.order_num, d.leader, d.status as dept_status
+        from sys_user u
+		left join sys_dept d on u.dept_id = d.dept_id
+		where u.user_id = #{userId}
+	</select>
+
+	<select id="selectUserListByTenantKey" resultMap="SysUserResult">
+		select u.user_id, u.dept_id, u.nick_name, u.user_name, u.email, u.phone_number, u.password, u.sex, u.id_card, u.status, u.del_flag, u.super_flag, u.login_ip, u.login_date, u.create_user, u.create_time, u.remark
+		from `sys_tenant_resource` r
+		left join sys_user u on r.resource_original_id = u.user_id
+		WHERE
+			u.del_flag = '0' and r.tenant_key = #{tenantKey}
+		AND r.resource_table = 'sys_user'
+		order by u.create_time
+	</select>
+
+	<select id="checkUserNameUnique" resultType="int">
+		select count(1) from sys_user where del_flag = '0' and user_name = #{userName} and
+		<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
+			tenant_key = #{tenantKey}
+		</foreach>
+		limit 1
+	</select>
+
+	<select id="checkUserNameUniqueByTenantKey" resultType="int">
+		select count(1) from sys_user where del_flag = '0' and user_name = #{userName} and tenant_key = #{tenantKey} limit 1
+	</select>
+
+	<select id="checkPhoneUnique" resultMap="SysUserResult">
+		select user_id, phone_number from sys_user where del_flag = '0' and phone_number = #{phoneNumber} and
+		(
+			<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
+				tenant_key = #{tenantKey}
+			</foreach>
+		)
+		limit 1
+	</select>
+
+	<select id="checkEmailUnique" resultMap="SysUserResult">
+		select user_id, email from sys_user where del_flag = '0' and email = #{email} and
+		(
+			<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
+				tenant_key = #{tenantKey}
+			</foreach>
+		)
+		limit 1
+	</select>
+
+	<insert id="insertUser" parameterType="com.hhwy.system.api.domain.SysUser" useGeneratedKeys="true" keyProperty="userId">
+ 		insert into sys_user(
+ 			<if test="userId != null and userId != 0">user_id,</if>
+			dept_id,
+ 			<if test="userName != null and userName != ''">user_name,</if>
+ 			<if test="nickName != null and nickName != ''">nick_name,</if>
+ 			<if test="email != null and email != ''">email,</if>
+ 			<if test="avatar != null and avatar != ''">avatar,</if>
+ 			<if test="phoneNumber != null and phoneNumber != ''">phone_number,</if>
+ 			<if test="sex != null and sex != ''">sex,</if>
+ 			<if test="idCard != null and idCard != ''">id_card,</if>
+ 			<if test="password != null and password != ''">password,</if>
+ 			<if test="status != null and status != ''">status,</if>
+ 			<if test="createUser != null and createUser != ''">create_user,</if>
+ 			<if test="remark != null and remark != ''">remark,</if>
+ 			<if test="superFlag != null and superFlag != ''">super_flag,</if>
+ 			<if test="tenantKey != null and tenantKey != ''">tenant_key,</if>
+ 			create_time
+ 		)values(
+ 			<if test="userId != null and userId != ''">#{userId},</if>
+			dept_id,
+ 			<if test="userName != null and userName != ''">#{userName},</if>
+ 			<if test="nickName != null and nickName != ''">#{nickName},</if>
+ 			<if test="email != null and email != ''">#{email},</if>
+ 			<if test="avatar != null and avatar != ''">#{avatar},</if>
+ 			<if test="phoneNumber != null and phoneNumber != ''">#{phoneNumber},</if>
+ 			<if test="sex != null and sex != ''">#{sex},</if>
+ 			<if test="idCard != null and idCard != ''">#{idCard},</if>
+ 			<if test="password != null and password != ''">#{password},</if>
+ 			<if test="status != null and status != ''">#{status},</if>
+ 			<if test="createUser != null and createUser != ''">#{createUser},</if>
+ 			<if test="remark != null and remark != ''">#{remark},</if>
+ 			<if test="superFlag != null and superFlag != ''">#{superFlag},</if>
+ 			<if test="tenantKey != null and tenantKey != ''">#{tenantKey},</if>
+ 			sysdate()
+ 		)
+	</insert>
+
+	<update id="updateUser" parameterType="com.hhwy.system.api.domain.SysUser">
+ 		update sys_user
+ 		<set>
+ 			<if test="deptId != null and deptId != 0">dept_id = #{deptId},</if>
+ 			<if test="userName != null and userName != ''">user_name = #{userName},</if>
+ 			<if test="nickName != null and nickName != ''">nick_name = #{nickName},</if>
+ 			<if test="email != null">email = #{email},</if>
+ 			<if test="phoneNumber != null ">phone_number = #{phoneNumber},</if>
+ 			<if test="sex != null and sex != ''">sex = #{sex},</if>
+ 			<if test="idCard != null and idCard != ''">id_card = #{idCard},</if>
+ 			<if test="avatar != null and avatar != ''">avatar = #{avatar},</if>
+ 			<if test="password != null and password != ''">password = #{password},</if>
+ 			<if test="status != null and status != ''">status = #{status},</if>
+ 			<if test="loginIp != null and loginIp != ''">login_ip = #{loginIp},</if>
+ 			<if test="loginDate != null">login_date = #{loginDate},</if>
+ 			<if test="updateUser != null and updateUser != ''">update_user = #{updateUser},</if>
+ 			<if test="remark != null">remark = #{remark},</if>
+ 			<if test="superFlag != null and superFlag != ''">super_flag = #{superFlag},</if>
+ 			<if test="tenantKey != null and tenantKey != ''">tenant_key = #{tenantKey},</if>
+ 			update_time = sysdate()
+ 		</set>
+ 		where user_id = #{userId}
+	</update>
+
+	<update id="updateUserStatus" parameterType="com.hhwy.system.api.domain.SysUser">
+ 		update sys_user set status = #{status} where user_id = #{userId}
+	</update>
+
+	<update id="updateUserAvatar" parameterType="com.hhwy.system.api.domain.SysUser">
+ 		update sys_user set avatar = #{avatar} where user_name = #{userName}
+	</update>
+
+	<update id="resetUserPwd" parameterType="com.hhwy.system.api.domain.SysUser">
+ 		update sys_user set password = #{password} where user_name = #{userName}
+	</update>
+	
+	<delete id="realDeleteUserById" parameterType="Long">
+		delete from sys_user where user_id = #{userId}
+ 	</delete>
+
+	<delete id="deleteUserById" parameterType="Long">
+		update sys_user set del_flag = '1' where user_id = #{userId}
+ 	</delete>
+
+ 	<delete id="deleteUserByIds" parameterType="Long">
+ 		update sys_user set del_flag = '1' where user_id in
+ 		<foreach collection="array" item="userId" open="(" separator="," close=")">
+ 			#{userId}
+        </foreach> 
+ 	</delete>
+
+ 	<delete id="realDeleteUserByIds">
+ 		delete from sys_user  where user_id in
+ 		<foreach collection="list" item="userId" open="(" separator="," close=")">
+ 			#{userId}
+        </foreach>
+ 	</delete>
+
+	<select id="selectAllocatedList" resultType="com.hhwy.system.api.domain.SysUser">
+		select distinct u.user_id userId, u.dept_id deptId, u.user_name userName, u.nick_name nickName, u.email, u.phone_number, u.password,
+			u.sex, u.id_card idCard, u.status, u.del_flag delFlag, u.super_flag superFlag, u.login_ip loginIp, u.login_date loginDate, u.create_user createUser, u.create_time createTime, u.remark
+		from sys_user u
+		left join sys_dept d on u.dept_id = d.dept_id
+		left join sys_user_role ur on u.user_id = ur.user_id
+		left join sys_role r on r.role_id = ur.role_id
+		where u.del_flag = '0' and r.role_id = #{roleId} and ur.tenant_key = #{tenantKey} and
+		<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
+			u.tenant_key = #{tenantKey}
+		</foreach>
+		<if test="user.userName != null and user.userName != ''">
+			AND u.user_name like concat('%', #{user.userName}, '%')
+		</if>
+		<if test="user.nickName != null and user.nickName != ''">
+			AND u.nick_name like concat('%', #{user.nickName}, '%')
+		</if>
+		<if test="user.phoneNumber != null and user.phoneNumber != ''">
+			AND u.phone_number like concat('%', #{user.phoneNumber}, '%')
+		</if>
+		<!-- 数据范围过滤 -->
+		${user.params.dataScope}
+	</select>
+
+	<select id="selectUnallocatedList" resultType="com.hhwy.system.api.domain.SysUser">
+		select u.user_id userId, u.dept_id deptId, u.user_name userName, u.nick_name nickName, u.email, u.phone_number, u.password, u.sex, u.id_card idCard,
+			u.status, u.del_flag delFlag, u.super_flag superFlag, u.login_ip loginIp, u.login_date loginDate, u.create_user createUser, u.create_time createTime, u.remark
+		from sys_user u
+		left join sys_dept d on u.dept_id = d.dept_id
+		where
+		(
+			<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
+				u.tenant_key = #{tenantKey}
+			</foreach>
+		)
+		and u.del_flag = '0'
+		and u.user_id not in (select u.user_id from sys_user u inner join sys_user_role ur on u.user_id = ur.user_id and ur.role_id = #{roleId} and ur.tenant_key = #{tenantKey} )
+		<if test="user.userName != null and user.userName != ''">
+			AND u.user_name like concat('%', #{user.userName}, '%')
+		</if>
+		<if test="user.nickName != null and user.nickName != ''">
+			AND u.nick_name like concat('%', #{user.nickName}, '%')
+		</if>
+		<if test="user.phoneNumber != null and user.phoneNumber != ''">
+			AND u.phone_number like concat('%', #{user.phoneNumber}, '%')
+		</if>
+		<!-- 数据范围过滤 -->
+		${user.params.dataScope}
+	</select>
+
+	<select id="selectUserListByRoleIdList" resultType="com.hhwy.system.api.domain.SysUser">
+		SELECT
+			u.user_name userName, u.nick_name nickName
+		FROM
+			sys_user u
+		LEFT JOIN sys_user_role ur ON u.user_id = ur.user_id
+		WHERE ur.tenant_key = #{tenantKey} and
+		(
+			<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
+				u.tenant_key = #{tenantKey}
+			</foreach>
+		)
+		and ur.role_id in
+		<foreach item="roleId" collection="roleIdList" open="(" separator="," close=")">
+			#{roleId}
+		</foreach>
+	</select>
+
+	<select id="selectUserListByOriginalRoleIdList" resultType="com.hhwy.system.api.domain.SysUser">
+		SELECT
+			u.user_name userName, u.nick_name nickName
+		FROM
+			sys_user u
+		LEFT JOIN sys_user_role ur ON u.user_id = ur.user_id
+		LEFT JOIN sys_tenant_resource str ON ur.role_id = str.resource_id
+		WHERE ur.tenant_key = #{tenantKey} and
+		(
+			<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
+				u.tenant_key = #{tenantKey}
+			</foreach>
+		)
+		AND str.tenant_key = #{tenantKey} AND str.resource_table = 'sys_role' AND str.resource_original_id in
+		<foreach item="originalId" collection="originalRoleIdList" open="(" separator="," close=")">
+			#{originalId}
+		</foreach>
+	</select>
+
+	<select id="selectUserListByRoleIdsAndDeptIds" resultType="com.hhwy.system.api.domain.SysUser">
+		SELECT
+			u.user_name userName, u.nick_name nickName
+		FROM
+			sys_user u
+		LEFT JOIN sys_user_role ur ON u.user_id = ur.user_id
+		LEFT JOIN sys_user_part_dept upd ON u.user_id = upd.dept_id
+		LEFT JOIN sys_role_dept rd ON ur.role_id = rd.dept_id
+		WHERE ur.tenant_key = #{tenantKey} and upd.tenant_key = #{tenantKey} and rd.tenant_key = #{tenantKey}  and
+		<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
+			u.tenant_key = #{tenantKey}
+		</foreach>
+		and ur.role_id in
+		<foreach item="roleId" collection="roleIdList" open="(" separator="," close=")">
+			#{roleId}
+		</foreach>
+		and
+		(
+			u.dept_id in
+			<foreach item="deptId" collection="deptIdList" open="(" separator="," close=")">
+				#{deptId}
+			</foreach>
+			or upd.dept_id in
+			<foreach item="deptId" collection="deptIdList" open="(" separator="," close=")">
+				#{deptId}
+			</foreach>
+		)
+	</select>
+
+	<select id="selectUserListByUserIdList" resultType="com.hhwy.system.api.domain.SysUser">
+		SELECT
+			u.user_name userName, u.nick_name nickName
+		FROM
+			sys_user u
+		WHERE
+		<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
+			u.tenant_key = #{tenantKey}
+		</foreach>
+	 	and u.user_id in
+		<foreach item="userId" collection="userIdList" open="(" separator="," close=")">
+			#{userId}
+		</foreach>
+	</select>
+
+	<select id="selectUserListByOriginalUserIdList" resultType="com.hhwy.system.api.domain.SysUser">
+		SELECT
+			u.user_name userName, u.nick_name nickName
+		FROM
+			sys_user u
+		LEFT JOIN sys_tenant_resource str ON u.user_id = str.resource_id
+		WHERE str.tenant_key = #{tenantKey} AND str.resource_table = 'sys_user' AND str.resource_original_id in
+		<foreach item="originalId" collection="originalUserIdList" open="(" separator="," close=")">
+			#{originalId}
+		</foreach>
+	</select>
+
+	<select id="selectUserListByNickName" resultType="com.hhwy.system.api.domain.SysUser">
+		SELECT
+			u.user_id userId, u.user_name userName, u.nick_name nickName
+		FROM
+			sys_user u
+		WHERE
+			u.nick_name like concat('%', #{nickName}, '%') and
+		<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
+			u.tenant_key = #{tenantKey}
+		</foreach>
+	</select>
+</mapper> 

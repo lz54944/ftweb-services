@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hhwy.activiti.core.mapper.ActiBusinessInfoMapper">
+    <resultMap type="com.hhwy.activiti.api.domain.ActiBusinessInfo" id="ActiBusinessInfoResult">
+        <result property="id"    column="id"    />
+        <result property="businessId"    column="business_id"    />
+        <result property="businessTableName"    column="business_table_name"    />
+        <result property="processInstanceId"    column="process_instance_id"    />
+        <result property="processNodeId"    column="process_node_id"    />
+        <result property="processTaskId"    column="process_task_id"    />
+        <result property="processTaskName"    column="process_task_name"    />
+        <result property="processTaskMan"    column="process_task_man"    />
+        <result property="createUser"    column="create_user"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateUser"    column="update_user"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="tenantKey"    column="tenant_key"    />
+        <result property="formUrl"    column="form_url"    />
+    </resultMap>
+
+    <sql id="selectActiBusinessInfoVo">
+        select `id`, `business_id`, `business_table_name`, `process_instance_id`, `process_node_id`, `process_task_id`, `process_task_name`, `process_task_man`, `create_user`, `create_time`, `update_user`, `update_time`, `remark`, `tenant_key`, `form_url` from `acti_business_info`
+    </sql>
+
+    <select id="selectActiBusinessInfoList" parameterType="com.hhwy.activiti.api.domain.ActiBusinessInfo" resultMap="ActiBusinessInfoResult">
+        <include refid="selectActiBusinessInfoVo"/>
+        <where>
+            <if test="businessId != null  and businessId != ''"> and `business_id` = #{businessId}</if>
+            <if test="businessTableName != null  and businessTableName != ''"> and `business_table_name` like concat('%', #{businessTableName}, '%')</if>
+            <if test="processInstanceId != null  and processInstanceId != ''"> and `process_instance_id` = #{processInstanceId}</if>
+            <if test="processNodeId != null  and processNodeId != ''"> and `process_node_id` = #{processNodeId}</if>
+            <if test="processTaskId != null  and processTaskId != ''"> and `process_task_id` = #{processTaskId}</if>
+            <if test="processTaskName != null  and processTaskName != ''"> and `process_task_name` like concat('%', #{processTaskName}, '%')</if>
+            <if test="processTaskMan != null  and processTaskMan != ''"> and `process_task_man` = #{processTaskMan}</if>
+            <if test="createUser != null  and createUser != ''"> and `create_user` = #{createUser}</if>
+            <if test="updateUser != null  and updateUser != ''"> and `update_user` = #{updateUser}</if>
+            <if test="tenantKey != null  and tenantKey != ''"> and `tenant_key` = #{tenantKey}</if>
+        </where>
+        order by `id` desc
+    </select>
+    
+    <select id="selectActiBusinessInfoById" parameterType="Long" resultMap="ActiBusinessInfoResult">
+        <include refid="selectActiBusinessInfoVo"/>
+        where `id` = #{id}
+    </select>
+
+    <select id="selectActiBusinessInfoByTableNameAndBusinessIdAndTenantKey" resultMap="ActiBusinessInfoResult">
+        <include refid="selectActiBusinessInfoVo"/>
+        where `business_table_name` = #{businessTableName} and `business_id` = #{businessId} and tenant_key = #{tenantKey}
+    </select>
+
+    <insert id="insertActiBusinessInfo" parameterType="com.hhwy.activiti.api.domain.ActiBusinessInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into `acti_business_info`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="businessId != null">`business_id`,</if>
+            <if test="businessTableName != null">`business_table_name`,</if>
+            <if test="processInstanceId != null">`process_instance_id`,</if>
+            <if test="processNodeId != null">`process_node_id`,</if>
+            <if test="processTaskId != null">`process_task_id`,</if>
+            <if test="processTaskName != null">`process_task_name`,</if>
+            <if test="processTaskMan != null">`process_task_man`,</if>
+            <if test="createUser != null">`create_user`,</if>
+            <if test="createTime != null">`create_time`,</if>
+            <if test="updateUser != null">`update_user`,</if>
+            <if test="updateTime != null">`update_time`,</if>
+            <if test="remark != null">`remark`,</if>
+            <if test="tenantKey != null">`tenant_key`,</if>
+            <if test="formUrl != null">`form_url`,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="businessId != null">#{businessId},</if>
+            <if test="businessTableName != null">#{businessTableName},</if>
+            <if test="processInstanceId != null">#{processInstanceId},</if>
+            <if test="processNodeId != null">#{processNodeId},</if>
+            <if test="processTaskId != null">#{processTaskId},</if>
+            <if test="processTaskName != null">#{processTaskName},</if>
+            <if test="processTaskMan != null">#{processTaskMan},</if>
+            <if test="createUser != null">#{createUser},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateUser != null">#{updateUser},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="tenantKey != null">#{tenantKey},</if>
+            <if test="formUrl != null">#{formUrl},</if>
+         </trim>
+    </insert>
+
+    <update id="updateActiBusinessInfo" parameterType="com.hhwy.activiti.api.domain.ActiBusinessInfo">
+        update `acti_business_info`
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="businessId != null">`business_id` = #{businessId},</if>
+            <if test="businessTableName != null">`business_table_name` = #{businessTableName},</if>
+            <if test="processInstanceId != null">`process_instance_id` = #{processInstanceId},</if>
+            <if test="processNodeId != null">`process_node_id` = #{processNodeId},</if>
+            <if test="processTaskId != null">`process_task_id` = #{processTaskId},</if>
+            <if test="processTaskName != null">`process_task_name` = #{processTaskName},</if>
+            <if test="processTaskMan != null">`process_task_man` = #{processTaskMan},</if>
+            <if test="createUser != null">`create_user` = #{createUser},</if>
+            <if test="createTime != null">`create_time` = #{createTime},</if>
+            <if test="updateUser != null">`update_user` = #{updateUser},</if>
+            <if test="updateTime != null">`update_time` = #{updateTime},</if>
+            <if test="remark != null">`remark` = #{remark},</if>
+            <if test="tenantKey != null">`tenant_key` = #{tenantKey},</if>
+            <if test="formUrl != null">`form_url` = #{formUrl},</if>
+        </trim>
+        where `id` = #{id}
+    </update>
+
+    <delete id="deleteActiBusinessInfoById" parameterType="Long">
+        delete from `acti_business_info` where `id` = #{id}
+    </delete>
+
+    <delete id="deleteActiBusinessInfoByIds" >
+        delete from `acti_business_info` where `id` in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+</mapper>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.hhwy</groupId>
+        <artifactId>ft-cloud</artifactId>
+        <version>2.0.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <modules>
+        <module>ft-service-activiti</module>
+        <module>ft-service-auth</module>
+        <module>ft-service-system</module>
+        <module>ft-service-gen</module>
+        <module>ft-service-job</module>
+        <module>ft-service-file</module>
+        <module>ft-service-canal</module>
+        <module>ft-service-demo</module>
+    </modules>
+
+    <artifactId>ft-services</artifactId>
+    <packaging>pom</packaging>
+
+    <description>
+        ft-services业务模块
+    </description>
+
+</project>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hhwy.activiti.core.mapper.ActiModelDeploymentMapper">
+    <resultMap type="com.hhwy.activiti.core.domain.po.ActiModelDeployment" id="ActiModelDeploymentResult">
+        <result property="modelId"    column="model_id"    />
+        <result property="deploymentId"    column="deployment_id"    />
+    </resultMap>
+
+    <sql id="selectActiModelDeploymentVo">
+        select `model_id`, `deployment_id` from `acti_model_deployment`
+    </sql>
+
+    <select id="selectActiModelDeploymentList" parameterType="com.hhwy.activiti.core.domain.po.ActiModelDeployment" resultMap="ActiModelDeploymentResult">
+        <include refid="selectActiModelDeploymentVo"/>
+        <where>
+            <if test="modelId != null  and modelId != ''"> and `model_id` = #{modelId}</if>
+            <if test="deploymentId != null  and deploymentId != ''"> and `deployment_id` = #{deploymentId}</if>
+        </where>
+        </select>
+
+    <select id="selectActiModelDeploymentById" parameterType="String" resultMap="ActiModelDeploymentResult">
+        <include refid="selectActiModelDeploymentVo"/>
+        where `model_id` = #{modelId}
+    </select>
+
+    <select id="selectModelIdByDeploymentId" parameterType="String" resultType="String">
+        select `model_id` from `acti_model_deployment`
+        where `deployment_id` = #{deploymentId}
+    </select>
+
+    <insert id="insertActiModelDeployment">
+        insert into `acti_model_deployment`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="modelId != null">`model_id`,</if>
+            <if test="deploymentId != null">`deployment_id`,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="modelId != null">#{modelId},</if>
+            <if test="deploymentId != null">#{deploymentId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateActiModelDeployment" parameterType="com.hhwy.activiti.core.domain.po.ActiModelDeployment">
+        update `acti_model_deployment`
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="deploymentId != null">`deployment_id` = #{deploymentId},</if>
+        </trim>
+        where `model_id` = #{modelId}
+    </update>
+
+    <delete id="deleteActiModelDeploymentById" parameterType="String">
+        delete from `acti_model_deployment` where `model_id` = #{modelId}
+    </delete>
+
+    <delete id="deleteActiModelDeploymentByDeploymentId" parameterType="String">
+        delete from `acti_model_deployment` where `deployment_id` = #{deploymentId}
+    </delete>
+
+    <delete id="deleteActiModelDeploymentByIds" >
+        delete from `acti_model_deployment` where `model_id` in
+        <foreach item="modelId" collection="array" open="(" separator="," close=")">
+            #{modelId}
+        </foreach>
+    </delete>
+
+
+</mapper>

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hhwy.activiti.core.mapper.ActivitiMapper">
+
+    <resultMap id="runningTaskResultMap" type="com.hhwy.activiti.core.domain.dto.ActRunTaskDTO">
+        <id property="id" column="ID_" jdbcType="VARCHAR"/>
+        <result property="revision" column="REV_" jdbcType="INTEGER"/>
+        <result property="name" column="NAME_" jdbcType="VARCHAR"/>
+        <result property="businessKey" column="BUSINESS_KEY_" jdbcType="VARCHAR"/>
+        <result property="parentTaskId" column="PARENT_TASK_ID_" jdbcType="VARCHAR"/>
+        <result property="description" column="DESCRIPTION_" jdbcType="VARCHAR"/>
+        <result property="priority" column="PRIORITY_" jdbcType="INTEGER"/>
+        <result property="createTime" column="CREATE_TIME_" jdbcType="TIMESTAMP" />
+        <result property="owner" column="OWNER_" jdbcType="VARCHAR"/>
+        <result property="assignee" column="ASSIGNEE_" jdbcType="VARCHAR"/>
+        <result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR" />
+        <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
+        <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR"/>
+        <result property="taskDefinitionKey" column="TASK_DEF_KEY_" jdbcType="VARCHAR"/>
+        <result property="dueDate" column="DUE_DATE_" jdbcType="TIMESTAMP"/>
+        <result property="category" column="CATEGORY_" jdbcType="VARCHAR" />
+        <result property="suspensionState" column="SUSPENSION_STATE_" jdbcType="INTEGER" />
+        <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
+        <result property="formKey" column="FORM_KEY_" jdbcType="VARCHAR" />
+        <result property="claimTime" column="CLAIM_TIME_" jdbcType="TIMESTAMP" />
+        <result property="appVersion" column="APP_VERSION_" jdbcType="INTEGER" />
+    </resultMap>
+
+    <select id="getProcessDefinitionIdByDeploymentId" parameterType="string" resultType="string">
+        SELECT
+            ID_
+        FROM
+            act_re_procdef
+        WHERE
+            DEPLOYMENT_ID_ = #{deploymentId}
+    </select>
+
+    <select id="getProcessKeyByDefinitionId" parameterType="string" resultType="string">
+        SELECT
+            KEY_
+        FROM
+            act_re_procdef
+        WHERE
+            ID_ = #{definitionId}
+    </select>
+
+    <select id="getProcessInstanceIdByDefinitionId" parameterType="string" resultType="string">
+        SELECT
+            PROC_INST_ID_
+        FROM
+            `act_hi_procinst`
+        WHERE
+            PROC_DEF_ID_ = #{definitionId}
+    </select>
+
+    <select id="getProcessDefinitionIdByInstanceId" parameterType="string" resultType="string">
+        SELECT
+            PROC_DEF_ID_
+        FROM
+            `act_hi_procinst`
+        WHERE
+            PROC_INST_ID_ = #{instanceId}
+    </select>
+
+    <select id="selectRunningTasksByDefinitionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="runningTaskResultMap">
+        select T.*
+        from ACT_RU_TASK T
+        where T.PROC_DEF_ID_ = #{definitionId} AND ASSIGNEE_ is NOT null
+      </select>
+
+    <select id="getTaskIdByProcInstIdAndTaskDefKey" resultType="string">
+        SELECT
+            ID_
+        FROM
+            `act_ru_task`
+        WHERE
+            PROC_INST_ID_ = #{procInstId}
+        AND TASK_DEF_KEY_ = #{taskDefKey}
+    </select>
+
+    <select id="getTaskIdListByProcInstIdAndTaskDefKey" resultType="string">
+        SELECT
+            ID_
+        FROM
+            `act_ru_task`
+        WHERE
+            PROC_INST_ID_ = #{procInstId}
+        AND TASK_DEF_KEY_ = #{taskDefKey}
+    </select>
+
+    <select id="getTaskNameByProcInstIdAndTaskDefKey" resultType="string">
+        SELECT
+            NAME_
+        FROM
+            `act_ru_task`
+        WHERE
+            PROC_INST_ID_ = #{procInstId}
+        AND TASK_DEF_KEY_ = #{taskDefKey}
+    </select>
+
+    <select id="getCompleteNodesByInstanceId" resultType="com.hhwy.activiti.core.domain.po.ActiTaskConfig">
+        SELECT DISTINCT
+            TASK_DEF_KEY_ taskNodeId, NAME_ taskNodeName
+        FROM
+            `act_hi_taskinst`
+        WHERE
+            PROC_INST_ID_ = #{instanceId}
+        AND ASSIGNEE_ IS NOT NULL AND END_TIME_ IS NOT NULL
+    </select>
+
+    <select id="selectHistoricTaskByInstanceId" resultType="org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntityImpl">
+        SELECT DISTINCT
+            RES.*
+        FROM
+            ACT_HI_TASKINST RES
+        WHERE
+            RES.PROC_INST_ID_ = #{instanceId}
+            AND ASSIGNEE_ IS NOT NULL
+        ORDER BY
+            RES.START_TIME_ DESC
+    </select>
+
+    <select id="getRecallTaskIds" resultType="string">
+        SELECT
+            next_task_id
+        FROM
+            `acti_todo_task_history`
+        WHERE
+            process_instance_id = #{instanceId}
+        AND state = 1
+    </select>
+
+    <select id="selectTaskTraces" resultType="com.hhwy.activiti.core.domain.po.ActiTodoTaskHistory">
+        SELECT DISTINCT
+            t.NAME_ taskNodeName, t.ASSIGNEE_ receiver, t.START_TIME_ taskStartTime, t.END_TIME_ taskEndTime, c.MESSAGE_ message, h.tenant_key tenantKey
+        FROM
+            ACT_HI_TASKINST t
+        LEFT JOIN acti_todo_task_history h ON t.ID_ = h.task_id
+        LEFT JOIN act_hi_comment c ON t.ID_ = c.TASK_ID_
+        WHERE
+            t.PROC_INST_ID_ = #{instanceId} AND (h.state != '1' OR h.state IS NULL)
+        ORDER BY
+            t.START_TIME_ ASC
+    </select>
+
+</mapper>

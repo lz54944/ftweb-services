@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.hhwy</groupId>
+        <artifactId>ft-common</artifactId>
+        <version>2.0.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    
+    <artifactId>ft-common-security</artifactId>
+
+    <description>
+        ft-common-security安全模块
+    </description>
+
+    <dependencies>
+    
+        <!-- FT Api System -->
+        <dependency>
+            <groupId>com.hhwy</groupId>
+            <artifactId>ft-api-system</artifactId>
+        </dependency>
+        
+        <!-- FT Common Redis-->
+        <dependency>
+            <groupId>com.hhwy</groupId>
+            <artifactId>ft-common-redis</artifactId>
+        </dependency>
+        
+    </dependencies>
+
+</project>

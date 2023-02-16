@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hhwy.system.core.mapper.SysMenuMapper">
+
+	<resultMap type="com.hhwy.system.api.domain.SysMenu" id="SysMenuResult">
+		<id     property="menuId"         column="menu_id"        />
+		<result property="menuName"       column="menu_name"      />
+		<result property="parentName"     column="parent_name"    />
+		<result property="parentId"       column="parent_id"      />
+		<result property="orderNum"       column="order_num"      />
+		<result property="routerPath"           column="router_path"           />
+		<result property="componentPath"      column="component_path"      />
+		<result property="isExternalLink"        column="is_external_link"       />
+		<result property="isCache"        column="is_cache"       />
+		<result property="isIframe"        column="is_iframe"       />
+		<result property="menuType"       column="menu_type"      />
+		<result property="visible"        column="visible"        />
+		<result property="status"         column="status"         />
+		<result property="perms"          column="perms"          />
+		<result property="icon"           column="icon"           />
+		<result property="createUser"       column="create_user"      />
+		<result property="createTime"     column="create_time"    />
+		<result property="updateTime"     column="update_time"    />
+		<result property="updateUser"       column="update_user"      />
+		<result property="remark"         column="remark"         />
+		<result property="tenantKey"         column="tenant_key"         />
+	</resultMap>
+
+	<sql id="selectMenuVo">
+        select menu_id, menu_name, parent_id, order_num, router_path, component_path, is_external_link, is_cache, is_iframe, menu_type, visible, status, tenant_key, ifnull(perms,'') as perms, icon, create_time
+		from sys_menu
+    </sql>
+
+    <select id="selectMenuList" resultMap="SysMenuResult">
+		<include refid="selectMenuVo"/>
+		<where>
+			<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
+				tenant_key = #{tenantKey}
+			</foreach>
+			<if test="menu.menuName != null and menu.menuName != ''">
+				AND menu_name like concat('%', #{menu.menuName}, '%')
+			</if>
+			<if test="menu.visible != null and menu.visible != ''">
+				AND visible = #{menu.visible}
+			</if>
+			<if test="menu.status != null and menu.status != ''">
+				AND status = #{menu.status}
+			</if>
+			<if test="menu.params.excludeTenant != null and menu.params.excludeTenant != ''">
+				AND menu_name not like concat('%', #{menu.params.excludeTenant}, '%')
+			</if>
+		</where>
+		order by parent_id, order_num
+	</select>
+	
+	<!--<select id="selectMenuTreeAll" resultMap="SysMenuResult">
+		select distinct m.menu_id, m.parent_id, m.menu_name, m.router_path, m.component_path, m.visible, m.status, ifnull(m.perms,'') as perms, m.is_external_link,
+		m.is_cache, m.is_iframe, m.menu_type, m.icon, m.order_num, m.create_time
+		from sys_menu m where m.menu_type in ('M', 'C') and m.status = 0
+		order by m.parent_id, m.order_num
+	</select>-->
+	
+	<select id="selectMenuListByUserId" resultMap="SysMenuResult">
+		select distinct m.menu_id, m.parent_id, m.menu_name, m.router_path, m.component_path, m.visible, m.status, ifnull(m.perms,'') as perms, m.is_external_link,
+		m.is_cache, m.is_iframe, m.menu_type, m.icon, m.order_num, m.create_time
+		from sys_menu m
+		left join sys_role_menu rm on m.menu_id = rm.menu_id
+		left join sys_user_role ur on rm.role_id = ur.role_id
+		where rm.tenant_key = #{tenantKey} and ur.tenant_key = #{tenantKey} and ur.user_id = #{params.userId}  and rm.misty_flag = '0' and
+		<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
+			m.tenant_key = #{tenantKey}
+		</foreach>
+		<if test="menu.menuName != null and menu.menuName != ''">
+            AND menu_name like concat('%', #{menu.menuName}, '%')
+		</if>
+		<if test="menu.visible != null and menu.visible != ''">
+            AND visible = #{menu.visible}
+		</if>
+		<if test="menu.status != null and menu.status != ''">
+            AND status = #{menu.status}
+		</if>
+		order by m.parent_id, m.order_num
+	</select>
+
+	<select id="selectMenuBarListByUserId" resultMap="SysMenuResult">
+		select distinct m.menu_id, m.parent_id, m.menu_name, m.router_path, m.component_path, m.visible, m.status, ifnull(m.perms,'') as perms, m.is_external_link,
+		m.is_cache, m.is_iframe, m.menu_type, m.icon, m.order_num, m.create_time
+		from sys_menu m
+		left join sys_role_menu rm on m.menu_id = rm.menu_id
+		left join sys_user_role ur on rm.role_id = ur.role_id
+		where rm.tenant_key = #{tenantKey} and ur.tenant_key = #{tenantKey} and ur.user_id = #{menu.params.userId} and
+		<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
+			m.tenant_key = #{tenantKey}
+		</foreach>
+		<if test="menu.menuName != null and menu.menuName != ''">
+            AND m.menu_name like concat('%', #{menu.menuName}, '%')
+		</if>
+		<if test="menu.visible != null and menu.visible != ''">
+            AND m.visible = #{menu.visible}
+		</if>
+		<if test="menu.status != null and menu.status != ''">
+            AND m.status = #{menu.status}
+		</if>
+		order by m.parent_id, m.order_num
+	</select>
+
+	<select id="selectMenuListByTenantKey" resultMap="SysMenuResult">
+		select distinct m.menu_id, m.parent_id, m.menu_name, m.router_path, m.component_path, m.visible, m.status, ifnull(m.perms,'') as perms, m.is_external_link,
+		m.is_cache, m.is_iframe, m.menu_type, m.icon, m.order_num, m.create_time, r.misty_flag mistyFlag
+		FROM
+			`sys_tenant_resource` r
+		LEFT JOIN sys_menu m ON r.resource_original_id = m.menu_id
+		WHERE
+			r.tenant_key = #{tenantKey}
+		AND r.resource_table = 'sys_menu'
+		order by m.parent_id, m.order_num
+	</select>
+
+    <select id="selectMenuTreeByUserId" resultMap="SysMenuResult">
+		select distinct m.menu_id, m.parent_id, m.menu_name, m.router_path, m.component_path, m.visible, m.status, ifnull(m.perms,'') as perms, m.is_external_link,
+		m.is_cache, m.is_iframe, m.menu_type, m.icon, m.order_num, m.create_time
+		from sys_menu m
+	    left join sys_role_menu rm on m.menu_id = rm.menu_id
+	    left join sys_user_role ur on rm.role_id = ur.role_id
+	    left join sys_role ro on ur.role_id = ro.role_id
+		where rm.tenant_key = #{tenantKey} and ur.tenant_key = #{tenantKey} and ur.user_id = #{userId} and m.menu_type in ('M', 'C') and m.status = 0  AND ro.status = 0 and
+		<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
+			m.tenant_key = #{tenantKey}
+		</foreach>
+		order by m.parent_id, m.order_num
+	</select>
+	
+	<select id="selectMenuIdListByRoleId" resultType="Long">
+		select m.menu_id
+		from sys_menu m
+        left join sys_role_menu rm on m.menu_id = rm.menu_id
+        where rm.role_id = #{roleId} and rm.tenant_key = #{tenantKey} and rm.misty_flag = '0' and
+		<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
+			m.tenant_key = #{tenantKey}
+		</foreach>
+		<if test="menuCheckStrictly">
+		  and m.menu_id not in (select m.parent_id from sys_menu m inner join sys_role_menu rm on m.menu_id = rm.menu_id and rm.role_id = #{roleId}  and rm.tenant_key = #{tenantKey})
+		</if>
+		order by m.parent_id, m.order_num
+	</select>
+
+	<select id="selectMistyMenuIdListByRoleId" resultType="Long">
+		select m.menu_id
+		from sys_menu m
+        left join sys_role_menu rm on m.menu_id = rm.menu_id
+        where rm.role_id = #{roleId} and rm.tenant_key = #{tenantKey} and rm.misty_flag = '1' and
+		<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
+			m.tenant_key = #{tenantKey}
+		</foreach>
+		<if test="menuCheckStrictly">
+		  and m.menu_id not in (select m.parent_id from sys_menu m inner join sys_role_menu rm on m.menu_id = rm.menu_id and rm.role_id = #{roleId} and rm.tenant_key = #{tenantKey})
+		</if>
+		order by m.parent_id, m.order_num
+	</select>
+
+	<!--<select id="selectMenuPerms" resultType="String">
+		select distinct m.perms
+		from sys_menu m
+		left join sys_role_menu rm on m.menu_id = rm.menu_id
+		left join sys_user_role ur on rm.role_id = ur.role_id
+		where rm.misty_flag = '0'
+	</select>-->
+
+	<select id="selectMenuPermsByUserId" resultType="String">
+		select distinct m.perms
+		from sys_menu m
+		left join sys_role_menu rm on m.menu_id = rm.menu_id
+		left join sys_user_role ur on rm.role_id = ur.role_id
+		left join sys_role r on r.role_id = ur.role_id
+		where m.status = '0' and rm.tenant_key = #{tenantKey} and ur.tenant_key = #{tenantKey} and r.status = '0'  and rm.misty_flag = '0' and ur.user_id = #{userId} and
+		<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
+			m.tenant_key = #{tenantKey}
+		</foreach>
+	</select>
+
+	<select id="selectButtonPermissionsByUserId" resultType="String">
+		select distinct m.perms
+		from sys_menu m
+		left join sys_role_menu rm on m.menu_id = rm.menu_id
+		left join sys_user_role ur on rm.role_id = ur.role_id
+		left join sys_role r on r.role_id = ur.role_id
+		where m.status = '0' and rm.tenant_key = #{tenantKey} and ur.tenant_key = #{tenantKey} and r.status = 'F' and r.status = '0' and rm.misty_flag = '0' and ur.user_id = #{userId} and
+		<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
+			m.tenant_key = #{tenantKey}
+		</foreach>
+	</select>
+
+	<select id="selectMenuById" parameterType="Long" resultMap="SysMenuResult">
+		<include refid="selectMenuVo"/>
+		where menu_id = #{menuId}
+	</select>
+	
+	<select id="hasChildByMenuId" resultType="Integer">
+	    select count(1) from sys_menu where parent_id = #{menuId}  
+	</select>
+	
+	<select id="checkMenuNameUnique" resultMap="SysMenuResult">
+		<include refid="selectMenuVo"/>
+		where menu_name=#{menuName} and parent_id = #{parentId} and
+		<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
+			tenant_key = #{tenantKey}
+		</foreach>
+		limit 1
+	</select>
+
+	<select id="checkRouterPathUnique" resultMap="SysMenuResult">
+		<include refid="selectMenuVo"/>
+		where router_path=#{routerPath} and
+		<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
+			tenant_key = #{tenantKey}
+		</foreach>
+		limit 1
+	</select>
+
+	<update id="updateMenu" parameterType="com.hhwy.system.api.domain.SysMenu">
+		update sys_menu
+		<set>
+			<if test="menuName != null and menuName != ''">menu_name = #{menuName},</if>
+			parent_id = #{parentId},
+			<if test="orderNum != null and orderNum != ''">order_num = #{orderNum},</if>
+			<if test="routerPath != null and routerPath != ''">router_path = #{routerPath},</if>
+			<if test="componentPath != null">component_path = #{componentPath},</if>
+			<if test="isExternalLink != null and isExternalLink != ''">is_external_link = #{isExternalLink},</if>
+			<if test="isCache != null and isCache != ''">is_cache = #{isCache},</if>
+			<if test="isIframe != null and isIframe != ''">is_iframe = #{isIframe},</if>
+			<if test="menuType != null and menuType != ''">menu_type = #{menuType},</if>
+			<if test="visible != null and visible != ''">visible = #{visible},</if>
+			<if test="status != null and status != ''">status = #{status},</if>
+			<if test="perms !=null">perms = #{perms},</if>
+			<if test="icon !=null and icon != ''">icon = #{icon},</if>
+			<if test="remark != null and remark != ''">remark = #{remark},</if>
+			<if test="updateUser != null and updateUser != ''">update_user = #{updateUser},</if>
+			<if test="tenantKey != null and tenantKey != ''">tenant_key = #{tenantKey},</if>
+			update_time = sysdate()
+		</set>
+		where menu_id = #{menuId}
+	</update>
+
+	<insert id="insertMenu" parameterType="com.hhwy.system.api.domain.SysMenu" useGeneratedKeys="true" keyProperty="menuId">
+		insert into sys_menu(
+		<if test="menuId != null and menuId != 0">menu_id,</if>
+		<if test="parentId != null and parentId != 0">parent_id,</if>
+		<if test="menuName != null and menuName != ''">menu_name,</if>
+		<if test="orderNum != null and orderNum != ''">order_num,</if>
+		<if test="routerPath != null and routerPath != ''">router_path,</if>
+		<if test="componentPath != null and componentPath != ''">component_path,</if>
+		<if test="isExternalLink != null and isExternalLink != ''">is_external_link,</if>
+		<if test="isCache != null and isCache != ''">is_cache,</if>
+		<if test="isIframe != null and isIframe != ''">is_iframe,</if>
+		<if test="menuType != null and menuType != ''">menu_type,</if>
+		<if test="visible != null and visible != ''">visible,</if>
+		<if test="status != null and status != ''">status,</if>
+		<if test="tenantKey != null and tenantKey != ''">tenant_key,</if>
+		<if test="perms !=null and perms != ''">perms,</if>
+		<if test="icon != null and icon != ''">icon,</if>
+		<if test="remark != null and remark != ''">remark,</if>
+		<if test="createUser != null and createUser != ''">create_user,</if>
+		create_time
+		)values(
+		<if test="menuId != null and menuId != 0">#{menuId},</if>
+		<if test="parentId != null and parentId != 0">#{parentId},</if>
+		<if test="menuName != null and menuName != ''">#{menuName},</if>
+		<if test="orderNum != null and orderNum != ''">#{orderNum},</if>
+		<if test="routerPath != null and routerPath != ''">#{routerPath},</if>
+		<if test="componentPath != null and componentPath != ''">#{componentPath},</if>
+		<if test="isExternalLink != null and isExternalLink != ''">#{isExternalLink},</if>
+		<if test="isCache != null and isCache != ''">#{isCache},</if>
+		<if test="isIframe != null and isIframe != ''">#{isIframe},</if>
+		<if test="menuType != null and menuType != ''">#{menuType},</if>
+		<if test="visible != null and visible != ''">#{visible},</if>
+		<if test="status != null and status != ''">#{status},</if>
+		<if test="tenantKey != null and tenantKey != ''">#{tenantKey},</if>
+		<if test="perms !=null and perms != ''">#{perms},</if>
+		<if test="icon != null and icon != ''">#{icon},</if>
+		<if test="remark != null and remark != ''">#{remark},</if>
+		<if test="createUser != null and createUser != ''">#{createUser},</if>
+		sysdate()
+		)
+	</insert>
+	
+	<delete id="deleteMenuById" parameterType="Long">
+	    delete from sys_menu where menu_id = #{menuId}
+	</delete>
+
+	<delete id="realDeleteMenuByIds">
+		delete from sys_menu where menu_id in
+		<foreach collection="list" item="menuId" open="(" separator="," close=")">
+			#{menuId}
+		</foreach>
+	</delete>
+
+	<!--<select id="selectMenuListByTenantKey" resultType="com.hhwy.system.api.domain.SysMenu">
+		<if test="menuStatus == 0">
+			select `id`, `resource_id`, `resource_table`, `tenant_key` from `sys_tenant_resource`
+		</if>
+	</select>-->
+
+</mapper> 

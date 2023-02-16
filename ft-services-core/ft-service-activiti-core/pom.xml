@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.hhwy</groupId>
+        <artifactId>ft-services-core</artifactId>
+        <version>2.0.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    
+    <artifactId>ft-service-activiti-core</artifactId>
+	
+    <description>
+        ft-service-activiti-core activiti服务核心包
+    </description>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-spring-boot-starter</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.activiti.dependencies</groupId>
+            <artifactId>activiti-dependencies</artifactId>
+            <type>pom</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-json-converter</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-image-generator</artifactId>
+        </dependency>
+
+        <!-- SpringCloud Alibaba Nacos -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+
+        <!-- SpringCloud Alibaba Nacos Config -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+        </dependency>
+
+        <!-- SpringCloud Alibaba Sentinel -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+        </dependency>
+
+        <!-- SpringBoot Actuator -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!-- Swagger UI -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+        </dependency>
+
+        <!-- Mysql Connector -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+
+        <!-- FT Common DataSource -->
+        <dependency>
+            <groupId>com.hhwy</groupId>
+            <artifactId>ft-common-datasource</artifactId>
+        </dependency>
+
+        <!-- FT Common DataScope -->
+        <dependency>
+            <groupId>com.hhwy</groupId>
+            <artifactId>ft-common-datascope</artifactId>
+        </dependency>
+
+        <!-- FT Common Log -->
+        <dependency>
+            <groupId>com.hhwy</groupId>
+            <artifactId>ft-common-log</artifactId>
+        </dependency>
+
+        <!-- FT ft-api-activiti -->
+        <dependency>
+            <groupId>com.hhwy</groupId>
+            <artifactId>ft-api-activiti</artifactId>
+        </dependency>
+
+        <!-- FT Common Swagger -->
+        <dependency>
+            <groupId>com.hhwy</groupId>
+            <artifactId>ft-common-swagger</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>batik-transcoder</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>batik</groupId>
+            <artifactId>batik-dom</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.hhwy</groupId>
+            <artifactId>ft-api-system</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.hhwy</groupId>
+            <artifactId>ft-common-tenant</artifactId>
+        </dependency>
+    </dependencies>
+</project>

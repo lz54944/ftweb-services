@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.hhwy</groupId>
+        <artifactId>ft-cloud</artifactId>
+        <version>2.0.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <modules>
+        <module>ft-common-log</module>
+        <module>ft-common-core</module>
+        <module>ft-common-redis</module>
+        <module>ft-common-swagger</module>
+        <module>ft-common-security</module>
+        <module>ft-common-socket</module>
+        <module>ft-common-datascope</module>
+		<module>ft-common-datasource</module>
+        <module>ft-common-tenant</module>
+        <module>ft-common-netty</module>
+    </modules>
+
+    <artifactId>ft-common</artifactId>
+    <packaging>pom</packaging>
+
+    <description>
+	    ft-common通用模块
+    </description>
+
+</project>

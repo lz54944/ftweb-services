@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hhwy.demo.mapper.DemoMapper">
+   <update id="cs">
+
+CREATE TABLE `users` (`name` varchar(255) DEFAULT NULL,`age` int(11) DEFAULT NULL,`sex` varchar(255) DEFAULT NULL,`id` int(11) NOT NULL AUTO_INCREMENT, PRIMARY KEY (`id`),UNIQUE KEY `q` (`name`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+   </update>
+
+   <update id="add">
+      INSERT INTO `t_demo`(name) VALUES(#{name})
+   </update>
+</mapper>

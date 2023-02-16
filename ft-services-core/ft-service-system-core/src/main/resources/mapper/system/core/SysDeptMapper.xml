@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hhwy.system.core.mapper.SysDeptMapper">
+
+	<resultMap type="com.hhwy.system.api.domain.SysDept" id="SysDeptResult">
+		<id     property="deptId"     column="dept_id"     />
+		<result property="parentId"   column="parent_id"   />
+		<result property="ancestors"  column="ancestors"   />
+		<result property="deptName"   column="dept_name"   />
+		<result property="orderNum"   column="order_num"   />
+		<result property="leader"     column="leader"      />
+		<result property="phone"      column="phone"       />
+		<result property="email"      column="email"       />
+		<result property="status"     column="status"      />
+		<result property="delFlag"    column="del_flag"    />
+		<result property="tenantKey"    column="tenant_key"    />
+		<result property="deptType"    column="dept_type"    />
+		<result property="parentName" column="parent_name" />
+		<result property="createUser"   column="create_user"   />
+		<result property="createTime" column="create_time" />
+		<result property="updateUser"   column="update_user"   />
+		<result property="updateTime" column="update_time" />
+	</resultMap>
+	
+	<sql id="selectDeptVo">
+        select d.dept_id, d.parent_id, d.ancestors, d.dept_name, d.order_num, d.leader, d.phone, d.email, d.status, d.del_flag, d.tenant_key, d.dept_type, d.create_user, d.create_time
+        from sys_dept d
+    </sql>
+
+	<select id="selectDeptList" resultMap="SysDeptResult">
+        <include refid="selectDeptVo"/>
+        where d.del_flag = '0' and
+		(
+		<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
+			d.tenant_key = #{tenantKey}
+		</foreach>
+		)
+        <if test="dept.parentId != null and dept.parentId != 0">
+			AND parent_id = #{dept.parentId}
+		</if>
+		<if test="dept.deptName != null and dept.deptName != ''">
+			AND dept_name like concat('%', #{dept.deptName}, '%')
+		</if>
+		<if test="dept.status != null and dept.status != ''">
+			AND status = #{dept.status}
+		</if>
+		<!-- 数据范围过滤 -->
+		${dept.params.dataScope}
+		order by d.parent_id, d.order_num
+    </select>
+
+	<select id="selectDeptListCount" resultType="int">
+		select count(1)
+		from sys_dept d
+        where d.del_flag = '0' and
+		(
+		<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
+			d.tenant_key = #{tenantKey}
+		</foreach>
+		)
+        <if test="dept.parentId != null and dept.parentId != 0">
+			AND parent_id = #{dept.parentId}
+		</if>
+		<if test="dept.deptName != null and dept.deptName != ''">
+			AND dept_name like concat('%', #{dept.deptName}, '%')
+		</if>
+		<if test="dept.status != null and dept.status != ''">
+			AND status = #{dept.status}
+		</if>
+		<!-- 数据范围过滤 -->
+		${dept.params.dataScope}
+		order by d.parent_id, d.order_num
+    </select>
+
+	<select id="selectOneLevelDeptList" resultMap="SysDeptResult">
+		select d.dept_id, d.parent_id, d.ancestors, d.dept_name, d.order_num, d.leader, d.phone, d.email, d.status, d.del_flag, d.tenant_key, d.dept_type, d.create_user, d.create_time
+		from sys_dept d
+		LEFT JOIN sys_dept sd ON d.parent_id = sd.dept_id
+        where d.del_flag = '0' and sd.dept_id is null and
+		(
+		<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
+			d.tenant_key = #{tenantKey}
+		</foreach>
+		)
+        <if test="dept.parentId != null and dept.parentId != 0">
+			AND parent_id = #{dept.parentId}
+		</if>
+		<if test="dept.deptName != null and dept.deptName != ''">
+			AND dept_name like concat('%', #{dept.deptName}, '%')
+		</if>
+		<if test="dept.status != null and dept.status != ''">
+			AND status = #{dept.status}
+		</if>
+		<!-- 数据范围过滤 -->
+		${dept.params.dataScope}
+		order by d.parent_id, d.order_num
+    </select>
+
+	<select id="selectChildrenDeptList" resultMap="SysDeptResult">
+		select d.dept_id, d.parent_id, d.ancestors, d.dept_name, d.order_num, d.leader, d.phone, d.email, d.status, d.del_flag, d.tenant_key, d.dept_type, d.create_user, d.create_time
+		from sys_dept d
+        where d.del_flag = '0' and d.parent_id = #{dept.deptId} and
+		(
+		<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
+			d.tenant_key = #{tenantKey}
+		</foreach>
+		)
+        <if test="dept.parentId != null and dept.parentId != 0">
+			AND parent_id = #{dept.parentId}
+		</if>
+		<if test="dept.deptName != null and dept.deptName != ''">
+			AND dept_name like concat('%', #{dept.deptName}, '%')
+		</if>
+		<if test="dept.status != null and dept.status != ''">
+			AND status = #{dept.status}
+		</if>
+		<!-- 数据范围过滤 -->
+		${dept.params.dataScope}
+		order by d.parent_id, d.order_num
+    </select>
+
+	<select id="selectDeptListByTenantKey" resultMap="SysDeptResult">
+		select d.dept_id, d.parent_id, d.ancestors, d.dept_name, d.order_num, d.leader, d.phone, d.email, d.status, d.del_flag, d.tenant_key, d.dept_type, d.create_user, d.create_time, r.misty_flag mistyFlag
+        from `sys_tenant_resource` r
+        left join sys_dept d ON r.resource_original_id = d.dept_id
+        WHERE
+			r.tenant_key = #{tenantKey} and d.del_flag = '0'
+		AND r.resource_table = 'sys_dept'
+        order by d.parent_id, d.order_num
+	</select>
+	
+	<select id="selectPartDeptListByUserId" resultMap="SysDeptResult">
+		select d.dept_id, d.parent_id, d.ancestors, d.dept_name, d.order_num, d.leader, d.phone, d.email, d.status, d.del_flag, d.dept_type, d.create_user, d.create_time
+		from sys_user_part_dept supd
+		left join sys_dept d on supd.dept_id = d.dept_id
+		where d.del_flag = '0' and supd.user_id = #{userId} and
+		<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
+			d.tenant_key = #{tenantKey}
+		</foreach>
+		order by d.parent_id, d.order_num
+	</select>
+
+	<select id="selectPartDeptIdListByUserId" resultType="Long">
+		select d.dept_id
+        from sys_dept d
+	    left join sys_user_part_dept upd on upd.dept_id = d.dept_id
+	    where d.del_flag = '0' and upd.tenant_key = #{tenantKey} and upd.user_id = #{userId} and
+		<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
+			d.tenant_key = #{tenantKey}
+		</foreach>
+	</select>
+
+    <select id="selectDeptIdListByRoleId" resultType="Long">
+		select d.dept_id
+		from sys_dept d
+        left join sys_role_dept rd on d.dept_id = rd.dept_id
+        where rd.tenant_key = #{tenantKey} and rd.role_id = #{roleId} and d.del_flag = '0'
+            <if test="deptCheckStrictly">
+              and d.dept_id not in (select d.parent_id from sys_dept d inner join sys_role_dept rd on d.dept_id = rd.dept_id and rd.role_id = #{roleId})
+            </if>
+            and
+			<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
+				d.tenant_key = #{tenantKey}
+			</foreach>
+		order by d.parent_id, d.order_num
+	</select>
+
+    <select id="selectSelfDeptIdListByDeptIdList" resultType="string">
+		select d.dept_id
+		from sys_dept d
+        where d.del_flag = '0'
+		and d.dept_id in
+		<foreach item="deptId" collection="deptIdList" open="(" separator="," close=")">
+			#{deptId}
+		</foreach>
+		and
+		<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
+			d.tenant_key = #{tenantKey}
+		</foreach>
+	</select>
+
+    <select id="selectDeptById" parameterType="Long" resultMap="SysDeptResult">
+		select d.dept_id, d.parent_id, d.ancestors, d.dept_name, d.order_num, d.leader, d.phone, d.email, d.status, d.del_flag, d.tenant_key, d.dept_type, d.create_user, d.create_time, sdd.dict_label deptTypeName
+		from sys_dept d
+		left join sys_dict_data sdd on sdd.dict_type = 'dept_type' and d.dept_type = sdd.dict_value
+		where d.dept_id = #{deptId}
+	</select>
+
+	<select id="selectDeptListByIds" resultMap="SysDeptResult">
+		<include refid="selectDeptVo"/>
+		 WHERE dept_id in
+		<foreach item="id" collection="deptIds" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</select>
+
+    <select id="checkDeptExistUser" parameterType="Long" resultType="int">
+		select count(1) from sys_user where dept_id = #{deptId} and del_flag = '0'
+	</select>
+	
+	<select id="hasChildByDeptId" parameterType="Long" resultType="int">
+		select count(1) from sys_dept
+		where del_flag = '0' and parent_id = #{deptId}
+	</select>
+	
+	<select id="selectChildrenDeptById" parameterType="Long" resultMap="SysDeptResult">
+		select d.dept_id, d.parent_id, d.ancestors, d.dept_name, d.order_num, d.leader, d.phone, d.email, d.status, d.del_flag, d.tenant_key, d.dept_type, d.create_user, d.create_time
+        from sys_dept d where find_in_set(#{deptId}, d.ancestors) and d.del_flag = '0'
+	</select>
+	
+	<select id="selectNormalChildrenDeptById" resultType="java.lang.Integer">
+		select count(1) from sys_dept where status = 0 and del_flag = '0' and find_in_set(#{deptId}, ancestors)
+	</select>
+	
+	<select id="checkDeptNameUnique" resultMap="SysDeptResult">
+	    <include refid="selectDeptVo"/>
+		where dept_name=#{deptName} and parent_id = #{parentId} and del_flag = '0' and
+		(
+			<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
+				tenant_key = #{tenantKey}
+			</foreach>
+		)
+		limit 1
+	</select>
+    
+    <insert id="insertDept" parameterType="com.hhwy.system.api.domain.SysDept" useGeneratedKeys="true" keyProperty="deptId">
+ 		insert into sys_dept(
+ 			<if test="deptId != null and deptId != 0">dept_id,</if>
+ 			<if test="parentId != null and parentId != 0">parent_id,</if>
+ 			<if test="deptName != null and deptName != ''">dept_name,</if>
+ 			<if test="ancestors != null and ancestors != ''">ancestors,</if>
+ 			<if test="orderNum != null and orderNum != ''">order_num,</if>
+ 			<if test="leader != null and leader != ''">leader,</if>
+ 			<if test="phone != null and phone != ''">phone,</if>
+ 			<if test="email != null and email != ''">email,</if>
+ 			<if test="status != null">status,</if>
+ 			<if test="tenantKey != null and tenantKey != ''">tenant_key,</if>
+ 			<if test="deptType != null and deptType != ''">dept_type,</if>
+ 			<if test="createUser != null and createUser != ''">create_user,</if>
+ 			create_time
+ 		)values(
+ 			<if test="deptId != null and deptId != 0">#{deptId},</if>
+ 			<if test="parentId != null and parentId != 0">#{parentId},</if>
+ 			<if test="deptName != null and deptName != ''">#{deptName},</if>
+ 			<if test="ancestors != null and ancestors != ''">#{ancestors},</if>
+ 			<if test="orderNum != null and orderNum != ''">#{orderNum},</if>
+ 			<if test="leader != null and leader != ''">#{leader},</if>
+ 			<if test="phone != null and phone != ''">#{phone},</if>
+ 			<if test="email != null and email != ''">#{email},</if>
+ 			<if test="status != null">#{status},</if>
+ 			<if test="tenantKey != null and tenantKey != ''">#{tenantKey},</if>
+ 			<if test="deptType != null and deptType != ''">#{deptType},</if>
+ 			<if test="createUser != null and createUser != ''">#{createUser},</if>
+ 			sysdate()
+ 		)
+	</insert>
+	
+	<update id="updateDept" parameterType="com.hhwy.system.api.domain.SysDept">
+ 		update sys_dept
+ 		<set>
+			parent_id = #{parentId},
+ 			<if test="deptName != null and deptName != ''">dept_name = #{deptName},</if>
+ 			<if test="ancestors != null">ancestors = #{ancestors},</if>
+ 			<if test="orderNum != null and orderNum != ''">order_num = #{orderNum},</if>
+ 			<if test="leader != null">leader = #{leader},</if>
+ 			<if test="phone != null">phone = #{phone},</if>
+ 			<if test="email != null">email = #{email},</if>
+ 			<if test="status != null and status != ''">status = #{status},</if>
+ 			<if test="updateUser != null and updateUser != ''">update_user = #{updateUser},</if>
+ 			<if test="tenantKey != null and tenantKey != ''">tenant_key = #{tenantKey},</if>
+ 			<if test="deptType != null and deptType != ''">dept_type = #{deptType},</if>
+ 			update_time = sysdate()
+ 		</set>
+ 		where dept_id = #{deptId}
+	</update>
+	
+	<update id="updateDeptChildren" >
+	    update sys_dept set ancestors =
+	    <foreach collection="depts" item="item" index="index"
+	        separator=" " open="case dept_id" close="end">
+	        when #{item.deptId} then #{item.ancestors}
+	    </foreach>
+	    where dept_id in
+	    <foreach collection="depts" item="item" index="index"
+	        separator="," open="(" close=")">
+	        #{item.deptId}
+	    </foreach>
+	</update>
+	 
+	<update id="updateDeptStatusNormal" >
+ 	    update sys_dept set status = '0' where dept_id in 
+ 	    <foreach collection="array" item="deptId" open="(" separator="," close=")">
+        	#{deptId}
+        </foreach>
+	</update>
+	
+	<delete id="deleteDeptById" parameterType="Long">
+		update sys_dept set del_flag = '1' where dept_id = #{deptId}
+	</delete>
+
+	<delete id="realDeleteDeptByIds">
+		delete from sys_dept where dept_id in
+		<foreach collection="list" item="deptId" open="(" separator="," close=")">
+			#{deptId}
+		</foreach>
+	</delete>
+
+</mapper> 

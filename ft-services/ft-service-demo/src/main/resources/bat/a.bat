@@ -1,0 +1,1 @@
+D:\office\mysql-5.6.24-win32\bin\mysqldump -h192.168.1.66 -P3306 --default-character-set utf8 -uroot -proot -d test > C:\Users\hhwy-jzq\Desktop\test.sql

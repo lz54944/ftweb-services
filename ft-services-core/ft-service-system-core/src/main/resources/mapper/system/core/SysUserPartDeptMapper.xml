@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hhwy.system.core.mapper.SysUserPartDeptMapper">
+    <resultMap type="com.hhwy.system.core.domain.SysUserPartDept" id="SysUserPartDeptResult">
+        <result property="userId"    column="user_id"    />
+        <result property="deptId"    column="dept_id"    />
+    </resultMap>
+
+    <sql id="selectSysUserPartDeptVo">
+        select `user_id`, `dept_id` from `sys_user_part_dept`
+    </sql>
+
+    <select id="selectSysUserPartDeptList" parameterType="com.hhwy.system.core.domain.SysUserPartDept" resultMap="SysUserPartDeptResult">
+        <include refid="selectSysUserPartDeptVo"/>
+        <where>
+            tenant_key = #{tenantKey}
+        </where>
+        order by `user_id` desc
+    </select>
+
+    <select id="selectSysUserPartDeptById" resultMap="SysUserPartDeptResult">
+        <include refid="selectSysUserPartDeptVo"/>
+        where `user_id` = #{userId} and tenant_key = #{tenantKey}
+    </select>
+
+    <insert id="insertSysUserPartDept" parameterType="com.hhwy.system.core.domain.SysUserPartDept">
+        insert into `sys_user_part_dept`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">`user_id`,</if>
+            <if test="deptId != null">`dept_id`,</if>
+            <if test="tenantKey != null and tenantKey != ''">`tenant_key`,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="tenantKey != null and tenantKey != ''">#{tenantKey},</if>
+         </trim>
+    </insert>
+
+    <insert id="batchInsertSysUserPartDept">
+        insert into sys_user_part_dept(user_id, dept_id,tenant_key) values
+        <foreach item="item" index="index" collection="list" separator=",">
+            (#{item.userId},#{item.deptId},#{item.tenantKey})
+        </foreach>
+    </insert>
+
+    <update id="updateSysUserPartDept" parameterType="com.hhwy.system.core.domain.SysUserPartDept">
+        update `sys_user_part_dept`
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="deptId != null">`dept_id` = #{deptId},</if>
+        </trim>
+        where `user_id` = #{userId} and tenant_key = #{tenantKey}
+    </update>
+
+    <delete id="deleteSysUserPartDeptByUserId">
+        delete from `sys_user_part_dept` where `user_id` = #{userId} and tenant_key = #{tenantKey}
+    </delete>
+
+    <delete id="deleteSysUserPartDeptByIds">
+        delete from `sys_user_part_dept` where `user_id` in
+        <foreach item="userId" collection="userIds" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+        and tenant_key = #{tenantKey}
+    </delete>
+
+</mapper>

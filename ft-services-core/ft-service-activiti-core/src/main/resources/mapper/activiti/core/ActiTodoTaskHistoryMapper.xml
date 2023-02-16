@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hhwy.activiti.core.mapper.ActiTodoTaskHistoryMapper">
+    <resultMap type="com.hhwy.activiti.core.domain.po.ActiTodoTaskHistory" id="ActiTodoTaskHistoryResult">
+        <result property="id"    column="id"    />
+        <result property="title"    column="title"    />
+        <result property="businessId"    column="business_id"    />
+        <result property="receiver"    column="receiver"    />
+        <result property="sender"    column="sender"    />
+        <result property="agentUser"    column="agent_user"    />
+        <result property="processInstanceId"    column="process_instance_id"    />
+        <result property="processKey"    column="process_key"    />
+        <result property="processName"    column="process_name"    />
+        <result property="taskId"    column="task_id"    />
+        <result property="taskNodeId"    column="task_node_id"    />
+        <result property="taskNodeName"    column="task_node_name"    />
+        <result property="preTaskId"    column="pre_task_id"    />
+        <result property="preTaskNodeId"    column="pre_task_node_id"    />
+        <result property="preTaskNodeName"    column="pre_task_node_name"    />
+        <result property="taskState"    column="task_state"    />
+        <result property="timeLimit"    column="time_limit"    />
+        <result property="taskStartTime"    column="task_start_time"    />
+        <result property="taskEndTime"    column="task_end_time"    />
+        <result property="formUrl"    column="form_url"    />
+        <result property="variables"    column="variables"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createUser"    column="create_user"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateUser"    column="update_user"    />
+        <result property="remark"    column="remark"    />
+        <result property="nextTaskId"    column="next_task_id"    />
+        <result property="nextTaskNodeId"    column="next_task_node_id"    />
+        <result property="nextTaskNodeName"    column="next_task_node_name"    />
+        <result property="state"    column="state"    />
+        <result property="tenantKey"    column="tenant_key"    />
+    </resultMap>
+
+    <sql id="selectActiTodoTaskHistoryVo">
+        select `id`, `title`, `business_id`, `receiver`, `sender`, `agent_user`, `process_instance_id`, `process_key`, `process_name`, `pre_task_id`, `pre_task_node_id`, `pre_task_node_name`, `task_id`, `task_node_id`, `task_node_name`, `task_state`, `time_limit`, `task_start_time`, `task_end_time`, `form_url`, `variables`, `create_time`, `create_user`, `update_time`, `update_user`, `remark`, `next_task_id`, `next_task_node_id`, `next_task_node_name`, `state`, `tenant_key` from `acti_todo_task_history`
+    </sql>
+
+    <select id="selectActiTodoTaskHistoryList" parameterType="com.hhwy.activiti.core.domain.po.ActiTodoTaskHistory" resultMap="ActiTodoTaskHistoryResult">
+        <include refid="selectActiTodoTaskHistoryVo"/>
+        <where>
+            <if test="title != null  and title != ''"> and `title` like concat('%', #{title}, '%')</if>
+            <if test="businessId != null  and businessId != ''"> and `business_id` = #{businessId}</if>
+            <if test="receiver != null "> and `receiver` = #{receiver}</if>
+            <if test="sender != null "> and `sender` = #{sender}</if>
+
+            <if test="params != null and params.senderList != null">
+                and `sender` in
+                <foreach item="sender" collection="params.senderList" open="(" separator="," close=")">
+                    #{sender.userName}
+                </foreach>
+            </if>
+
+            <if test="agentUser != null "> and `agent_user` = #{agentUser}</if>
+            <if test="processInstanceId != null  and processInstanceId != ''"> and `process_instance_id` = #{processInstanceId}</if>
+            <if test="processKey != null  and processKey != ''"> and `process_key` = #{processKey}</if>
+            <if test="processName != null  and processName != ''"> and `process_name` like concat('%', #{processName}, '%')</if>
+            <if test="taskId != null  and taskId != ''"> and `task_id` = #{taskId}</if>
+            <if test="taskNodeId != null  and taskNodeId != ''"> and `task_node_id` = #{taskNodeId}</if>
+            <if test="taskNodeName != null  and taskNodeName != ''"> and `task_node_name` like concat('%', #{taskNodeName}, '%')</if>
+            <if test="preTaskId != null  and preTaskId != ''"> and `pre_task_id` like concat('%', #{preTaskId}, '%')</if>
+            <if test="preTaskNodeId != null  and preTaskNodeId != ''"> and `pre_task_node_id` = #{preTaskNodeId}</if>
+            <if test="preTaskNodeName != null  and preTaskNodeName != ''"> and `pre_task_node_name` like concat('%', #{preTaskNodeName}, '%')</if>
+            <if test="taskState != null  and taskState != ''"> and `task_state` = #{taskState}</if>
+            <if test="timeLimit != null "> and `time_limit` = #{timeLimit}</if>
+            <if test="taskStartTime != null "> and `task_start_time` = #{taskStartTime}</if>
+            <if test="taskEndTime != null "> and `task_end_time` = #{taskEndTime}</if>
+            <if test="formUrl != null  and formUrl != ''"> and `form_url` = #{formUrl}</if>
+            <if test="variables != null  and variables != ''"> and `variables` = #{variables}</if>
+            <if test="createUser != null "> and `create_user` = #{createUser}</if>
+            <if test="updateUser != null "> and `update_user` = #{updateUser}</if>
+            <if test="nextTaskId != null  and nextTaskId != ''"> and `next_task_id` = #{nextTaskId}</if>
+            <if test="nextTaskNodeId != null  and nextTaskNodeId != ''"> and `next_task_node_id` = #{nextTaskNodeId}</if>
+            <if test="nextTaskNodeName != null  and nextTaskNodeName != ''"> and `next_task_node_name` like concat('%', #{nextTaskNodeName}, '%')</if>
+            <if test="state != null  and state != ''"> and `state` like concat('%', #{state}, '%')</if>
+            <if test="tenantKey != null  and tenantKey != ''"> and `tenant_key` = #{tenantKey}</if>
+        </where>
+        order by `id` desc
+    </select>
+    
+    <select id="selectActiTodoTaskHistoryById" parameterType="Long" resultMap="ActiTodoTaskHistoryResult">
+        <include refid="selectActiTodoTaskHistoryVo"/>
+        where `id` = #{id}
+    </select>
+
+    <select id="selectActiTodoTaskHistoryByNextTaskId" resultMap="ActiTodoTaskHistoryResult">
+        <include refid="selectActiTodoTaskHistoryVo"/>
+        where `next_task_id` = #{nextTaskId}
+    </select>
+
+    <select id="selectActiTodoTaskHistoryByPreTaskId" resultMap="ActiTodoTaskHistoryResult">
+        <include refid="selectActiTodoTaskHistoryVo"/>
+        where `pre_task_id` = #{preTaskId}
+    </select>
+
+    <select id="selectActiTodoTaskHistoryByTaskId" resultMap="ActiTodoTaskHistoryResult">
+        <include refid="selectActiTodoTaskHistoryVo"/>
+        where `task_id` = #{taskId}
+    </select>
+
+    <insert id="insertActiTodoTaskHistory" parameterType="com.hhwy.activiti.core.domain.po.ActiTodoTaskHistory" useGeneratedKeys="true" keyProperty="id">
+        insert into `acti_todo_task_history`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="title != null">`title`,</if>
+            <if test="businessId != null">`business_id`,</if>
+            <if test="receiver != null">`receiver`,</if>
+            <if test="sender != null">`sender`,</if>
+            <if test="agentUser != null">`agent_user`,</if>
+            <if test="processInstanceId != null">`process_instance_id`,</if>
+            <if test="processKey != null">`process_key`,</if>
+            <if test="processName != null">`process_name`,</if>
+            <if test="taskId != null">`task_id`,</if>
+            <if test="taskNodeId != null and taskNodeId != ''">`task_node_id`,</if>
+            <if test="taskNodeName != null">`task_node_name`,</if>
+            <if test="preTaskId != null">`pre_task_id`,</if>
+            <if test="preTaskNodeId != null">`pre_task_node_id`,</if>
+            <if test="preTaskNodeName != null">`pre_task_node_name`,</if>
+            <if test="taskState != null">`task_state`,</if>
+            <if test="timeLimit != null">`time_limit`,</if>
+            <if test="taskStartTime != null">`task_start_time`,</if>
+            <if test="taskEndTime != null">`task_end_time`,</if>
+            <if test="formUrl != null">`form_url`,</if>
+            <if test="variables != null">`variables`,</if>
+            <if test="createTime != null">`create_time`,</if>
+            <if test="createUser != null">`create_user`,</if>
+            <if test="updateTime != null">`update_time`,</if>
+            <if test="updateUser != null">`update_user`,</if>
+            <if test="remark != null">`remark`,</if>
+            <if test="nextTaskId != null">`next_task_id`,</if>
+            <if test="nextTaskNodeId != null">`next_task_node_id`,</if>
+            <if test="nextTaskNodeName != null">`next_task_node_name`,</if>
+            <if test="state != null">`state`,</if>
+            <if test="tenantKey != null">`tenant_key`,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="title != null">#{title},</if>
+            <if test="businessId != null">#{businessId},</if>
+            <if test="receiver != null">#{receiver},</if>
+            <if test="sender != null">#{sender},</if>
+            <if test="agentUser != null">#{agentUser},</if>
+            <if test="processInstanceId != null">#{processInstanceId},</if>
+            <if test="processKey != null">#{processKey},</if>
+            <if test="processName != null">#{processName},</if>
+            <if test="taskId != null">#{taskId},</if>
+            <if test="taskNodeId != null and taskNodeId != ''">#{taskNodeId},</if>
+            <if test="taskNodeName != null">#{taskNodeName},</if>
+            <if test="preTaskId != null">#{preTaskId},</if>
+            <if test="preTaskNodeId != null and preTaskNodeId != ''">#{preTaskNodeId},</if>
+            <if test="preTaskNodeName != null">#{preTaskNodeName},</if>
+            <if test="taskState != null">#{taskState},</if>
+            <if test="timeLimit != null">#{timeLimit},</if>
+            <if test="taskStartTime != null">#{taskStartTime},</if>
+            <if test="taskEndTime != null">#{taskEndTime},</if>
+            <if test="formUrl != null">#{formUrl},</if>
+            <if test="variables != null">#{variables},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="createUser != null">#{createUser},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="updateUser != null">#{updateUser},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="nextTaskId != null">#{nextTaskId},</if>
+            <if test="nextTaskNodeId != null">#{nextTaskNodeId},</if>
+            <if test="nextTaskNodeName != null">#{nextTaskNodeName},</if>
+            <if test="state != null">#{state},</if>
+            <if test="tenantKey != null">#{tenantKey},</if>
+         </trim>
+    </insert>
+
+    <update id="updateActiTodoTaskHistory" parameterType="com.hhwy.activiti.core.domain.po.ActiTodoTaskHistory">
+        update `acti_todo_task_history`
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="title != null">`title` = #{title},</if>
+            <if test="businessId != null">`business_id` = #{businessId},</if>
+            <if test="receiver != null">`receiver` = #{receiver},</if>
+            <if test="sender != null">`sender` = #{sender},</if>
+            <if test="agentUser != null">`agent_user` = #{agentUser},</if>
+            <if test="processInstanceId != null">`process_instance_id` = #{processInstanceId},</if>
+            <if test="processKey != null">`process_key` = #{processKey},</if>
+            <if test="processName != null">`process_name` = #{processName},</if>
+            <if test="taskId != null">`task_id` = #{taskId},</if>
+            <if test="taskNodeId != null and taskNodeId != ''">`task_node_id` = #{taskNodeId},</if>
+            <if test="taskNodeName != null">`task_node_name` = #{taskNodeName},</if>
+            <if test="preTaskId != null">`pre_task_id` = #{preTaskId},</if>
+            <if test="preTaskNodeId != null and preTaskNodeId != ''">`pre_task_node_id` = #{preTaskNodeId},</if>
+            <if test="preTaskNodeName != null">`pre_task_node_name` = #{preTaskNodeName},</if>
+            <if test="taskState != null">`task_state` = #{taskState},</if>
+            <if test="timeLimit != null">`time_limit` = #{timeLimit},</if>
+            <if test="taskStartTime != null">`task_start_time` = #{taskStartTime},</if>
+            <if test="taskEndTime != null">`task_end_time` = #{taskEndTime},</if>
+            <if test="formUrl != null">`form_url` = #{formUrl},</if>
+            <if test="variables != null">`variables` = #{variables},</if>
+            <if test="createTime != null">`create_time` = #{createTime},</if>
+            <if test="createUser != null">`create_user` = #{createUser},</if>
+            <if test="updateTime != null">`update_time` = #{updateTime},</if>
+            <if test="updateUser != null">`update_user` = #{updateUser},</if>
+            <if test="remark != null">`remark` = #{remark},</if>
+            <if test="nextTaskId != null">`next_task_id` = #{nextTaskId},</if>
+            <if test="nextTaskNodeId != null">`next_task_node_id` = #{nextTaskNodeId},</if>
+            <if test="nextTaskNodeName != null">`next_task_node_name` = #{nextTaskNodeName},</if>
+            <if test="state != null">`state` = #{state},</if>
+            <if test="tenantKey != null">`tenant_key` = #{tenantKey},</if>
+        </trim>
+        where `id` = #{id}
+    </update>
+
+    <delete id="deleteActiTodoTaskHistoryById" parameterType="Long">
+        delete from `acti_todo_task_history` where `id` = #{id}
+    </delete>
+
+    <delete id="deleteActiTodoTaskHistoryByIds" >
+        delete from `acti_todo_task_history` where `id` in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="setRecallTask" parameterType="string">
+        UPDATE `acti_todo_task_history` SET state = '1' WHERE task_id = #{taskId}
+    </update>
+
+    <update id="setBackTask" parameterType="string">
+        UPDATE `acti_todo_task_history` SET state = '2' WHERE task_id = #{taskId}
+    </update>
+
+</mapper>
