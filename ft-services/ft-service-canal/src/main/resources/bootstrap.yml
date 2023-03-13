@@ -8,12 +8,13 @@ spring:
     active: dev
   cloud:
     nacos:
+      server-addr: http://10.0.1.46:8848
       discovery:
         # 服务注册地址
-        server-addr: 192.168.1.66:8848
+        server-addr: ${spring.cloud.nacos.server-addr}
       config:
         # 配置中心地址
-        server-addr: 192.168.1.66:8848
+        server-addr: ${spring.cloud.nacos.server-addr}
         # 配置文件格式
         file-extension: yml
         # 共享配置
