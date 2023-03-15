@@ -505,6 +505,22 @@
         </repository>
     </distributionManagement>
 
+    <repositories>
+        <repository>
+            <id>dev-hhwy</id>
+            <name>Local Development Repository hhwy</name>
+            <url>http://10.0.5.46:8081/repository/maven-releases/</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>warn</checksumPolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <build>
         <plugins>
             <plugin>
