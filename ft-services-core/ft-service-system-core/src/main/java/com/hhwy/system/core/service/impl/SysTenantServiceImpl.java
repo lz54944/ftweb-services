@@ -112,7 +112,7 @@ public class SysTenantServiceImpl implements ISysTenantService {
             String rootUrl = sysConfig.getConfigValue();
             for (SysTenant tenant : sysTenants) {
                 String tenantKey = tenant.getTenantKey();
-                tenant.setTenantUrl(rootUrl+"/"+tenantKey);
+                tenant.setTenantUrl(rootUrl+"/"+tenantKey+"login");
             }
         }
         return sysTenants;
