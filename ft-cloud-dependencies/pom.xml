@@ -84,11 +84,11 @@
                 <version>${ft-common-datasource.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>com.hhwy</groupId>
-                <artifactId>ft-common-i18n</artifactId>
-                <version>${ft-common-i18n.version}</version>
-            </dependency>
+<!--            <dependency>-->
+<!--                <groupId>com.hhwy</groupId>-->
+<!--                <artifactId>ft-common-i18n</artifactId>-->
+<!--                <version>${ft-common-i18n.version}</version>-->
+<!--            </dependency>-->
 
             <dependency>
                 <groupId>com.hhwy</groupId>
