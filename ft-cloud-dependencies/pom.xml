@@ -176,4 +176,13 @@
 
         </dependencies>
     </dependencyManagement>
+
+    <distributionManagement>
+        <repository>
+            <id>dkh-maven-releases</id>
+            <name>nexus dkh mavan releases</name>
+            <url>http://10.0.5.46:8081/repository/maven-releases/</url>
+        </repository>
+    </distributionManagement>
+
 </project>

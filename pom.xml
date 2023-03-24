@@ -51,6 +51,7 @@
         <groovy.version>3.0.3</groovy.version>
         <log4j2.version>2.16.0</log4j2.version>
         <build.plugin.version>2.5.6</build.plugin.version>
+        <ft.cloud.dependencies.version>3.0.0</ft.cloud.dependencies.version>
     </properties>
 
     <!-- 依赖声明 -->
@@ -314,144 +315,152 @@
                 <version>${activiti.version}</version>
             </dependency>
 
-            <!-- 核心模块 -->
-	        <dependency>
-                <groupId>com.hhwy</groupId>
-                <artifactId>ft-common-core</artifactId>
-                <version>${ft-cloud.version}</version>
-            </dependency>
-			
-            <!-- 接口模块 -->
-            <dependency>
-                <groupId>com.hhwy</groupId>
-                <artifactId>ft-common-swagger</artifactId>
-                <version>${ft-cloud.version}</version>
-            </dependency>
-	        
-            <!-- 安全模块 -->
-            <dependency>
-                <groupId>com.hhwy</groupId>
-                <artifactId>ft-common-security</artifactId>
-                <version>${ft-cloud.version}</version>
-            </dependency>
-	        
-            <!-- 权限范围 -->
-            <dependency>
-                <groupId>com.hhwy</groupId>
-                <artifactId>ft-common-datascope</artifactId>
-                <version>${ft-cloud.version}</version>
-            </dependency>
-            
-            <!-- 多数据源 -->
-            <dependency>
-                <groupId>com.hhwy</groupId>
-                <artifactId>ft-common-datasource</artifactId>
-                <version>${ft-cloud.version}</version>
-            </dependency>
-			
-            <!-- 日志记录 -->
-            <dependency>
-                <groupId>com.hhwy</groupId>
-                <artifactId>ft-common-log</artifactId>
-                <version>${ft-cloud.version}</version>
-            </dependency>
-			
-            <!-- 缓存服务 -->
-            <dependency>
-                <groupId>com.hhwy</groupId>
-                <artifactId>ft-common-redis</artifactId>
-                <version>${ft-cloud.version}</version>
-            </dependency>
+<!--            &lt;!&ndash; 核心模块 &ndash;&gt;-->
+<!--	        <dependency>-->
+<!--                <groupId>com.hhwy</groupId>-->
+<!--                <artifactId>ft-common-core</artifactId>-->
+<!--                <version>${ft-cloud.version}</version>-->
+<!--            </dependency>-->
+<!--			-->
+<!--            &lt;!&ndash; 接口模块 &ndash;&gt;-->
+<!--            <dependency>-->
+<!--                <groupId>com.hhwy</groupId>-->
+<!--                <artifactId>ft-common-swagger</artifactId>-->
+<!--                <version>${ft-cloud.version}</version>-->
+<!--            </dependency>-->
+<!--	        -->
+<!--            &lt;!&ndash; 安全模块 &ndash;&gt;-->
+<!--            <dependency>-->
+<!--                <groupId>com.hhwy</groupId>-->
+<!--                <artifactId>ft-common-security</artifactId>-->
+<!--                <version>${ft-cloud.version}</version>-->
+<!--            </dependency>-->
+<!--	        -->
+<!--            &lt;!&ndash; 权限范围 &ndash;&gt;-->
+<!--            <dependency>-->
+<!--                <groupId>com.hhwy</groupId>-->
+<!--                <artifactId>ft-common-datascope</artifactId>-->
+<!--                <version>${ft-cloud.version}</version>-->
+<!--            </dependency>-->
+<!--            -->
+<!--            &lt;!&ndash; 多数据源 &ndash;&gt;-->
+<!--            <dependency>-->
+<!--                <groupId>com.hhwy</groupId>-->
+<!--                <artifactId>ft-common-datasource</artifactId>-->
+<!--                <version>${ft-cloud.version}</version>-->
+<!--            </dependency>-->
+<!--			-->
+<!--            &lt;!&ndash; 日志记录 &ndash;&gt;-->
+<!--            <dependency>-->
+<!--                <groupId>com.hhwy</groupId>-->
+<!--                <artifactId>ft-common-log</artifactId>-->
+<!--                <version>${ft-cloud.version}</version>-->
+<!--            </dependency>-->
+<!--			-->
+<!--            &lt;!&ndash; 缓存服务 &ndash;&gt;-->
+<!--            <dependency>-->
+<!--                <groupId>com.hhwy</groupId>-->
+<!--                <artifactId>ft-common-redis</artifactId>-->
+<!--                <version>${ft-cloud.version}</version>-->
+<!--            </dependency>-->
 
-            <!-- 通信模块 -->
-            <dependency>
-                <groupId>com.hhwy</groupId>
-                <artifactId>ft-common-socket</artifactId>
-                <version>${ft-cloud.version}</version>
-            </dependency>
+<!--            &lt;!&ndash; 通信模块 &ndash;&gt;-->
+<!--            <dependency>-->
+<!--                <groupId>com.hhwy</groupId>-->
+<!--                <artifactId>ft-common-socket</artifactId>-->
+<!--                <version>${ft-cloud.version}</version>-->
+<!--            </dependency>-->
 
-            <!-- 租户模块 -->
-            <dependency>
-                <groupId>com.hhwy</groupId>
-                <artifactId>ft-common-tenant</artifactId>
-                <version>${ft-cloud.version}</version>
-            </dependency>
+<!--            &lt;!&ndash; 租户模块 &ndash;&gt;-->
+<!--            <dependency>-->
+<!--                <groupId>com.hhwy</groupId>-->
+<!--                <artifactId>ft-common-tenant</artifactId>-->
+<!--                <version>${ft-cloud.version}</version>-->
+<!--            </dependency>-->
 
-            <!-- 通信模块 -->
-            <dependency>
-                <groupId>com.hhwy</groupId>
-                <artifactId>ft-common-netty</artifactId>
-                <version>${ft-cloud.version}</version>
-            </dependency>
+<!--            &lt;!&ndash; 通信模块 &ndash;&gt;-->
+<!--            <dependency>-->
+<!--                <groupId>com.hhwy</groupId>-->
+<!--                <artifactId>ft-common-netty</artifactId>-->
+<!--                <version>${ft-cloud.version}</version>-->
+<!--            </dependency>-->
 
-            <!-- 系统接口 -->
-            <dependency>
-                <groupId>com.hhwy</groupId>
-                <artifactId>ft-api-system</artifactId>
-                <version>${ft-cloud.version}</version>
-            </dependency>
+<!--            &lt;!&ndash; 系统接口 &ndash;&gt;-->
+<!--            <dependency>-->
+<!--                <groupId>com.hhwy</groupId>-->
+<!--                <artifactId>ft-api-system</artifactId>-->
+<!--                <version>${ft-cloud.version}</version>-->
+<!--            </dependency>-->
 
-            <!-- 附件接口 -->
-            <dependency>
-                <groupId>com.hhwy</groupId>
-                <artifactId>ft-api-file</artifactId>
-                <version>${ft-cloud.version}</version>
-            </dependency>
+<!--            &lt;!&ndash; 附件接口 &ndash;&gt;-->
+<!--            <dependency>-->
+<!--                <groupId>com.hhwy</groupId>-->
+<!--                <artifactId>ft-api-file</artifactId>-->
+<!--                <version>${ft-cloud.version}</version>-->
+<!--            </dependency>-->
 
-            <!-- 流程接口 -->
-            <dependency>
-                <groupId>com.hhwy</groupId>
-                <artifactId>ft-api-activiti</artifactId>
-                <version>${ft-cloud.version}</version>
-            </dependency>
+<!--            &lt;!&ndash; 流程接口 &ndash;&gt;-->
+<!--            <dependency>-->
+<!--                <groupId>com.hhwy</groupId>-->
+<!--                <artifactId>ft-api-activiti</artifactId>-->
+<!--                <version>${ft-cloud.version}</version>-->
+<!--            </dependency>-->
 
-            <!-- auth认证接口 -->
-            <dependency>
-                <groupId>com.hhwy</groupId>
-                <artifactId>ft-api-auth</artifactId>
-                <version>${ft-cloud.version}</version>
-            </dependency>
+<!--            &lt;!&ndash; auth认证接口 &ndash;&gt;-->
+<!--            <dependency>-->
+<!--                <groupId>com.hhwy</groupId>-->
+<!--                <artifactId>ft-api-auth</artifactId>-->
+<!--                <version>${ft-cloud.version}</version>-->
+<!--            </dependency>-->
+
+<!--            <dependency>-->
+<!--                <groupId>com.hhwy</groupId>-->
+<!--                <artifactId>ft-service-activiti-core</artifactId>-->
+<!--                <version>${ft-cloud.version}</version>-->
+<!--            </dependency>-->
+
+<!--            <dependency>-->
+<!--                <groupId>com.hhwy</groupId>-->
+<!--                <artifactId>ft-service-auth-core</artifactId>-->
+<!--                <version>${ft-cloud.version}</version>-->
+<!--            </dependency>-->
+
+<!--            <dependency>-->
+<!--                <groupId>com.hhwy</groupId>-->
+<!--                <artifactId>ft-service-canal-core</artifactId>-->
+<!--                <version>${ft-cloud.version}</version>-->
+<!--            </dependency>-->
+
+<!--            <dependency>-->
+<!--                <groupId>com.hhwy</groupId>-->
+<!--                <artifactId>ft-service-file-core</artifactId>-->
+<!--                <version>${ft-cloud.version}</version>-->
+<!--            </dependency>-->
+
+<!--            <dependency>-->
+<!--                <groupId>com.hhwy</groupId>-->
+<!--                <artifactId>ft-service-gen-core</artifactId>-->
+<!--                <version>${ft-cloud.version}</version>-->
+<!--            </dependency>-->
+
+<!--            <dependency>-->
+<!--                <groupId>com.hhwy</groupId>-->
+<!--                <artifactId>ft-service-job-core</artifactId>-->
+<!--                <version>${ft-cloud.version}</version>-->
+<!--            </dependency>-->
+
+<!--            <dependency>-->
+<!--                <groupId>com.hhwy</groupId>-->
+<!--                <artifactId>ft-service-system-core</artifactId>-->
+<!--                <version>${ft-cloud.version}</version>-->
+<!--            </dependency>-->
 
             <dependency>
                 <groupId>com.hhwy</groupId>
-                <artifactId>ft-service-activiti-core</artifactId>
-                <version>${ft-cloud.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.hhwy</groupId>
-                <artifactId>ft-service-auth-core</artifactId>
-                <version>${ft-cloud.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.hhwy</groupId>
-                <artifactId>ft-service-canal-core</artifactId>
-                <version>${ft-cloud.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.hhwy</groupId>
-                <artifactId>ft-service-file-core</artifactId>
-                <version>${ft-cloud.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.hhwy</groupId>
-                <artifactId>ft-service-gen-core</artifactId>
-                <version>${ft-cloud.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.hhwy</groupId>
-                <artifactId>ft-service-job-core</artifactId>
-                <version>${ft-cloud.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.hhwy</groupId>
-                <artifactId>ft-service-system-core</artifactId>
-                <version>${ft-cloud.version}</version>
+                <artifactId>ft-cloud-dependencies</artifactId>
+                <version>${ft.cloud.dependencies.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
 
             <dependency>
@@ -510,14 +519,6 @@
             <id>dev-hhwy</id>
             <name>Local Development Repository hhwy</name>
             <url>http://10.0.5.46:8081/repository/maven-releases/</url>
-<!--            <releases>-->
-<!--                <enabled>true</enabled>-->
-<!--                <updatePolicy>always</updatePolicy>-->
-<!--                <checksumPolicy>warn</checksumPolicy>-->
-<!--            </releases>-->
-<!--            <snapshots>-->
-<!--                <enabled>true</enabled>-->
-<!--            </snapshots>-->
         </repository>
     </repositories>
 
