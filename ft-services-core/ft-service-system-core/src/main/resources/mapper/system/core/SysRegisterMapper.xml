@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hhwy.system.core.register.mapper.SysRegisterMapper">
+    <resultMap type="com.hhwy.system.core.register.domain.SysRegister" id="SysRegisterVO">
+        <result property="id"    column="ID"    />
+        <result property="nickName" column="nick_name"/>
+        <result property="email" column="email"/>
+        <result property="phoneNumber" column="phone_number"/>
+        <result property="companyName" column="company_name"/>
+        <result property="jobName" column="job_name"/>
+        <result property="leaveWord" column="leave_word"/>
+        <result property="creditCode" column="credit_code"/>
+        <result property="remark"    column="remark"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+    <sql id="selectSql">
+        SELECT id, nick_name, email, phone_number, company_name, remark, job_name, credit_code, create_time, leave_word, update_time
+        FROM sys_register
+    </sql>
+    <select id="selectAll" resultMap="SysRegisterVO">
+        <include refid="selectSql"></include>
+        order by create_time desc
+    </select>
+    <insert id="insertSysRegister" parameterType="com.hhwy.system.core.register.domain.SysRegister">
+        insert into `sys_register`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="nickName != null">`nick_name`,</if>
+            <if test="email != null">`email`,</if>
+            <if test="phoneNumber != null">`phone_number`,</if>
+            <if test="companyName != null">`company_name`,</if>
+            <if test="jobName != null">`job_name`,</if>
+            <if test="leaveWord != null">`leave_word`,</if>
+            <if test="creditCode != null">`credit_code`,</if>
+            <if test="remark != null">`remark`,</if>
+            <if test="createTime != null">`create_time`,</if>
+            <if test="updateTime != null">`update_time`,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="nickName != null">#{nickName},</if>
+            <if test="email != null">#{email},</if>
+            <if test="phoneNumber != null">#{phoneNumber},</if>
+            <if test="companyName != null">#{companyName},</if>
+            <if test="jobName != null">#{jobName},</if>
+            <if test="leaveWord != null">#{leaveWord},</if>
+            <if test="creditCode != null">#{creditCode},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+</mapper>
