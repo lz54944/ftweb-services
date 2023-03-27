@@ -78,10 +78,10 @@ public class TokenController {
         LoginUser loginUser = tokenService.getLoginUser(request);
         if (StringUtils.isNotNull(loginUser)) {
             String username = loginUser.getUsername();
-            // 删除用户缓存记录
-            tokenService.delLoginUser(loginUser.getToken(),loginUser.getTenantKey());
             // 记录用户退出日志
             sysLoginService.logout(username);
+            // 删除用户缓存记录
+            tokenService.delLoginUser(loginUser.getToken(),loginUser.getTenantKey());
         }
         return R.ok();
     }

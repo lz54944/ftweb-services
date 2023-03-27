@@ -87,6 +87,11 @@
             <groupId>com.hhwy</groupId>
             <artifactId>ft-api-auth</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-common</artifactId>
+            <version>${swagger.fox.version}</version>
+        </dependency>
 
     </dependencies>
 
