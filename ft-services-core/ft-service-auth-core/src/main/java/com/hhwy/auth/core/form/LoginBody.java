@@ -1,10 +1,13 @@
 package com.hhwy.auth.core.form;
 
+import lombok.Data;
+
 /**
  * 用户登录对象
  *
  * @author hhwy
  */
+@Data
 public class LoginBody {
     /**
      * 用户名
@@ -16,19 +19,13 @@ public class LoginBody {
      */
     private String password;
 
-    public String getUsername() {
-        return username;
-    }
+    /**
+     * 验证码缓存
+     */
+    private String redisKey;
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    /**
+     * 验证码
+     */
+    private String verificationCode;
 }

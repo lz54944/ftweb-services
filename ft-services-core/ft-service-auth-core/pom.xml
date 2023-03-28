@@ -52,6 +52,12 @@
             <groupId>com.hhwy</groupId>
             <artifactId>ft-common-security</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.ramostear</groupId>
+            <artifactId>Happy-Captcha</artifactId>
+            <version>1.0.1</version>
+        </dependency>
         
     </dependencies>
 </project>

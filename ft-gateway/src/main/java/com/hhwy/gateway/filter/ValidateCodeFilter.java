@@ -28,7 +28,7 @@ import reactor.core.publisher.Mono;
  *
  * @author hhwy
  */
-@Component
+//@Component
 public class ValidateCodeFilter extends AbstractGatewayFilterFactory<Object> {
     private final static String AUTH_URL = "/auth/login";
 

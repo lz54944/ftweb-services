@@ -5,8 +5,10 @@ import com.hhwy.common.core.constant.UserConstants;
 import com.hhwy.common.core.domain.R;
 import com.hhwy.common.core.enums.UserStatus;
 import com.hhwy.common.core.exception.BaseException;
+import com.hhwy.common.core.exception.CaptchaException;
 import com.hhwy.common.core.utils.SecurityUtils;
 import com.hhwy.common.core.utils.StringUtils;
+import com.hhwy.common.redis.service.RedisService;
 import com.hhwy.common.security.service.TokenService;
 import com.hhwy.system.api.RemoteLogService;
 import com.hhwy.system.api.RemoteUserService;
@@ -30,6 +32,9 @@ public class SysLoginService {
 
     @Autowired
     private TokenService tokenService;
+
+    @Autowired
+    private RedisService redisService;
 
     public LoginUser usernameValidate(String tenantKey, String username){
         // 租户标识为空 错误
@@ -61,7 +66,7 @@ public class SysLoginService {
     /**
      * 登录
      */
-    public LoginUser login(String tenantKey, String username, String password) {
+    public LoginUser login(String tenantKey, String username, String password, String redisKey, String verificationCode) {
         // 租户标识为空 错误
         if (StringUtils.isBlank(tenantKey)) {
             remoteLogService.saveLogininfor(tenantKey, username, Constants.LOGIN_FAIL, "租户标识不能为空");
@@ -72,6 +77,8 @@ public class SysLoginService {
             remoteLogService.saveLogininfor(tenantKey, username, Constants.LOGIN_FAIL, "用户/密码必须填写");
             throw new BaseException("用户/密码必须填写");
         }
+        //校验验证码
+        this.checkCaptcha(verificationCode,redisKey);
         // 密码如果不在指定范围内 错误
         if (password.length() < UserConstants.PASSWORD_MIN_LENGTH
                 || password.length() > UserConstants.PASSWORD_MAX_LENGTH) {
@@ -112,6 +119,29 @@ public class SysLoginService {
         }
         remoteLogService.saveLogininfor(tenantKey, username, Constants.LOGIN_SUCCESS, "登录成功");
         return userInfo;
+    }
+
+    /**
+     * 校验验证码
+     * @param verificationCode 验证码
+     * @param redisKey
+     * @throws CaptchaException
+     */
+    public void checkCaptcha(String verificationCode, String redisKey) throws CaptchaException {
+        if (StringUtils.isBlank(verificationCode)){
+            throw new CaptchaException("登陆验证码不得为空!");
+        }
+
+        if (StringUtils.isBlank(redisKey) || null == redisService.getCacheObject(redisKey)){
+            throw new CaptchaException("验证码已过期!");
+        }
+
+        //redis中的验证码
+        String cache = redisService.getCacheObject(redisKey).toString();
+        redisService.deleteObject(redisKey);
+        if (!verificationCode.equalsIgnoreCase(cache)){
+            throw new CaptchaException("验证码错误!");
+        }
     }
 
     public void logout(String loginName) {

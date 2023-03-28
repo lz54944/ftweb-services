@@ -1,6 +1,7 @@
 package com.hhwy.auth.core.controller;
 
 import com.hhwy.auth.core.form.LoginBody;
+import com.hhwy.auth.core.ramostear.captcha.HappyCaptcha;
 import com.hhwy.auth.core.service.SysLoginService;
 import com.hhwy.common.core.constant.CacheConstants;
 import com.hhwy.common.core.domain.R;
@@ -8,15 +9,16 @@ import com.hhwy.common.core.utils.DESUtil;
 import com.hhwy.common.core.utils.ServletUtils;
 import com.hhwy.common.core.utils.StringUtils;
 import com.hhwy.common.core.web.domain.AjaxResult;
+import com.hhwy.common.redis.service.RedisService;
 import com.hhwy.common.security.service.TokenService;
 import com.hhwy.system.api.model.LoginUser;
+import com.ramostear.captcha.support.CaptchaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 /**
@@ -31,6 +33,9 @@ public class TokenController {
 
     @Autowired
     private SysLoginService sysLoginService;
+
+    @Autowired
+    private RedisService redisService;
 
      /**
         * <br>方法描述：单点认证 获取token
@@ -57,7 +62,7 @@ public class TokenController {
         String tenantKey = ServletUtils.getHeader(CacheConstants.DETAILS_TENANT_KEY);
         Assert.notNull(tenantKey,"租户key不能为空");
         // 用户登录
-        LoginUser userInfo = sysLoginService.login(tenantKey, form.getUsername(), form.getPassword());
+        LoginUser userInfo = sysLoginService.login(tenantKey, form.getUsername(), form.getPassword(),form.getRedisKey() ,form.getVerificationCode());
         // 获取登录token
         return R.ok(tokenService.createToken(userInfo,tenantKey));
     }
@@ -95,5 +100,19 @@ public class TokenController {
             return R.ok();
         }
         return R.ok();
+    }
+
+    /**
+     * 生成验证码
+     * @param redisKey
+     * @param request
+     * @param response
+     */
+    @GetMapping("sso/captcha")
+    public void happyCaptcha(String redisKey, HttpServletRequest request, HttpServletResponse response){
+        if (StringUtils.isNotEmpty(redisKey)){
+            redisService.deleteObject(redisKey);
+        }
+        HappyCaptcha.require(request, response).type(CaptchaType.NUMBER).build().finish();
     }
 }

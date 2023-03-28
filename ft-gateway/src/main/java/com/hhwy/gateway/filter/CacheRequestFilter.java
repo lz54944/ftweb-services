@@ -20,7 +20,7 @@ import reactor.core.publisher.Mono;
 /**
  * @author hhwy
  */
-@Component
+//@Component
 public class CacheRequestFilter extends AbstractGatewayFilterFactory<CacheRequestFilter.Config> {
     public CacheRequestFilter() {
         super(Config.class);
