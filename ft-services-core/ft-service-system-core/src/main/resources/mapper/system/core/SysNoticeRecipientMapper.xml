@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hhwy.system.core.mapper.SysNoticeRecipientMapper">
+    
+    <resultMap type="com.hhwy.system.core.domain.SysNoticeRecipient" id="SysNoticeRecipientResult">
+        <result property="id"    column="id"    />
+        <result property="noticeId"    column="notice_id"    />
+        <result property="readStatus"    column="read_status"    />
+        <result property="recipientId"    column="recipient_id"    />
+        <result property="recipientName"    column="recipient_name"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectSysNoticeRecipientVo">
+        select id, notice_id, read_status, recipient_id, recipient_name, remark from sys_notice_recipient
+    </sql>
+
+    <select id="selectSysNoticeRecipientList" parameterType="com.hhwy.system.core.domain.SysNoticeRecipient" resultMap="SysNoticeRecipientResult">
+        <include refid="selectSysNoticeRecipientVo"/>
+        <where>  
+            <if test="noticeId != null "> and notice_id = #{noticeId}</if>
+            <if test="readStatus != null  and readStatus != ''"> and read_status = #{readStatus}</if>
+            <if test="recipientId != null  and recipientId != ''"> and recipient_id = #{recipientId}</if>
+            <if test="recipientName != null  and recipientName != ''"> and recipient_name like concat('%', #{recipientName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectSysNoticeRecipientById" parameterType="Long" resultMap="SysNoticeRecipientResult">
+        <include refid="selectSysNoticeRecipientVo"/>
+        where id = #{id}
+    </select>
+    <select id="getSysNoticeRecipientListByNoticeId" resultMap="SysNoticeRecipientResult">
+        <include refid="selectSysNoticeRecipientVo"/>
+        where notice_id = #{noticeId}
+    </select>
+
+    <insert id="insertSysNoticeRecipient" parameterType="com.hhwy.system.core.domain.SysNoticeRecipient" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_notice_recipient
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="noticeId != null">notice_id,</if>
+            <if test="readStatus != null">read_status,</if>
+            <if test="recipientId != null">recipient_id,</if>
+            <if test="recipientName != null">recipient_name,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="noticeId != null">#{noticeId},</if>
+            <if test="readStatus != null">#{readStatus},</if>
+            <if test="recipientId != null">#{recipientId},</if>
+            <if test="recipientName != null">#{recipientName},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+    <insert id="insertSysNoticeRecipientList">
+        insert into sys_notice_recipient
+            (notice_id,
+            read_status,
+            recipient_id,
+            recipient_name,
+            remark)
+        values
+        <foreach collection="recipientList" item="item" separator=",">
+            (#{item.noticeId},
+            #{item.readStatus},
+            #{item.recipientId},
+            #{item.recipientName},
+            #{item.remark})
+        </foreach>
+    </insert>
+
+    <update id="updateSysNoticeRecipient" parameterType="com.hhwy.system.core.domain.SysNoticeRecipient">
+        update sys_notice_recipient
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="noticeId != null">notice_id = #{noticeId},</if>
+            <if test="readStatus != null">read_status = #{readStatus},</if>
+            <if test="recipientId != null">recipient_id = #{recipientId},</if>
+            <if test="recipientName != null">recipient_name = #{recipientName},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+    <update id="updateReadStatusByNoticeIdAndRecipientId">
+        update sys_notice_recipient set read_status = '1' where notice_id = #{noticeId} and recipient_id = #{recipientId}
+    </update>
+
+    <delete id="deleteSysNoticeRecipientById" parameterType="Long">
+        delete from sys_notice_recipient where id = #{id}
+    </delete>
+
+    <delete id="deleteSysNoticeRecipientByIds" parameterType="String">
+        delete from sys_notice_recipient where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <delete id="deleteSysNoticeRecipientByNoticeIds">
+        delete from sys_notice_recipient where notice_id in
+        <foreach item="noticeId" collection="noticeIds" open="(" separator="," close=")">
+            #{noticeId}
+        </foreach>
+    </delete>
+    <delete id="deleteSysNoticeRecipientByNoticeId">
+        delete from sys_notice_recipient where notice_id = #{noticeId}
+    </delete>
+</mapper>
