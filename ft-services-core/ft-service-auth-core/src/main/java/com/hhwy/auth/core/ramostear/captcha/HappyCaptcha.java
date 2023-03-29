@@ -1,6 +1,5 @@
 package com.hhwy.auth.core.ramostear.captcha;
 
-import com.hhwy.auth.core.service.SysLoginService;
 import com.hhwy.auth.core.util.SpringContextUtils;
 import com.hhwy.common.redis.service.RedisService;
 import com.ramostear.captcha.common.Fonts;
@@ -16,10 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 public class HappyCaptcha {
 
-
     private RedisService redisService;
-
-    private SysLoginService sysLoginService;
 
     public static final String SESSION_KEY = "happy-captcha";
     private CaptchaType type;
@@ -37,7 +33,7 @@ public class HappyCaptcha {
 
     public boolean finish() {
         try {
-            boolean flag = false;
+            Long aLong = 60L;
             if (this.style.equals(CaptchaStyle.IMG)) {
                 Captcha captcha = new Captcha();
                 captcha.setType(this.type);
@@ -49,7 +45,6 @@ public class HappyCaptcha {
                 String replace = UUID.randomUUID().toString().replace("-", "");
                 response.setHeader("redisKey",replace);
                 this.redisService = SpringContextUtils.getApplicationContext().getBean(RedisService.class);
-                Long aLong = 30l;
                 //存到redis内
                 System.out.println("存储redis获取的用户信息:"+ replace);
                 redisService.setCacheObject(replace,captcha.getCaptchaCode(),aLong,TimeUnit.SECONDS);
@@ -68,7 +63,6 @@ public class HappyCaptcha {
                 String replace = UUID.randomUUID().toString().replace("-", "");
                 response.setHeader("redisKey",replace);
                 this.redisService = SpringContextUtils.getApplicationContext().getBean(RedisService.class);
-                Long aLong = 30l;
                 //存到redis内
                 System.out.println("存储redis获取的用户信息:"+ replace);
                 redisService.setCacheObject(replace,captcha.getCaptchaCode(),aLong,TimeUnit.SECONDS);
