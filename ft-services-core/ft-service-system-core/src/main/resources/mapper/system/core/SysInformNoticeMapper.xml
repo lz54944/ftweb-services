@@ -208,6 +208,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where notice_id = #{noticeId}
     </update>
 
+    <update id="closeOutOfDateNotice">
+        update sys_inform_notice set status = '1' where end_time &lt; #{date}
+    </update>
+
     <delete id="deleteSysInformNoticeByNoticeId" parameterType="Long">
         delete from sys_inform_notice where notice_id = #{noticeId}
     </delete>

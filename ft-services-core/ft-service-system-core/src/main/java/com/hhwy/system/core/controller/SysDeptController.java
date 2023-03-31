@@ -174,4 +174,13 @@ public class SysDeptController extends BaseController {
         }
         return toAjax(deptService.deleteDeptById(deptId));
     }
+
+    /**
+     * 获取当前登录人所在部门及下级部门（嵌套列表）
+     * @return
+     */
+    @GetMapping("getLoginUserNestDept")
+    public AjaxResult getLoginUserNestDept(){
+        return AjaxResult.success(deptService.getLoginUserNestDept());
+    }
 }

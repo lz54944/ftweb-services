@@ -1,6 +1,8 @@
 package com.hhwy.system.core.mapper;
 
 import com.hhwy.system.core.domain.SysLogininfor;
+import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 
 /**
@@ -38,4 +40,10 @@ public interface SysLogininforMapper {
      * @return 结果
      */
     int cleanLogininfor(String tenantKey);
+
+    /**
+     * 关闭结束时间在指定日期之前所有的消息
+     * @param date
+     */
+    void closeOutOfDateNotice(@Param("date") String date);
 }

@@ -23,7 +23,9 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 用户信息
@@ -198,6 +200,35 @@ public class SysUserController extends BaseController {
         ajax.put("roles", roles);
         ajax.put("permissions", permissions);
         return ajax;
+    }
+
+    /**
+     * 新增代码
+     * 获取当前登录用户信息
+     * @return 用户信息
+     */
+    @GetMapping("getLoginUser")
+    public AjaxResult getLoginUser() {
+        Map<String,Object> result = new ConcurrentHashMap<>();
+
+        SysUser sysUser = tokenService.getSysUser();
+        // 角色集合
+        Set<String> roles = permissionService.getRolePermission(sysUser);
+        // 权限集合
+        Set<String> permissions = permissionService.getMenuPermission(sysUser);
+
+        result.put("user", userService.selectUserById(sysUser.getUserId()));
+        result.put("roles", roles);
+        result.put("permissions", permissions);
+        result.put("userId",String.valueOf(sysUser.getUserId()));
+        result.put("userName",sysUser.getUserName());
+        result.put("nickName",sysUser.getNickName());
+        result.put("phoneNumber",sysUser.getPhoneNumber());
+        result.put("sex",sysUser.getSex());
+        result.put("deptId",String.valueOf(sysUser.getDept().getDeptId()));
+        result.put("deptName",sysUser.getDept().getDeptName());
+
+        return AjaxResult.success(result);
     }
 
     /**

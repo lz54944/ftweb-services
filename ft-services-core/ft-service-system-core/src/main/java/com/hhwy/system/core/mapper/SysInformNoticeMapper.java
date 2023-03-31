@@ -106,4 +106,10 @@ public interface SysInformNoticeMapper {
      * @return
      */
     List<SysInformNotice> getMessage4LoginUserPost(InformNoticeQueryVo queryVo);
+
+    /**
+     * 关闭结束时间在指定日期之前所有的消息
+     * @param date
+     */
+    void closeOutOfDateNotice(@Param("date") String date);
 }

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hhwy.activiti.core.mapper.ActReModelMapper">
+
+    <select id="getAllModel" resultType="com.hhwy.activiti.core.domain.vo.ActReModelVo">
+        select `KEY_` as `key`,NAME_ as `name` from act_re_model group by KEY_,NAME_ ORDER BY CREATE_TIME_ DESC
+    </select>
+
+</mapper>

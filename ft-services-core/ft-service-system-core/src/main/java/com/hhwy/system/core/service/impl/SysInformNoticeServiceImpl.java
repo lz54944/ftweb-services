@@ -261,6 +261,9 @@ public class SysInformNoticeServiceImpl implements ISysInformNoticeService {
      */
     @Override
     public List<InformNotice> selectListByNoticeType(InformNoticeQueryVo queryVo) {
+        if(StringUtils.isBlank(queryVo.getNoticeType())){
+            throw new RuntimeException("消息类型不能为空！");
+        }
         SysUser sysUser = tokenService.getSysUser();
 
         queryVo.setTenantKey(sysUser.getTenantKey());

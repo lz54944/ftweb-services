@@ -11,6 +11,8 @@ import com.hhwy.common.security.annotation.EnableFtFeignClients;
 import com.hhwy.common.swagger.annotation.EnableCustomSwagger2;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.Environment;
+import org.springframework.scheduling.annotation.EnableScheduling;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -25,6 +27,7 @@ import java.net.UnknownHostException;
 @EnableFtFeignClients
 @SpringBootApplication
 @EnableFtI18n
+@EnableScheduling
 public class FtSystemApplication {
     public static void main(String[] args) throws UnknownHostException {
         Logger logger = LoggerFactory.getLogger(FtSystemApplication.class);

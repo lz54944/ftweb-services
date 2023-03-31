@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hhwy.system.core.mapper.SysDeptFuncFlowMapper">
+    
+    <resultMap type="com.hhwy.system.core.domain.SysDeptFuncFlow" id="SysDeptFuncFlowResult">
+        <result property="id"    column="id"    />
+        <result property="funModel"    column="fun_model"    />
+        <result property="actCode"    column="act_code"    />
+        <result property="actName"    column="act_name"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="deptName"    column="dept_name"    />
+        <result property="createDeptId"    column="create_dept_id"    />
+        <result property="remark"    column="remark"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createUser"    column="create_user"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateUser"    column="update_user"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="tenantKey"    column="tenant_key"    />
+    </resultMap>
+
+    <sql id="selectSysDeptFuncFlowVo">
+        select id, fun_model, act_code, act_name, dept_id, dept_name, create_dept_id, remark, create_time, create_user, update_time, update_user, del_flag, tenant_key from sys_dept_func_flow
+    </sql>
+
+    <select id="selectSysDeptFuncFlowList" parameterType="com.hhwy.system.core.domain.SysDeptFuncFlow" resultMap="SysDeptFuncFlowResult">
+        <include refid="selectSysDeptFuncFlowVo"/>
+        <where>
+            del_flag = '0' and tenant_key = #{tenantKey}
+            <if test="funModel != null  and funModel != ''"> and fun_model = #{funModel}</if>
+            <if test="actCode != null  and actCode != ''"> and act_code = #{actCode}</if>
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="deptName != null  and deptName != ''"> and dept_name like concat('%', #{deptName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectSysDeptFuncFlowById" parameterType="Long" resultMap="SysDeptFuncFlowResult">
+        <include refid="selectSysDeptFuncFlowVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="getFlowListByDeptId" resultMap="SysDeptFuncFlowResult">
+        <include refid="selectSysDeptFuncFlowVo"/>
+        <where>
+            del_flag = '0' and dept_id = #{deptId} and tenant_key = #{tenantKey}
+            <if test="funModel != null and funModel != ''">and fun_model = #{funModel}</if>
+        </where>
+    </select>
+
+    <select id="getFuncFlowByModelAndDeptId" resultMap="SysDeptFuncFlowResult">
+        <include refid="selectSysDeptFuncFlowVo"/>
+        where del_flag = '0' and dept_id = #{deptId} and fun_model = #{funModel} and tenant_key = #{tenantKey}
+    </select>
+
+    <select id="selectFuncFlowCountByModelAndDeptId" resultType="java.lang.Integer">
+        select count(*) from sys_dept_func_flow
+        <where>
+            del_flag = '0' and dept_id = #{deptId} and fun_model = #{funModel} and tenant_key = #{tenantKey}
+            <if test="id != null and id != ''">and id != #{id}</if>
+        </where>
+    </select>
+
+    <insert id="insertSysDeptFuncFlow" parameterType="com.hhwy.system.core.domain.SysDeptFuncFlow" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_dept_func_flow
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="funModel != null">fun_model,</if>
+            <if test="actCode != null">act_code,</if>
+            <if test="actName != null">act_name,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="deptName != null">dept_name,</if>
+            <if test="createDeptId != null">create_dept_id,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createUser != null">create_user,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="tenantKey != null">tenant_key,</if>
+            create_time
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="funModel != null">#{funModel},</if>
+            <if test="actCode != null">#{actCode},</if>
+            <if test="actName != null">#{actName},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="deptName != null">#{deptName},</if>
+            <if test="createDeptId != null">#{createDeptId},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createUser != null">#{createUser},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="tenantKey != null">#{tenantKey},</if>
+            sysdate()
+         </trim>
+    </insert>
+
+    <update id="updateSysDeptFuncFlow" parameterType="com.hhwy.system.core.domain.SysDeptFuncFlow">
+        update sys_dept_func_flow
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="funModel != null">fun_model = #{funModel},</if>
+            <if test="actCode != null">act_code = #{actCode},</if>
+            <if test="actName != null">act_name = #{actName},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="deptName != null">dept_name = #{deptName},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="updateUser != null">update_user = #{updateUser},</if>
+            update_time = sysdate()
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysDeptFuncFlowById" parameterType="Long">
+        delete from sys_dept_func_flow where id = #{id}
+    </delete>
+
+    <delete id="deleteSysDeptFuncFlowByIds" parameterType="String">
+        delete from sys_dept_func_flow where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

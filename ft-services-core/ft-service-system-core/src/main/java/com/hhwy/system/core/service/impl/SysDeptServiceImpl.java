@@ -8,6 +8,7 @@ import com.hhwy.common.datascope.annotation.DataScope;
 import com.hhwy.common.security.service.TokenService;
 import com.hhwy.system.api.domain.SysDept;
 import com.hhwy.system.api.domain.SysRole;
+import com.hhwy.system.api.domain.SysUser;
 import com.hhwy.system.core.domain.vo.TreeSelect;
 import com.hhwy.system.core.mapper.SysDeptMapper;
 import com.hhwy.system.core.mapper.SysRoleMapper;
@@ -312,5 +313,48 @@ public class SysDeptServiceImpl implements ISysDeptService {
      */
     private boolean hasChild(List<SysDept> list, SysDept t) {
         return getChildList(list, t).size() > 0 ? true : false;
+    }
+
+    /**
+     * 获取当前登录人所在部门及下级部门（嵌套列表）
+     * @return
+     */
+    @Override
+    public List<SysDept> getLoginUserNestDept() {
+        List<SysDept> sysDeptList = new ArrayList<>();
+        SysUser sysUser = tokenService.getSysUser();
+        //所有部门集合
+        List<SysDept> deptListAll = this.selectDeptList(new SysDept());
+
+        if(sysUser.isAdmin()){//当前登录人是超级管理员
+            for (SysDept dept : deptListAll) {
+                if(dept.getParentId() == null){
+                    this.getChildren(dept,deptListAll);
+                    sysDeptList.add(dept);
+                }
+            }
+        }else{
+            SysDept root = sysUser.getDept();
+            this.getChildren(root,sysDeptList);
+            sysDeptList.add(root);
+        }
+
+        return sysDeptList;
+    }
+
+    /**
+     * 获取根节点的子节点
+     * @param root
+     * @param deptListAll
+     */
+    public void getChildren(SysDept root,List<SysDept> deptListAll){
+        List<SysDept> childDeptList = new ArrayList<SysDept>();
+        for (SysDept dept : deptListAll) {
+            if(Objects.equals(root.getDeptId(), dept.getParentId())){
+                childDeptList.add(dept);
+                getChildren(dept,deptListAll);
+            }
+        }
+        root.setChildren(childDeptList);
     }
 }

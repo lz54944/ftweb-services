@@ -91,4 +91,11 @@ public interface SysDictDataMapper {
      * @return 结果
      */
     int updateDictDataType(@Param("oldDictType") String oldDictType, @Param("newDictType") String newDictType);
+
+    /**
+     * 根据字典类型查询字典集合
+     * @param dictType
+     * @return
+     */
+    List<SysDictData> getDictDateByDictType(@Param("dictType") String dictType);
 }
