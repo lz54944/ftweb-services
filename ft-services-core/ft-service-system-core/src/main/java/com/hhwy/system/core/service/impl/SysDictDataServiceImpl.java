@@ -99,4 +99,9 @@ public class SysDictDataServiceImpl implements ISysDictDataService {
         }
         return row;
     }
+
+    @Override
+    public List<SysDictData> getDictDateByDictType(String dictType) {
+        return dictDataMapper.selectDictDataByType(dictType);
+    }
 }

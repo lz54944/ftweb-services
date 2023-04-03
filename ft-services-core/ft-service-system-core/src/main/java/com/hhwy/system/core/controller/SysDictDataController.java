@@ -68,7 +68,7 @@ public class SysDictDataController extends BaseController {
     public AjaxResult dictType(@PathVariable String dictType) {
         List<SysDictData> data = dictTypeService.selectDictDataByType(dictType);
         if (StringUtils.isNull(data)) {
-            data = new ArrayList<SysDictData>();
+            data = new ArrayList<>();
         }
         return AjaxResult.success(data);
     }
@@ -104,5 +104,19 @@ public class SysDictDataController extends BaseController {
     public AjaxResult remove(@PathVariable Long[] dictDataIds) {
         dictDataService.deleteDictDataByIds(dictDataIds);
         return success();
+    }
+
+    /**
+     * 新增代码
+     * 根据字典类型查询字典集合
+     * @param dictType
+     * @return
+     */
+    @GetMapping("getDictDateByDictType")
+    public AjaxResult getDictDateByDictType(String dictType){
+        if (StringUtils.isBlank(dictType)) {
+            throw new RuntimeException("字典类型不能为空！");
+        }
+        return AjaxResult.success(dictDataService.getDictDateByDictType(dictType));
     }
 }

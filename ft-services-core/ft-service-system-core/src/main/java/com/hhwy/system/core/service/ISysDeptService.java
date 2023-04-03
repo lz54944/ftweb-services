@@ -111,4 +111,10 @@ public interface ISysDeptService {
      * @return 结果
      */
     int deleteDeptById(Long deptId);
+
+    /**
+     * 获取当前登录人所在部门及下级部门（嵌套列表）
+     * @return
+     */
+    List<SysDept> getLoginUserNestDept();
 }
