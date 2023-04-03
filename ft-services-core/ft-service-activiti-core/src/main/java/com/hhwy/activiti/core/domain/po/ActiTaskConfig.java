@@ -59,6 +59,12 @@ public class ActiTaskConfig extends BaseEntity {
     private String assignees;
 
     /**
+     * 任务参与者姓名
+     */
+    @Excel(name = "任务参与者姓名")
+    private String assigneesNames;
+
+    /**
      * 相同节点处理人
      */
     @Excel(name = "相同节点处理人")
@@ -157,6 +163,14 @@ public class ActiTaskConfig extends BaseEntity {
         return assignees;
     }
 
+    public String getAssigneesNames() {
+        return assigneesNames;
+    }
+
+    public void setAssigneesNames(String assigneesNames) {
+        this.assigneesNames = assigneesNames;
+    }
+
     public void setSameAssigneesNode(String sameAssigneesNode) {
         this.sameAssigneesNode = sameAssigneesNode;
     }
@@ -207,6 +221,7 @@ public class ActiTaskConfig extends BaseEntity {
                 ", taskNodeName='" + taskNodeName + '\'' +
                 ", assigneeType='" + assigneeType + '\'' +
                 ", assignees='" + assignees + '\'' +
+                ", assigneesNames='" + assigneesNames + '\'' +
                 ", sameAssigneesNode='" + sameAssigneesNode + '\'' +
                 ", assigneesScope='" + assigneesScope + '\'' +
                 ", formUrl='" + formUrl + '\'' +
