@@ -33,7 +33,7 @@ public class SysConfigController extends BaseController {
     /**
      * 获取参数配置列表
      */
-    @PreAuthorize(hasPermi = "system:config:query")
+//    @PreAuthorize(hasPermi = "system:config:query")
     @GetMapping("/list")
     public AjaxResult list(SysConfig config) {
         startPage();
@@ -53,7 +53,7 @@ public class SysConfigController extends BaseController {
     /**
      * 根据参数编号获取详细信息
      */
-    @PreAuthorize(hasPermi = "system:config:query")
+//    @PreAuthorize(hasPermi = "system:config:query")
     @GetMapping(value = "/{configId}")
     public AjaxResult getInfo(@PathVariable Long configId) {
         return AjaxResult.success(configService.selectConfigById(configId));
@@ -63,7 +63,7 @@ public class SysConfigController extends BaseController {
      * 根据参数键名查询参数值
      */
     @GetMapping(value = "/configKey/{configKey}")
-    @PreAuthorize(hasPermi = "system:config:query")
+//    @PreAuthorize(hasPermi = "system:config:query")
     public R<String> getConfigKey(@PathVariable String configKey) {
         return R.ok(configService.selectConfigByKey(configKey),"查询成功");
     }
