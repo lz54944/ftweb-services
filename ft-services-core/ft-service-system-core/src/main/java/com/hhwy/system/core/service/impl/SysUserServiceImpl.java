@@ -21,7 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 用户 业务层处理
@@ -670,5 +672,19 @@ public class SysUserServiceImpl implements ISysUserService {
             }
         }
         return result;
+    }
+
+    /**
+     * 查询用户列表（包括岗位，部门，监管部门）
+     * @param user
+     * @return
+     */
+    @Override
+    public List<SysUser> selectUserAllList(SysUser user) {
+        List<SysUser> sysUsers = userMapper.selectUserList(user, tokenService.getTenantKeyListForUser());
+        for (SysUser sysUser : sysUsers) {
+            fillInfo(sysUser, tokenService.getTenantKey(), tokenService.getTenantKeyListForUser());
+        }
+        return sysUsers;
     }
 }

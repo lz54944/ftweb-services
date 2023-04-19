@@ -1,6 +1,7 @@
 package com.hhwy.system.core.service;
 
 import com.hhwy.system.api.domain.SysUser;
+
 import java.util.List;
 
 /**
@@ -199,4 +200,11 @@ public interface ISysUserService {
     List<SysUser> selectUserListByNickName(String nickName);
 
     List<SysUser> selectUserListByUsernames(String tenantKey, String usernames);
+
+    /**
+     * 查询用户列表（包括岗位，部门，监管部门）
+     * @param user
+     * @return
+     */
+    List<SysUser> selectUserAllList(SysUser user);
 }

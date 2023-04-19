@@ -1,5 +1,6 @@
 package com.hhwy.system.api;
 
+import com.hhwy.common.core.web.domain.AjaxResult;
 import com.hhwy.system.api.domain.SysUser;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -116,5 +117,8 @@ public interface RemoteUserService {
      */
     @GetMapping(value = "/user/selectUserListByNickName/{nickName}")
     R<List<SysUser>> getUserListByNickName(@PathVariable("nickName") String nickName);
+
+    @GetMapping("/user/getUserAllList")
+    AjaxResult selectUserAllList(@PathVariable("deptId")Long deptId);
 
 }

@@ -203,6 +203,20 @@ public class SysUserController extends BaseController {
     }
 
     /**
+     * 查询用户列表（包括岗位，部门，监管部门）
+     * @param deptId
+     * @return
+     */
+    @GetMapping("getUserAllList")
+    public AjaxResult selectUserAllList(@PathVariable("deptId")Long deptId) {
+        SysUser user = new SysUser();
+        user.setDeptId(deptId);
+        startPage();
+        List<SysUser> list = userService.selectUserAllList(user);
+        return getDataTableAjaxResult(list);
+    }
+
+    /**
      * 新增代码
      * 获取当前登录用户信息
      * @return 用户信息

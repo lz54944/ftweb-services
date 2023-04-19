@@ -1,5 +1,6 @@
 package com.hhwy.system.api.factory;
 
+import com.hhwy.common.core.web.domain.AjaxResult;
 import com.hhwy.system.api.domain.SysUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,6 +77,11 @@ public class RemoteUserFallbackFactory implements FallbackFactory<RemoteUserServ
             @Override
             public R<List<SysUser>> getUserListByNickName(String nickName) {
                 return R.fail("获取用户失败:" + throwable.getMessage());
+            }
+
+            @Override
+            public AjaxResult selectUserAllList(Long deptId) {
+                throw new RuntimeException("获取用户失败");
             }
         };
     }
