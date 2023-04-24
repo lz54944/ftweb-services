@@ -41,6 +41,48 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
+        <!-- Swagger UI -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+        </dependency>
+
+        <!-- Mysql Connector -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+
+        <!-- FT Common DataSource -->
+        <dependency>
+            <groupId>com.hhwy</groupId>
+            <artifactId>ft-common-datasource</artifactId>
+        </dependency>
+
+        <!-- FT Common DataScope -->
+        <dependency>
+            <groupId>com.hhwy</groupId>
+            <artifactId>ft-common-datascope</artifactId>
+        </dependency>
+
+        <!-- FT Common DataScope -->
+        <dependency>
+            <groupId>com.hhwy</groupId>
+            <artifactId>ft-common-security</artifactId>
+        </dependency>
+
+        <!-- FT Common Log -->
+        <dependency>
+            <groupId>com.hhwy</groupId>
+            <artifactId>ft-common-log</artifactId>
+        </dependency>
+
+        <!-- FT Common tenant -->
+        <dependency>
+            <groupId>com.hhwy</groupId>
+            <artifactId>ft-common-tenant</artifactId>
+        </dependency>
+
         <!-- FastDFS -->
         <dependency>
             <groupId>com.github.tobato</groupId>

@@ -17,8 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * 数据字典信息
@@ -64,13 +63,36 @@ public class SysDictDataController extends BaseController {
      * 根据字典类型查询字典数据信息
      */
     @GetMapping(value = "/type/{dictType}")
-    @PreAuthorize(hasPermi = "system:dict:query")
+//    @PreAuthorize(hasPermi = "system:dict:query")
     public AjaxResult dictType(@PathVariable String dictType) {
         List<SysDictData> data = dictTypeService.selectDictDataByType(dictType);
         if (StringUtils.isNull(data)) {
             data = new ArrayList<>();
         }
         return AjaxResult.success(data);
+    }
+
+    /**
+     * 根据字典类型查询字典数据信息
+     */
+    @GetMapping(value = "/types")
+//    @PreAuthorize(hasPermi = "system:dict:query")
+    public AjaxResult dictTypes(String dictTypes) {
+
+        Map<String, List<SysDictData>> maplist= new HashMap<String, List<SysDictData>>();
+
+        if (StringUtils.isNotEmpty(dictTypes)) {
+            String[] split = dictTypes.split(",");
+            Arrays.stream(split).forEach(dictType -> {
+                List<SysDictData> data = dictTypeService.selectDictDataByType(dictType);
+                if (StringUtils.isNull(data)) {
+                    data = new ArrayList<>();
+                }
+                maplist.put(dictType, data);
+            });
+        }
+
+        return AjaxResult.success(maplist);
     }
 
     /**

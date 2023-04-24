@@ -21,7 +21,7 @@
             <groupId>com.hhwy</groupId>
             <artifactId>ft-service-file-core</artifactId>
         </dependency>
-        
+
     </dependencies>
 
     <build>

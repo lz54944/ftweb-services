@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hhwy.file.core.mapper.SysFileMapper">
+    <resultMap type="com.hhwy.file.api.domain.SysFile" id="SysFileResult">
+        <result property="id"    column="id"    />
+        <result property="businessId"    column="business_id"    />
+        <result property="businessName"    column="business_name"    />
+        <result property="fileUrl"    column="file_url"    />
+        <result property="fileFullUrl"    column="file_full_url"    />
+        <result property="showFileName"    column="show_file_name"    />
+        <result property="actFileName"    column="act_file_name"    />
+        <result property="fileSize"    column="file_size"    />
+        <result property="fileType"    column="file_type"    />
+        <result property="remark"    column="remark"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createUserId"    column="create_user_id"    />
+        <result property="createUser"    column="create_user"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateUserId"    column="update_user_id"    />
+        <result property="updateUser"    column="update_user"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="deptName"    column="dept_name"    />
+        <result property="tenantKey"    column="tenant_key"    />
+    </resultMap>
+
+    <sql id="selectSysFileVo">
+        select `id`, `business_id`, `business_name`, `file_url`, `file_full_url`, `show_file_name`, `act_file_name`, `file_size`, `file_type`, `remark`, `del_flag`, `create_user_id`, `create_user`, `create_time`, `update_user_id`, `update_user`, `update_time`, `dept_id`, `dept_name`, `tenant_key` from `sys_file`
+    </sql>
+
+    <select id="selectSysFileList" parameterType="com.hhwy.file.api.domain.SysFile" resultMap="SysFileResult">
+        <include refid="selectSysFileVo"/>
+        <where>
+            `del_flag` = '0'
+            <if test="businessId != null  and businessId != ''"> and `business_id` = #{businessId}</if>
+        </where>
+        order by `id` desc
+    </select>
+
+    <select id="selectSysFileByIds" parameterType="string" resultMap="SysFileResult">
+        <include refid="selectSysFileVo"/>
+         where  `del_flag` = '0' and `id` in
+         <foreach item="id" collection="array" separator="," open="(" close=")" >
+             #{id}
+         </foreach>
+    </select>
+
+    <select id="selectSysFileListBatch" parameterType="string" resultMap="SysFileResult">
+        <include refid="selectSysFileVo"/>
+        where  `del_flag` = '0' and `business_id` in
+        <foreach item="businessId" collection="array" separator="," open="(" close=")" >
+            #{businessId}
+        </foreach>
+    </select>
+    
+    <select id="selectSysFileById" parameterType="Long" resultMap="SysFileResult">
+        <include refid="selectSysFileVo"/>
+        where `id` = #{id}
+    </select>
+    <select id="getSysFileListByBusinessIdList" resultMap="SysFileResult">
+        <include refid="selectSysFileVo"/>
+        <where>
+            del_flag = '0' and business_id in
+            <foreach item="businessId" collection="businessIdList" separator="," open="(" close=")" >
+                #{businessId}
+            </foreach>
+        </where>
+    </select>
+
+    <select id="selectSysFileByBusinessId" resultMap="SysFileResult">
+        <include refid="selectSysFileVo"/>
+        where del_flag = '0' and business_id = #{businessId}
+    </select>
+
+    <insert id="insertSysFile" parameterType="com.hhwy.file.api.domain.SysFile" useGeneratedKeys="true" keyProperty="id">
+        insert into `sys_file`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="businessId != null">`business_id`,</if>
+            <if test="businessName != null">`business_name`,</if>
+            <if test="fileUrl != null">`file_url`,</if>
+            <if test="fileFullUrl != null">`file_full_url`,</if>
+            <if test="showFileName != null">`show_file_name`,</if>
+            <if test="actFileName != null">`act_file_name`,</if>
+            <if test="fileSize != null">`file_size`,</if>
+            <if test="fileType != null">`file_type`,</if>
+            <if test="remark != null">`remark`,</if>
+            <if test="delFlag != null">`del_flag`,</if>
+            <if test="createUserId != null">`create_user_id`,</if>
+            <if test="createUser != null">`create_user`,</if>
+            <if test="createTime != null">`create_time`,</if>
+            <if test="updateUserId != null">`update_user_id`,</if>
+            <if test="updateUser != null">`update_user`,</if>
+            <if test="updateTime != null">`update_time`,</if>
+            <if test="deptId != null">`dept_id`,</if>
+            <if test="deptName != null">`dept_name`,</if>
+            <if test="tenantKey != null">`tenant_key`,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="businessId != null">#{businessId},</if>
+            <if test="businessName != null">#{businessName},</if>
+            <if test="fileUrl != null">#{fileUrl},</if>
+            <if test="fileFullUrl != null">#{fileFullUrl},</if>
+            <if test="showFileName != null">#{showFileName},</if>
+            <if test="actFileName != null">#{actFileName},</if>
+            <if test="fileSize != null">#{fileSize},</if>
+            <if test="fileType != null">#{fileType},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="updateUserId != null">#{updateUserId},</if>
+            <if test="createUser != null">#{createUser},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateUserId != null">#{updateUserId},</if>
+            <if test="updateUser != null">#{updateUser},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="deptName != null">#{deptName},</if>
+            <if test="tenantKey != null">#{tenantKey},</if>
+         </trim>
+    </insert>
+
+    <update id="deleteSysFileByBusinessIds" parameterType="string">
+        update `sys_file` set del_flag = '1' where and `business_id` in
+        <foreach item="businessId" collection="array" open="(" separator="," close=")">
+            #{businessId}
+        </foreach>
+    </update>
+
+    <update id="deleteSysFilebybusinessId">
+        update sys_file set del_flag = '1' where business_id = #{businessId}
+    </update>
+
+    <update id="deleteSysFileByIds">
+        update `sys_file` set del_flag = '1' where and `id` in
+            <foreach item="id" collection="array" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+    </update>
+
+</mapper>

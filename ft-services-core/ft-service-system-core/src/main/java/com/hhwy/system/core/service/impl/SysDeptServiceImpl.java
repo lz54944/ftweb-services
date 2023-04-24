@@ -212,6 +212,8 @@ public class SysDeptServiceImpl implements ISysDeptService {
         }
         if (info != null) {
             dept.setAncestors(info.getAncestors() + "," + dept.getParentId());
+        } else {
+            dept.setAncestors("0");
         }
         return deptMapper.insertDept(dept);
     }

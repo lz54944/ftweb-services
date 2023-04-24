@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hhwy.system.core.mapper.SysBusinessFormItemMapper">
+    <resultMap type="com.hhwy.system.core.domain.SysBusinessFormItem" id="SysBusinessFormItemResult">
+        <result property="id"    column="id"    />
+        <result property="colCode"    column="col_code"    />
+        <result property="colName"    column="col_name"    />
+        <result property="colType"    column="col_type"    />
+        <result property="dictCode"    column="dict_code"    />
+        <result property="dbWhereParam"    column="db_where_param"    />
+        <result property="querySql"    column="query_sql"    />
+        <result property="sqlParams"    column="sql_params"    />
+        <result property="orderno"    column="orderno"    />
+        <result property="isshow"    column="isshow"    />
+        <result property="isedit"    column="isedit"    />
+        <result property="isfile"    column="isfile"    />
+        <result property="colComm"    column="col_comm"    />
+        <result property="fileGroupId"    column="file_group_id"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="remark"    column="remark"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createOrgId"    column="create_org_id"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateOrgId"    column="update_org_id"    />
+        <result property="createUser"    column="create_user"    />
+        <result property="updateUser"    column="update_user"    />
+        <result property="flowFormId" column="flow_form_id"/>
+    </resultMap>
+
+    <resultMap id="GetTableAll" type="com.hhwy.system.core.domain.vo.TableAll">
+        <result property="tableSchema" column="TABLE_SCHEMA" />
+        <result property="tableName" column="TABLE_NAME"/>
+        <result property="columnName" column="COLUMN_NAME"/>
+        <result property="ordinalPosition" column="ORDINAL_POSITION"/>
+        <result property="dataType" column="DATA_TYPE"/>
+        <result property="columnComment" column="COLUMN_COMMENT"/>
+    </resultMap>
+
+    <sql id="selectSysBusinessFormItemVo">
+        select `id`, `col_code`, `col_name`, `col_type`, `dict_code`,`db_where_param`, `query_sql`, `sql_params`, `orderno`, `isshow`, `isedit`, `isfile`, `col_comm`, `file_group_id`, `del_flag`, `remark`, `create_time`, `create_by`, `create_org_id`, `update_time`, `update_by`, `update_org_id`, `create_user`, `update_user` ,flow_form_id from `sys_business_form_item`
+    </sql>
+
+    <select id="selectSysBusinessFormItemList" parameterType="com.hhwy.system.core.domain.SysBusinessFormItem" resultMap="SysBusinessFormItemResult">
+        <include refid="selectSysBusinessFormItemVo"/>
+        <where>
+            `del_flag` = 0
+            <if test="colCode != null  and colCode != ''"> and `col_code` = #{colCode}</if>
+            <if test="colName != null  and colName != ''"> and `col_name` like concat('%', #{colName}, '%')</if>
+            <if test="colType != null  and colType != ''"> and `col_type` = #{colType}</if>
+            <if test="dictCode != null  and dictCode != ''"> and `dict_code` = #{dictCode}</if>
+            <if test="querySql != null  and querySql != ''"> and `query_sql` = #{querySql}</if>
+            <if test="sqlParams != null  and sqlParams != ''"> and `sql_params` = #{sqlParams}</if>
+            <if test="orderno != null "> and `orderno` = #{orderno}</if>
+            <if test="isshow != null  and isshow != ''"> and `isshow` = #{isshow}</if>
+            <if test="isedit != null  and isedit != ''"> and `isedit` = #{isedit}</if>
+            <if test="isfile != null  and isfile != ''"> and `isfile` = #{isfile}</if>
+            <if test="colComm != null  and colComm != ''"> and `col_comm` = #{colComm}</if>
+            <if test="fileGroupId != null  and fileGroupId != ''"> and `file_group_id` = #{fileGroupId}</if>
+            <if test="createOrgId != null "> and `create_org_id` = #{createOrgId}</if>
+            <if test="updateOrgId != null "> and `update_org_id` = #{updateOrgId}</if>
+            <if test="createUser != null  and createUser != ''"> and `create_user` = #{createUser}</if>
+            <if test="updateUser != null  and updateUser != ''"> and `update_user` = #{updateUser}</if>
+        </where>
+        order by `id` desc
+    </select>
+    
+    <select id="selectSysBusinessFormItemById" parameterType="Long" resultMap="SysBusinessFormItemResult">
+        <include refid="selectSysBusinessFormItemVo"/>
+        where `id` = #{id}
+    </select>
+    <select id="selectSysBusinessFormItemListEr"  resultMap="SysBusinessFormItemResult">
+            SELECT * FROM `sys_business_form_item` WHERE flow_form_id = #{flowFormId}
+    </select>
+    <select id="selectOmsListId"  resultMap="SysBusinessFormItemResult">
+        SELECT * FROM `sys_business_form_item` WHERE flow_form_id = #{flowFormId} AND del_flag = 0
+    </select>
+    <select id="selectOmsSysTable" resultMap="GetTableAll">
+        SELECT TABLE_SCHEMA,TABLE_NAME,COLUMN_NAME,ORDINAL_POSITION,DATA_TYPE,COLUMN_COMMENT
+        FROM INFORMATION_SCHEMA.COLUMNS
+        WHERE TABLE_SCHEMA = #{table} AND TABLE_NAME = #{tableDbCode}
+    </select>
+    <select id="selectById" resultMap="SysBusinessFormItemResult">
+        SELECT * FROM `sys_business_form_item` WHERE id in
+        <foreach item="id" collection="toStrArray" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+    <select id="selectListId" resultMap="SysBusinessFormItemResult">
+        SELECT * FROM `sys_business_form_item` WHERE flow_form_id = #{flowFormId} AND del_flag = 0 AND isshow = 1
+    </select>
+    <select id="selectOmsListEry" resultMap="SysBusinessFormItemResult">
+        SELECT * FROM `sys_business_form_item`
+        WHERE flow_form_id = #{flowFormId}
+        AND del_flag = 0 AND isshow = 1
+        ORDER BY orderno
+    </select>
+<!--    <select id="selectDbWhereParamListByColName"-->
+<!--            resultType="com.hhwy.oms.other.flowFormItem.domain.result.SysBusinessFormItemResult">-->
+<!--        SELECT-->
+<!--        `col_code` AS colCode,-->
+<!--        `db_where_param` AS dbWhereParam-->
+<!--        FROM `sys_business_form_item`-->
+<!--        <where>-->
+<!--            `db_where_param` IS NOT NULL-->
+<!--            <if test="colName != '' and colName != null">-->
+<!--                AND `col_name` = #{colName}-->
+<!--            </if>-->
+<!--            AND del_flag = '0'-->
+<!--        </where>-->
+
+<!--    </select>-->
+    <select id="checkDbWhereParam" resultType="java.lang.Integer">
+        SELECT
+        COUNT(id)
+        FROM `sys_business_form_item`
+        <where>
+            1 = 1
+            <if test="colName != '' and colName != null">
+                AND `col_name` = #{colName}
+            </if>
+            <if test="dbWhereParam != '' and dbWhereParam != null">
+                AND `db_where_param` = #{dbWhereParam}
+            </if>
+
+        </where>
+    </select>
+    <insert id="insertSysBusinessFormItem" parameterType="com.hhwy.system.core.domain.SysBusinessFormItem" useGeneratedKeys="true" keyProperty="id">
+        insert into `sys_business_form_item`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="colCode != null">`col_code`,</if>
+            <if test="colName != null">`col_name`,</if>
+            <if test="colType != null">`col_type`,</if>
+            <if test="dictCode != null">`dict_code`,</if>
+            <if test="dbWhereParam != null">`db_where_param`,</if>
+            <if test="querySql != null">`query_sql`,</if>
+            <if test="sqlParams != null">`sql_params`,</if>
+            <if test="orderno != null">`orderno`,</if>
+            <if test="isshow != null">`isshow`,</if>
+            <if test="isedit != null">`isedit`,</if>
+            <if test="isfile != null">`isfile`,</if>
+            <if test="colComm != null">`col_comm`,</if>
+            <if test="fileGroupId != null">`file_group_id`,</if>
+            <if test="delFlag != null">`del_flag`,</if>
+            <if test="remark != null">`remark`,</if>
+            <if test="createTime != null">`create_time`,</if>
+            <if test="createBy != null">`create_by`,</if>
+            <if test="createOrgId != null">`create_org_id`,</if>
+            <if test="updateTime != null">`update_time`,</if>
+            <if test="updateBy != null">`update_by`,</if>
+            <if test="updateOrgId != null">`update_org_id`,</if>
+            <if test="createUser != null">`create_user`,</if>
+            <if test="updateUser != null">`update_user`,</if>
+            <if test="flowFormId != null">`flow_form_id`,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="colCode != null">#{colCode},</if>
+            <if test="colName != null">#{colName},</if>
+            <if test="colType != null">#{colType},</if>
+            <if test="dictCode != null">#{dictCode},</if>
+            <if test="dbWhereParam != null">#{dbWhereParam},</if>
+            <if test="querySql != null">#{querySql},</if>
+            <if test="sqlParams != null">#{sqlParams},</if>
+            <if test="orderno != null">#{orderno},</if>
+            <if test="isshow != null">#{isshow},</if>
+            <if test="isedit != null">#{isedit},</if>
+            <if test="isfile != null">#{isfile},</if>
+            <if test="colComm != null">#{colComm},</if>
+            <if test="fileGroupId != null">#{fileGroupId},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createOrgId != null">#{createOrgId},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateOrgId != null">#{updateOrgId},</if>
+            <if test="createUser != null">#{createUser},</if>
+            <if test="updateUser != null">#{updateUser},</if>
+            <if test="flowFormId != null">#{flowFormId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysBusinessFormItem" parameterType="com.hhwy.system.core.domain.SysBusinessFormItem">
+        update `sys_business_form_item`
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="colCode != null">`col_code` = #{colCode},</if>
+            <if test="colName != null">`col_name` = #{colName},</if>
+            <if test="colType != null">`col_type` = #{colType},</if>
+            <if test="dictCode != null">`dict_code` = #{dictCode},</if>
+            <if test="dbWhereParam != null">`db_where_param` = #{dbWhereParam},</if>
+            <if test="querySql != null">`query_sql` = #{querySql},</if>
+            <if test="sqlParams != null">`sql_params` = #{sqlParams},</if>
+            <if test="orderno != null">`orderno` = #{orderno},</if>
+            <if test="isshow != null">`isshow` = #{isshow},</if>
+            <if test="isedit != null">`isedit` = #{isedit},</if>
+            <if test="isfile != null">`isfile` = #{isfile},</if>
+            <if test="colComm != null">`col_comm` = #{colComm},</if>
+            <if test="fileGroupId != null">`file_group_id` = #{fileGroupId},</if>
+            <if test="delFlag != null">`del_flag` = #{delFlag},</if>
+            <if test="remark != null">`remark` = #{remark},</if>
+            <if test="createTime != null">`create_time` = #{createTime},</if>
+            <if test="createBy != null">`create_by` = #{createBy},</if>
+            <if test="createOrgId != null">`create_org_id` = #{createOrgId},</if>
+            <if test="updateTime != null">`update_time` = #{updateTime},</if>
+            <if test="updateBy != null">`update_by` = #{updateBy},</if>
+            <if test="updateOrgId != null">`update_org_id` = #{updateOrgId},</if>
+            <if test="createUser != null">`create_user` = #{createUser},</if>
+            <if test="updateUser != null">`update_user` = #{updateUser},</if>
+        </trim>
+        where `id` = #{id}
+    </update>
+    <update id="updateSysBusinessFormItems" parameterType="com.hhwy.system.core.domain.SysBusinessFormItem">
+        update `sys_business_form_item`
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="colCode != null">`col_code` = #{colCode},</if>
+            <if test="colName != null">`col_name` = #{colName},</if>
+            <if test="colType != null">`col_type` = #{colType},</if>
+            <if test="dictCode != null">`dict_code` = #{dictCode},</if>
+            <if test="dbWhereParam != null">`db_where_param` = #{dbWhereParam},</if>
+            <if test="querySql != null">`query_sql` = #{querySql},</if>
+            <if test="sqlParams != null">`sql_params` = #{sqlParams},</if>
+            <if test="isshow != null">`isshow` = #{isshow},</if>
+            <if test="isedit != null">`isedit` = #{isedit},</if>
+            <if test="isfile != null">`isfile` = #{isfile},</if>
+            <if test="colComm != null">`col_comm` = #{colComm},</if>
+            <if test="fileGroupId != null">`file_group_id` = #{fileGroupId},</if>
+            <if test="delFlag != null">`del_flag` = #{delFlag},</if>
+            <if test="remark != null">`remark` = #{remark},</if>
+            <if test="createTime != null">`create_time` = #{createTime},</if>
+            <if test="createBy != null">`create_by` = #{createBy},</if>
+            <if test="createOrgId != null">`create_org_id` = #{createOrgId},</if>
+            <if test="updateTime != null">`update_time` = #{updateTime},</if>
+            <if test="updateBy != null">`update_by` = #{updateBy},</if>
+            <if test="updateOrgId != null">`update_org_id` = #{updateOrgId},</if>
+            <if test="createUser != null">`create_user` = #{createUser},</if>
+            <if test="updateUser != null">`update_user` = #{updateUser},</if>
+        </trim>
+        where `orderno` = #{orderno}
+    </update>
+
+    <update id="deleteSysBusinessFormItemById" parameterType="Long">
+        update `sys_business_form_item` set del_flag = 1 where `id` = #{id}
+    </update>
+
+    <update id="deleteSysBusinessFormItemByIds" parameterType="String">
+        update `sys_business_form_item` set del_flag = 1 where `id` in
+        <foreach item="id" collection="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+
+</mapper>

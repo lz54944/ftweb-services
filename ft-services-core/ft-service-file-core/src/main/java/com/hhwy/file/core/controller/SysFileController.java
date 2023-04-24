@@ -3,17 +3,19 @@ package com.hhwy.file.core.controller;
 import com.hhwy.common.core.domain.R;
 import com.hhwy.common.core.utils.StringUtils;
 import com.hhwy.common.core.utils.file.FileUtils;
+import com.hhwy.common.core.web.domain.AjaxResult;
+import com.hhwy.file.api.domain.FileParam;
 import com.hhwy.file.core.service.ISysFileService;
 import com.hhwy.file.api.domain.SysFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * 文件请求处理
@@ -21,11 +23,42 @@ import javax.servlet.http.HttpServletResponse;
  * @author hhwy
  */
 @RestController
+@RequestMapping("/file")
 public class SysFileController {
     private static final Logger log = LoggerFactory.getLogger(SysFileController.class);
 
     @Autowired
     private ISysFileService sysFileService;
+
+    /**
+     * 文件上传请求（带业务）
+     */
+    @PostMapping("uploadFile")
+    public AjaxResult upload(@RequestPart(value = "file") MultipartFile file, @Validated FileParam fileParam) {
+        try {
+            // 上传并返回访问地址
+            SysFile sysFile = sysFileService.uploadFile(file, fileParam);
+            return AjaxResult.success(sysFile);
+        } catch (Exception e) {
+            log.error("上传文件失败", e);
+            return AjaxResult.error(e.getMessage());
+        }
+    }
+
+    /**
+     * 文件上传请求（带业务）
+     */
+    @PostMapping("uploadFiles")
+    public AjaxResult uploadFiles(@RequestPart(value = "files") MultipartFile[] files, @Validated FileParam fileParam) {
+        try {
+            // 上传并返回访问地址
+            List<SysFile> sysFiles = sysFileService.uploadFiles(files, fileParam);
+            return AjaxResult.success(sysFiles);
+        } catch (Exception e) {
+            log.error("上传文件失败", e);
+            return AjaxResult.error(e.getMessage());
+        }
+    }
 
     /**
      * 文件上传请求

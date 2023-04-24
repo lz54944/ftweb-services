@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hhwy.system.core.mapper.SysBusinessFormMapper">
+    <resultMap type="com.hhwy.system.core.domain.SysBusinessForm" id="SysBusinessFormResult">
+        <result property="id"    column="id"    />
+        <result property="flowFormId"    column="flow_form_id"    />
+        <result property="module"    column="module"    />
+        <result property="tableDbCode"    column="table_db_code"    />
+        <result property="formCode"    column="form_code"    />
+        <result property="tableName"    column="table_name"    />
+        <result property="bpmnFormUrl"    column="bpmn_form_url"    />
+        <result property="sqlParams"    column="sql_params"    />
+        <result property="querySql"    column="query_sql"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="remark"    column="remark"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createOrgId"    column="create_org_id"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateOrgId"    column="update_org_id"    />
+        <result property="createUser"    column="create_user"    />
+        <result property="updateUser"    column="update_user"    />
+    </resultMap>
+
+    <sql id="selectSysBusinessFormVo">
+        select `id`, `flow_form_id`, `module`, `table_db_code`, `form_code`, `table_name`, `bpmn_form_url`, `sql_params`, `query_sql`, `del_flag`, `remark`, `create_time`, `create_by`, `create_org_id`, `update_time`, `update_by`, `update_org_id`, `create_user`, `update_user` from `sys_business_form`
+    </sql>
+
+    <select id="selectSysBusinessFormList" parameterType="com.hhwy.system.core.domain.SysBusinessForm" resultMap="SysBusinessFormResult">
+        <include refid="selectSysBusinessFormVo"/>
+        <where>
+            `del_flag` = 0
+            <if test="flowFormId != null  and flowFormId != ''"> and `flow_form_id` = #{flowFormId}</if>
+            <if test="module != null  and module != ''"> and `module` = #{module}</if>
+            <if test="tableDbCode != null  and tableDbCode != ''"> and `table_db_code` = #{tableDbCode}</if>
+            <if test="formCode != null  and formCode != ''"> and `form_code` = #{formCode}</if>
+            <if test="tableName != null  and tableName != ''"> and `table_name` like concat('%', #{tableName}, '%')</if>
+            <if test="sqlParams != null  and sqlParams != ''"> and `sql_params` = #{sqlParams}</if>
+            <if test="querySql != null  and querySql != ''"> and `query_sql` = #{querySql}</if>
+            <if test="createOrgId != null "> and `create_org_id` = #{createOrgId}</if>
+            <if test="updateOrgId != null "> and `update_org_id` = #{updateOrgId}</if>
+            <if test="createUser != null  and createUser != ''"> and `create_user` = #{createUser}</if>
+            <if test="updateUser != null  and updateUser != ''"> and `update_user` = #{updateUser}</if>
+        </where>
+        order by `id` desc
+    </select>
+    
+    <select id="selectSysBusinessFormById" parameterType="Long" resultMap="SysBusinessFormResult">
+        <include refid="selectSysBusinessFormVo"/>
+        where `id` = #{id}
+    </select>
+
+    <select id="selectOmsSysFlowGetTable" resultMap="SysBusinessFormResult">
+        SELECT TABLE_NAME table_db_code,TABLE_NAME form_code,TABLE_COMMENT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = #{table}
+    </select>
+    <select id="selectConfiggurationList" resultMap="SysBusinessFormResult">
+        SELECT * FROM `sys_business_form`
+        WHERE  `del_flag` = 0
+        <if test="module != null and module != '' ">
+            AND `module` = #{module}
+        </if>
+        <if test="formCode != null and formCode != ''">
+            AND `form_code` like concat('%',#{formCode},'%')
+        </if>
+        <if test="tableName != null and tableName != ''">
+            AND `table_name` like concat('%',#{tableName},'%')
+        </if>
+    </select>
+    <select id="selectActCodeByactCode" resultMap="SysBusinessFormResult">
+        SELECT * FROM `sys_business_form` WHERE form_code = #{formCode} and `del_flag` = 0
+    </select>
+    <select id="selectOmsSysFlowByFlowForData"  resultMap="SysBusinessFormResult">
+        SELECT * FROM `sys_business_form` WHERE flow_form_id = #{flowFormId} AND del_flag = 0
+    </select>
+
+    <insert id="insertSysBusinessForm" parameterType="com.hhwy.system.core.domain.SysBusinessForm" useGeneratedKeys="true" keyProperty="id">
+        insert into `sys_business_form`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="flowFormId != null">`flow_form_id`,</if>
+            <if test="module != null">`module`,</if>
+            <if test="tableDbCode != null">`table_db_code`,</if>
+            <if test="formCode != null">`form_code`,</if>
+            <if test="tableName != null">`table_name`,</if>
+            <if test="bpmnFormUrl != null">`bpmn_form_url`,</if>
+            <if test="sqlParams != null">`sql_params`,</if>
+            <if test="querySql != null">`query_sql`,</if>
+            <if test="delFlag != null">`del_flag`,</if>
+            <if test="remark != null">`remark`,</if>
+            <if test="createTime != null">`create_time`,</if>
+            <if test="createBy != null">`create_by`,</if>
+            <if test="createOrgId != null">`create_org_id`,</if>
+            <if test="updateTime != null">`update_time`,</if>
+            <if test="updateBy != null">`update_by`,</if>
+            <if test="updateOrgId != null">`update_org_id`,</if>
+            <if test="createUser != null">`create_user`,</if>
+            <if test="updateUser != null">`update_user`,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="flowFormId != null">#{flowFormId},</if>
+            <if test="module != null">#{module},</if>
+            <if test="tableDbCode != null">#{tableDbCode},</if>
+            <if test="formCode != null">#{formCode},</if>
+            <if test="tableName != null">#{tableName},</if>
+            <if test="bpmnFormUrl != null">#{bpmnFormUrl},</if>
+            <if test="sqlParams != null">#{sqlParams},</if>
+            <if test="querySql != null">#{querySql},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createOrgId != null">#{createOrgId},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateOrgId != null">#{updateOrgId},</if>
+            <if test="createUser != null">#{createUser},</if>
+            <if test="updateUser != null">#{updateUser},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysBusinessForm" parameterType="com.hhwy.system.core.domain.SysBusinessForm">
+        update `sys_business_form`
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="flowFormId != null">`flow_form_id` = #{flowFormId},</if>
+            <if test="module != null">`module` = #{module},</if>
+            <if test="tableDbCode != null">`table_db_code` = #{tableDbCode},</if>
+            <if test="formCode != null">`form_code` = #{formCode},</if>
+            <if test="tableName != null">`table_name` = #{tableName},</if>
+            <if test="bpmnFormUrl != null">`bpmn_form_url` = #{bpmnFormUrl},</if>
+            <if test="sqlParams != null">`sql_params` = #{sqlParams},</if>
+            <if test="querySql != null">`query_sql` = #{querySql},</if>
+            <if test="delFlag != null">`del_flag` = #{delFlag},</if>
+            <if test="remark != null">`remark` = #{remark},</if>
+            <if test="createTime != null">`create_time` = #{createTime},</if>
+            <if test="createBy != null">`create_by` = #{createBy},</if>
+            <if test="createOrgId != null">`create_org_id` = #{createOrgId},</if>
+            <if test="updateTime != null">`update_time` = #{updateTime},</if>
+            <if test="updateBy != null">`update_by` = #{updateBy},</if>
+            <if test="updateOrgId != null">`update_org_id` = #{updateOrgId},</if>
+            <if test="createUser != null">`create_user` = #{createUser},</if>
+            <if test="updateUser != null">`update_user` = #{updateUser},</if>
+        </trim>
+        where `id` = #{id}
+    </update>
+
+    <update id="deleteSysBusinessFormById" parameterType="Long">
+        update `sys_business_form` set del_flag = 1 where `id` = #{id}
+    </update>
+
+    <update id="deleteSysBusinessFormByIds" parameterType="String">
+        update `sys_business_form` set del_flag = 1 where `flow_form_id` in
+        <foreach item="flowFormId" collection="array" open="(" separator="," close=")">
+            #{flowFormId}
+        </foreach>
+    </update>
+
+
+</mapper>

@@ -20,6 +20,11 @@ public class BaseEntity implements Serializable {
     private String searchValue;
 
     /**
+     * 创建人id
+     */
+    private Long createUserId;
+
+    /**
      * 创建者
      */
     private String createUser;
@@ -29,6 +34,11 @@ public class BaseEntity implements Serializable {
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date createTime;
+
+    /**
+     * 更新着者id
+     */
+    private Long updateUserId;
 
     /**
      * 更新者
@@ -53,6 +63,12 @@ public class BaseEntity implements Serializable {
 
     /** 租户标识 */
     private String tenantKey;
+
+    /** 部门id */
+    private Long deptId;
+
+    /** 部门名称 */
+    private String deptName;
 
     /**
      * 请求参数
@@ -121,6 +137,38 @@ public class BaseEntity implements Serializable {
 
     public void setTenantKey(String tenantKey) {
         this.tenantKey = tenantKey;
+    }
+
+    public Long getDeptId() {
+        return deptId;
+    }
+
+    public void setDeptId(Long deptId) {
+        this.deptId = deptId;
+    }
+
+    public String getDeptName() {
+        return deptName;
+    }
+
+    public void setDeptName(String deptName) {
+        this.deptName = deptName;
+    }
+
+    public Long getCreateUserId() {
+        return createUserId;
+    }
+
+    public void setCreateUserId(Long createUserId) {
+        this.createUserId = createUserId;
+    }
+
+    public Long getUpdateUserId() {
+        return updateUserId;
+    }
+
+    public void setUpdateUserId(Long updateUserId) {
+        this.updateUserId = updateUserId;
     }
 
     public Map<String, Object> getParams() {

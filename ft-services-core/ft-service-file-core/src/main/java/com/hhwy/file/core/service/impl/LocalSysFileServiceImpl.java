@@ -3,6 +3,8 @@ package com.hhwy.file.core.service.impl;
 import com.hhwy.common.core.utils.StringUtils;
 import com.hhwy.common.core.utils.YamlUtil;
 import com.hhwy.common.core.utils.file.FileUploadUtils;
+import com.hhwy.file.api.domain.FileParam;
+import com.hhwy.file.api.domain.SysFile;
 import com.hhwy.file.core.service.ISysFileService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
@@ -11,13 +13,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
 import java.net.InetAddress;
+import java.util.List;
 
 /**
  * 本地文件存储
  *
  * @author hhwy
  */
-@Primary
 @Service
 public class LocalSysFileServiceImpl implements ISysFileService {
     /**
@@ -37,6 +39,16 @@ public class LocalSysFileServiceImpl implements ISysFileService {
      */
     @Value("${file.path}")
     private String localFilePath;
+
+    @Override
+    public SysFile uploadFile(MultipartFile file, FileParam fileParam) throws Exception {
+        return null;
+    }
+
+    @Override
+    public List<SysFile> uploadFiles(MultipartFile[] files, FileParam fileParam) {
+        return null;
+    }
 
     /**
      * 本地文件上传接口

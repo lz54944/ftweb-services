@@ -1,6 +1,8 @@
 package com.hhwy.file;
 
+import com.hhwy.common.security.annotation.EnableFtFeignClients;
 import org.apache.commons.lang3.StringUtils;
+import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -19,7 +21,8 @@ import java.net.UnknownHostException;
  * @author hhwy
  */
 @EnableCustomSwagger2
-@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
+@SpringBootApplication
+@EnableFtFeignClients
 public class FtFileApplication {
     public static void main(String[] args) throws UnknownHostException {
         Logger logger = LoggerFactory.getLogger(FtFileApplication.class);

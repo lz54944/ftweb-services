@@ -2,12 +2,16 @@ package com.hhwy.file.core.service.impl;
 
 import com.github.tobato.fastdfs.domain.fdfs.StorePath;
 import com.github.tobato.fastdfs.service.FastFileStorageClient;
+import com.hhwy.file.api.domain.FileParam;
+import com.hhwy.file.api.domain.SysFile;
 import com.hhwy.file.core.service.ISysFileService;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 /**
  * FastDFS 文件存储
@@ -24,6 +28,16 @@ public class FastDfsSysFileServiceImpl implements ISysFileService {
 
     @Autowired
     private FastFileStorageClient storageClient;
+
+    @Override
+    public SysFile uploadFile(MultipartFile file, FileParam fileParam) throws Exception {
+        return null;
+    }
+
+    @Override
+    public List<SysFile> uploadFiles(MultipartFile[] files, FileParam fileParam) {
+        return null;
+    }
 
     /**
      * FastDfs文件上传接口
