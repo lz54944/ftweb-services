@@ -70,6 +70,16 @@ public class BaseEntity implements Serializable {
     /** 部门名称 */
     private String deptName;
 
+    private String ptVar1;
+
+    private String ptVar2;
+
+    private String ptVar3;
+
+    private String ptVar4;
+
+    private String ptVar5;
+
     /**
      * 请求参数
      */
@@ -169,6 +179,46 @@ public class BaseEntity implements Serializable {
 
     public void setUpdateUserId(Long updateUserId) {
         this.updateUserId = updateUserId;
+    }
+
+    public String getPtVar1() {
+        return ptVar1;
+    }
+
+    public void setPtVar1(String ptVar1) {
+        this.ptVar1 = ptVar1;
+    }
+
+    public String getPtVar2() {
+        return ptVar2;
+    }
+
+    public void setPtVar2(String ptVar2) {
+        this.ptVar2 = ptVar2;
+    }
+
+    public String getPtVar3() {
+        return ptVar3;
+    }
+
+    public void setPtVar3(String ptVar3) {
+        this.ptVar3 = ptVar3;
+    }
+
+    public String getPtVar4() {
+        return ptVar4;
+    }
+
+    public void setPtVar4(String ptVar4) {
+        this.ptVar4 = ptVar4;
+    }
+
+    public String getPtVar5() {
+        return ptVar5;
+    }
+
+    public void setPtVar5(String ptVar5) {
+        this.ptVar5 = ptVar5;
     }
 
     public Map<String, Object> getParams() {
