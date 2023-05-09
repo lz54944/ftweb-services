@@ -87,6 +87,8 @@ public class SysRole extends BaseEntity {
     //与deptIds对应
     private List<SysDept> deptList;
 
+    private List<Long> dbParamList;
+
     public SysRole() {
 
     }
@@ -210,6 +212,14 @@ public class SysRole extends BaseEntity {
 
     public void setDeptList(List<SysDept> deptList) {
         this.deptList = deptList;
+    }
+
+    public List<Long> getDbParamList() {
+        return dbParamList;
+    }
+
+    public void setDbParamList(List<Long> dbParamList) {
+        this.dbParamList = dbParamList;
     }
 
     public String toString() {
