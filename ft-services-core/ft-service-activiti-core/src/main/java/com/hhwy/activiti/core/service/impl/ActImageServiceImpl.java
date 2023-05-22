@@ -1,9 +1,27 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
 package com.hhwy.activiti.core.service.impl;
 
 import com.hhwy.activiti.core.image.CustomProcessDiagramGenerator;
 import com.hhwy.activiti.core.mapper.ActivitiMapper;
 import com.hhwy.activiti.core.service.IActImageService;
 import com.hhwy.common.core.utils.StringUtils;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowNode;
@@ -13,7 +31,6 @@ import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.runtime.Execution;
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
-import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.util.XMLResourceDescriptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,87 +40,74 @@ import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGSVGElement;
 
-import javax.xml.transform.*;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-/**
- * <br>描 述： ActImageServiceImpl
- * <br>创 建 人：Jinzhaoqiang
- * <br>创建时间：2021/8/10 10:46
- * <br>修改备注：无
- * <br>版本：1.0.0
- */
 @Service
-@Transactional(rollbackFor = Exception.class)
+@Transactional(
+        rollbackFor = {Exception.class}
+)
 public class ActImageServiceImpl implements IActImageService {
-
     @Autowired
     RepositoryService repositoryService;
-
     @Autowired
     ActHistoryServiceImpl actHistoryServiceImpl;
-
     @Autowired
     ActProcessDefinitionServiceImpl actProcessDefinitionServiceImpl;
-
     @Autowired
     ActivitiMapper activitiMapper;
 
-    /**
-     * 根据流程实例Id获取流程图
-     *
-     * @param procInstId 流程实例id
-     * @return inputStream
-     * @throws Exception exception
-     */
-    @Override
+    public ActImageServiceImpl() {
+    }
+
     public String getFlowImgByProcInstId(String procInstId) throws Exception {
-        List<HistoricActivityInstance> historicActivityInstanceList = new ArrayList<>();
-        List<String> emptyRunningActivityIdList = new ArrayList<>();
-        InputStream initialStream  = getFlowImgInputStreamByProcInstId(procInstId,historicActivityInstanceList,emptyRunningActivityIdList);
+        List<HistoricActivityInstance> historicActivityInstanceList = new ArrayList();
+        List<String> emptyRunningActivityIdList = new ArrayList();
+        InputStream initialStream = this.getFlowImgInputStreamByProcInstId(procInstId, historicActivityInstanceList, emptyRunningActivityIdList);
         byte[] buffer = new byte[initialStream.available()];
         initialStream.read(buffer);
         String result = new String(buffer);
         result = result.substring(result.indexOf("<svg"));
         String parser = XMLResourceDescriptor.getXMLParserClassName();
         SAXSVGDocumentFactory factory = new SAXSVGDocumentFactory(parser);
-        SVGDocument svgDocument = factory.createSVGDocument(SVGOMDocument.SVG_NAMESPACE_URI, new ByteArrayInputStream(result.getBytes("UTF-8")));
-        for (HistoricActivityInstance historicActivityInstance : historicActivityInstanceList) {
+        SVGDocument svgDocument = factory.createSVGDocument("http://www.w3.org/2000/svg", new ByteArrayInputStream(result.getBytes("UTF-8")));
+        Iterator var10 = historicActivityInstanceList.iterator();
+
+        while(var10.hasNext()) {
+            HistoricActivityInstance historicActivityInstance = (HistoricActivityInstance)var10.next();
             String activityId = historicActivityInstance.getActivityId();
-            // 给通过的节点增加点击事件
-            svgDocument.getElementById(activityId).setAttribute("onclick","showHistoryTaskDetail(this)");
+            svgDocument.getElementById(activityId).setAttribute("onclick", "showHistoryTaskDetail(this)");
         }
-        for (String runningActivityId : emptyRunningActivityIdList) {
-            // 给通过的节点增加点击事件
-            svgDocument.getElementById(runningActivityId).setAttribute("onclick","showRunningTaskDetail(this)");
+
+        var10 = emptyRunningActivityIdList.iterator();
+
+        String svg;
+        while(var10.hasNext()) {
+            svg = (String)var10.next();
+            svgDocument.getElementById(svg).setAttribute("onclick", "showRunningTaskDetail(this)");
         }
+
         SVGSVGElement rootElement = svgDocument.getRootElement();
-        String svg = convertElemToSVG(rootElement);
+        svg = convertElemToSVG(rootElement);
         return svg;
     }
 
     public static String convertElemToSVG(Element element) {
         TransformerFactory transFactory = TransformerFactory.newInstance();
         Transformer transformer = null;
+
         try {
             transformer = transFactory.newTransformer();
-        } catch (TransformerConfigurationException e) {
-            e.printStackTrace();
+        } catch (TransformerConfigurationException var6) {
+            var6.printStackTrace();
         }
+
         StringWriter buffer = new StringWriter();
-        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+        transformer.setOutputProperty("omit-xml-declaration", "yes");
+
         try {
             transformer.transform(new DOMSource(element), new StreamResult(buffer));
-        } catch (TransformerException e) {
-            e.printStackTrace();
+        } catch (TransformerException var5) {
+            var5.printStackTrace();
         }
+
         String elementStr = buffer.toString();
         return elementStr;
     }
@@ -111,327 +115,207 @@ public class ActImageServiceImpl implements IActImageService {
     public InputStream getFlowImgInputStreamByProcInstId(String procInstId, List<HistoricActivityInstance> emptyHistoricActivityInstanceList, List<String> emptyRunningActivityIdList) throws Exception {
         if (StringUtils.isEmpty(procInstId)) {
             throw new Exception("[异常]-传入的参数procInstId为空！");
-        }
-        InputStream imageStream = null;
-        try {
-            // 通过流程实例ID获取历史流程实例
-            HistoricProcessInstance historicProcessInstance = actHistoryServiceImpl.getHistoricProcessInstance(procInstId);
+        } else {
+            InputStream imageStream = null;
 
-            // 通过流程实例ID获取流程中已经执行的节点，按照执行先后顺序排序
-            List<HistoricActivityInstance> historicActivityInstanceList = actHistoryServiceImpl.getHistoricActivityInstancesAsc(procInstId);
-            List<String> recallTaskIdList =  activitiMapper.getRecallTaskIds(procInstId);
-            // 过滤掉已撤回的节点
-            historicActivityInstanceList = historicActivityInstanceList.stream().filter(p->!recallTaskIdList.contains(p.getTaskId())).collect(Collectors.toList());
+            InputStream var15;
+            try {
+                HistoricProcessInstance historicProcessInstance = this.actHistoryServiceImpl.getHistoricProcessInstance(procInstId);
+                List<HistoricActivityInstance> historicActivityInstanceList = this.actHistoryServiceImpl.getHistoricActivityInstancesAsc(procInstId);
+                List<String> recallTaskIdList = this.activitiMapper.getRecallTaskIds(procInstId);
+                historicActivityInstanceList = (List)historicActivityInstanceList.stream().filter((p) -> {
+                    return !recallTaskIdList.contains(p.getTaskId());
+                }).collect(Collectors.toList());
+                emptyHistoricActivityInstanceList.addAll(historicActivityInstanceList);
+                List<String> highLightedActivityIdList = (List)historicActivityInstanceList.stream().map(HistoricActivityInstance::getActivityId).collect(Collectors.toList());
+                List<Execution> runningActivityInstanceList = this.actProcessDefinitionServiceImpl.getRunningActivityInstance(procInstId);
+                List<String> runningActivityIdList = new ArrayList();
+                Iterator var11 = runningActivityInstanceList.iterator();
 
-            emptyHistoricActivityInstanceList.addAll(historicActivityInstanceList);
-
-            // 将已经执行的节点放入高亮显示节点集合
-            List<String> highLightedActivityIdList = historicActivityInstanceList.stream()
-                    .map(HistoricActivityInstance::getActivityId)
-                    .collect(Collectors.toList());
-
-            // 通过流程实例ID获取流程中正在执行的节点
-            List<Execution> runningActivityInstanceList = actProcessDefinitionServiceImpl.getRunningActivityInstance(procInstId);
-            List<String> runningActivityIdList = new ArrayList<>();
-            for (Execution execution : runningActivityInstanceList) {
-                if (!StringUtils.isEmpty(execution.getActivityId())) {
-                    runningActivityIdList.add(execution.getActivityId());
+                while(var11.hasNext()) {
+                    Execution execution = (Execution)var11.next();
+                    if (!StringUtils.isEmpty(execution.getActivityId())) {
+                        runningActivityIdList.add(execution.getActivityId());
+                    }
                 }
+
+                emptyRunningActivityIdList.addAll(runningActivityIdList);
+                CustomProcessDiagramGenerator processDiagramGenerator = new CustomProcessDiagramGenerator();
+                BpmnModel bpmnModel = this.repositoryService.getBpmnModel(historicProcessInstance.getProcessDefinitionId());
+                List<String> highLightedFlowsIds = this.getHighLightedFlowsByIncomingFlows(bpmnModel, historicActivityInstanceList);
+                List<String> runningActivityFlowsIds = this.getRunningActivityFlowsIds(bpmnModel, runningActivityIdList, historicActivityInstanceList);
+//                imageStream = processDiagramGenerator.generateDiagramCustom(bpmnModel, highLightedActivityIdList, runningActivityIdList, highLightedFlowsIds, runningActivityFlowsIds, "宋体", "微软雅黑", "黑体");
+                imageStream = processDiagramGenerator.generateDiagramCustom(bpmnModel, highLightedActivityIdList, runningActivityIdList, highLightedFlowsIds, runningActivityFlowsIds, "Courier New", "Courier New", "Courier New");
+                var15 = imageStream;
+            } catch (Exception var19) {
+                throw new Exception("通过流程实例ID" + procInstId + "获取流程图时出现异常！", var19);
+            } finally {
+                if (imageStream != null) {
+                    imageStream.close();
+                }
+
             }
-            emptyRunningActivityIdList.addAll(runningActivityIdList);
-            // 定义流程画布生成器
-            CustomProcessDiagramGenerator processDiagramGenerator = new CustomProcessDiagramGenerator();
 
-            // 获取流程定义Model对象
-            BpmnModel bpmnModel = repositoryService.getBpmnModel(historicProcessInstance.getProcessDefinitionId());
-
-            // 获取已经流经的流程线，需要高亮显示流程已经发生流转的线id集合
-//            List<String> highLightedFlowsIds = getHighLightedFlows(bpmnModel, historicActivityInstanceList);
-            List<String> highLightedFlowsIds = getHighLightedFlowsByIncomingFlows(bpmnModel, historicActivityInstanceList);
-
-            // 根据runningActivityIdList获取runningActivityFlowsIds
-            List<String> runningActivityFlowsIds = getRunningActivityFlowsIds(bpmnModel, runningActivityIdList, historicActivityInstanceList);
-
-            // 使用默认配置获得流程图表生成器，并生成追踪图片字符流
-            imageStream = processDiagramGenerator.generateDiagramCustom(
-                    bpmnModel,
-                    highLightedActivityIdList, runningActivityIdList, highLightedFlowsIds, runningActivityFlowsIds,
-                    "宋体", "微软雅黑", "黑体");
-            /* ------------------  */
-
-            return imageStream;
-        } catch (Exception e) {
-            throw new Exception("通过流程实例ID" + procInstId + "获取流程图时出现异常！", e);
-        } finally {
-            if (imageStream != null) {
-                imageStream.close();
-            }
+            return var15;
         }
     }
 
-    /**
-     * @param bpmnModel                    bpmnModel
-     * @param historicActivityInstanceList historicActivityInstanceList
-     * @return HighLightedFlows
-     */
-    public List<String> getHighLightedFlows(BpmnModel bpmnModel,
-                                            List<HistoricActivityInstance> historicActivityInstanceList) {
-        //historicActivityInstanceList 是 流程中已经执行的历史活动实例
-        // 已经流经的顺序流，需要高亮显示
-        List<String> highFlows = new ArrayList<>();
+    public List<String> getHighLightedFlows(BpmnModel bpmnModel, List<HistoricActivityInstance> historicActivityInstanceList) {
+        List<String> highFlows = new ArrayList();
+        List<FlowNode> allHistoricActivityNodeList = new ArrayList();
+        List<HistoricActivityInstance> finishedActivityInstancesList = new ArrayList();
+        Iterator var6 = historicActivityInstanceList.iterator();
 
-        // 全部活动节点
-        List<FlowNode> allHistoricActivityNodeList = new ArrayList<>();
-
-        // 拥有endTime的历史活动实例，即已经完成了的节点
-        List<HistoricActivityInstance> finishedActivityInstancesList = new ArrayList<>();
-
-        /*
-         * 循环的目的：
-         *           获取所有的历史节点FlowNode并放入allHistoricActivityNodeList
-         *           获取所有确定结束了的历史节点finishedActivityInstancesList
-         */
-        for (HistoricActivityInstance historicActivityInstance : historicActivityInstanceList) {
-            // 获取流程节点
-            // bpmnModel.getMainProcess()获取一个Process对象
-            FlowNode flowNode = (FlowNode) bpmnModel.getMainProcess().getFlowElement(historicActivityInstance.getActivityId(), true);
+        while(var6.hasNext()) {
+            HistoricActivityInstance historicActivityInstance = (HistoricActivityInstance)var6.next();
+            FlowNode flowNode = (FlowNode)bpmnModel.getMainProcess().getFlowElement(historicActivityInstance.getActivityId(), true);
             allHistoricActivityNodeList.add(flowNode);
-
-            // 如果结束时间不为空，表示当前节点已经完成
             if (historicActivityInstance.getEndTime() != null) {
                 finishedActivityInstancesList.add(historicActivityInstance);
             }
         }
 
-        FlowNode currentFlowNode;
-        FlowNode targetFlowNode;
-        HistoricActivityInstance currentActivityInstance;
-
-        // 遍历已经完成的活动实例，从每个实例的outgoingFlows中找到已经执行的
-        for (int k = 0; k < finishedActivityInstancesList.size(); k++) {
-            currentActivityInstance = finishedActivityInstancesList.get(k);
-
-            // 获得当前活动对应的节点信息以及outgoingFlows信息
-            currentFlowNode = (FlowNode) bpmnModel.getMainProcess().getFlowElement(currentActivityInstance.getActivityId(), true);
-
-            // 当前节点的所有流出线
+        for(int k = 0; k < finishedActivityInstancesList.size(); ++k) {
+            HistoricActivityInstance currentActivityInstance = (HistoricActivityInstance)finishedActivityInstancesList.get(k);
+            FlowNode currentFlowNode = (FlowNode)bpmnModel.getMainProcess().getFlowElement(currentActivityInstance.getActivityId(), true);
             List<SequenceFlow> outgoingFlowList = currentFlowNode.getOutgoingFlows();
+            if (!"parallelGateway".equals(currentActivityInstance.getActivityType()) && !"inclusiveGateway".equals(currentActivityInstance.getActivityType())) {
+                String currentActivityId = currentActivityInstance.getActivityId();
+                int size = historicActivityInstanceList.size();
+                boolean ifStartFind = false;
+                boolean ifFinded = false;
 
-            /*
-             * 遍历outgoingFlows并找到已经流转的  满足如下条件认为已经流转：
-             * 1、当前节点是并行网关或者兼容网关，则通过outgoingFlows能够在历史活动中找到的全部节点均为已经流转
-             * 2、当前节点是以上两种类型之外的，通过outgoingFlows查找到的时间最早的流转节点视为有效流转
-             * (第二点有问题，有过驳回的，会只绘制驳回的流程线，通过走向下一级的流程线没有高亮显示)
-             */
-            if ("parallelGateway".equals(currentActivityInstance.getActivityType()) ||
-                    "inclusiveGateway".equals(currentActivityInstance.getActivityType())) {
-                // 遍历历史活动节点，找到匹配流程目标节点的
-                for (SequenceFlow outgoingFlow : outgoingFlowList) {
-                    // 获取当前节点流程线对应的下一级节点
-                    targetFlowNode = (FlowNode) bpmnModel.getMainProcess().getFlowElement(outgoingFlow.getTargetRef(), true);
+                for(int i = 0; i < size; ++i) {
+                    HistoricActivityInstance historicActivityInstance = (HistoricActivityInstance)historicActivityInstanceList.get(i);
+                    if (i >= k && historicActivityInstance.getActivityId().equals(currentActivityId)) {
+                        ifStartFind = true;
+                    } else {
+                        if (ifStartFind) {
+                            ifFinded = false;
+                            Iterator var17 = outgoingFlowList.iterator();
 
-                    // 如果下级节点包含在所有历史节点中，则将当前节点的流出线高亮显示
+                            while(var17.hasNext()) {
+                                SequenceFlow sequenceFlow = (SequenceFlow)var17.next();
+                                if (historicActivityInstance.getActivityId().equals(sequenceFlow.getTargetRef())) {
+                                    highFlows.add(sequenceFlow.getId());
+                                    ifFinded = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (ifFinded) {
+                            break;
+                        }
+                    }
+                }
+            } else {
+                Iterator var11 = outgoingFlowList.iterator();
+
+                while(var11.hasNext()) {
+                    SequenceFlow outgoingFlow = (SequenceFlow)var11.next();
+                    FlowNode targetFlowNode = (FlowNode)bpmnModel.getMainProcess().getFlowElement(outgoingFlow.getTargetRef(), true);
                     if (allHistoricActivityNodeList.contains(targetFlowNode)) {
                         highFlows.add(outgoingFlow.getId());
                     }
                 }
-            } else {
-                /*
-                 * 2、当前节点不是并行网关或者兼容网关
-                 * 【已解决-问题】如果当前节点有驳回功能，驳回到申请节点，
-                 * 则因为申请节点在历史节点中，导致当前节点驳回到申请节点的流程线被高亮显示，但实际并没有进行驳回操作
-                 */
-                //List<Map<String, Object>> tempMapList = new ArrayList<>();
-
-                // 当前节点ID
-                String currentActivityId = currentActivityInstance.getActivityId();
-
-                int size = historicActivityInstanceList.size();
-                boolean ifStartFind = false;
-                boolean ifFinded = false;
-                HistoricActivityInstance historicActivityInstance;
-
-                // 循环当前节点的所有流出线
-                // 循环所有的历史节点
-//                log.info("【开始】-匹配当前节点-ActivityId=【{}】需要高亮显示的流出线", currentActivityId);
-//                log.info("循环历史节点");
-
-                for (int i = 0; i < size; i++) {
-                    // // 如果当前节点流程线对应的下级节点在历史节点中，则该条流程线进行高亮显示（【问题】有驳回流程线时，即使没有进行驳回操作，因为申请节点在历史节点中，也会将驳回流程线高亮显示-_-||）
-                    // if (historicActivityInstance.getActivityId().equals(sequenceFlow.getTargetRef())) {
-                    // Map<String, Object> map = new HashMap<>();
-                    // map.put("highLightedFlowId", sequenceFlow.getId());
-                    // map.put("highLightedFlowStartTime", historicActivityInstance.getStartTime().getTime());
-                    // tempMapList.add(map);
-                    // // highFlows.add(sequenceFlow.getId());
-                    // }
-
-                    // 历史节点
-                    historicActivityInstance = historicActivityInstanceList.get(i);
-//                    log.info("第【{}/{}】个历史节点-ActivityId=【{}】", i + 1, size, historicActivityInstance.getActivityId());
-
-                    // 如果循环历史节点中的id等于当前节点id，从当前历史节点继续先后查找是否有当前流程线等于的节点
-                    // 历史节点的序号需要大于等于已经完成历史节点的序号，放置驳回重审一个节点经过两次时只取第一次的流出线高亮显示，第二次的不显示
-                    if (i >= k && historicActivityInstance.getActivityId().equals(currentActivityId)) {
-//                        log.info("第【{}】个历史节点和当前节点一致-ActivityId=【{}】", i + 1, historicActivityInstance.getActivityId());
-                        ifStartFind = true;
-                        // 跳过当前节点继续查找下一个节点
-                        continue;
-                    }
-                    if (ifStartFind) {
-//                        log.info("[开始]-循环当前节点-ActivityId=【{}】的所有流出线", currentActivityId);
-
-                        ifFinded = false;
-                        for (SequenceFlow sequenceFlow : outgoingFlowList) {
-                            // 如果当前节点流程线对应的下级节点在其后面的历史节点中，则该条流程线进行高亮显示
-                            // 【问题】
-//                            log.info("当前流出线的下级节点=[{}]", sequenceFlow.getTargetRef());
-                            if (historicActivityInstance.getActivityId().equals(sequenceFlow.getTargetRef())) {
-//                                log.info("当前节点[{}]需高亮显示的流出线=[{}]", currentActivityId, sequenceFlow.getId());
-                                highFlows.add(sequenceFlow.getId());
-                                // 暂时默认找到离当前节点最近的下一级节点即退出循环，否则有多条流出线时将全部被高亮显示
-                                ifFinded = true;
-                                break;
-                            }
-                        }
-//                        log.info("[完成]-循环当前节点-ActivityId=【{}】的所有流出线", currentActivityId);
-                    }
-                    if (ifFinded) {
-                        // 暂时默认找到离当前节点最近的下一级节点即退出历史节点循环，否则有多条流出线时将全部被高亮显示
-                        break;
-                    }
-                }
-//                log.info("【完成】-匹配当前节点-ActivityId=【{}】需要高亮显示的流出线", currentActivityId);
-                // if (!CollectionUtils.isEmpty(tempMapList)) {
-                // // 遍历匹配的集合，取得开始时间最早的一个
-                // long earliestStamp = 0L;
-                // String highLightedFlowId = null;
-                // for (Map<String, Object> map : tempMapList) {
-                // long highLightedFlowStartTime = Long.valueOf(map.get("highLightedFlowStartTime").toString());
-                // if (earliestStamp == 0 || earliestStamp <= highLightedFlowStartTime) {
-                // highLightedFlowId = map.get("highLightedFlowId").toString();
-                // earliestStamp = highLightedFlowStartTime;
-                // }
-                // }
-                // highFlows.add(highLightedFlowId);
-                // }
             }
         }
+
         return highFlows;
     }
 
-    /**
-     * @param bpmnModel                    bpmnModel
-     * @param historicActivityInstanceList historicActivityInstanceList
-     * @return HighLightedFlows
-     */
-    public List<String> getHighLightedFlowsByIncomingFlows(BpmnModel bpmnModel,
-                                                           List<HistoricActivityInstance> historicActivityInstanceList) {
-        //historicActivityInstanceList 是 流程中已经执行的历史活动实例
-        // 已经流经的顺序流，需要高亮显示
-        List<String> highFlows = new ArrayList<>();
+    public List<String> getHighLightedFlowsByIncomingFlows(BpmnModel bpmnModel, List<HistoricActivityInstance> historicActivityInstanceList) {
+        List<String> highFlows = new ArrayList();
+        List<FlowNode> allHistoricActivityNodeList = new ArrayList();
+        Iterator var5 = historicActivityInstanceList.iterator();
 
-        // 全部活动节点(包括正在执行的和未执行的)
-        List<FlowNode> allHistoricActivityNodeList = new ArrayList<>();
-
-        /*
-         * 循环的目的：
-         *           获取所有的历史节点FlowNode并放入allHistoricActivityNodeList
-         *           获取所有确定结束了的历史节点finishedActivityInstancesList
-         */
-        for (HistoricActivityInstance historicActivityInstance : historicActivityInstanceList) {
-            // 获取流程节点
-            // bpmnModel.getMainProcess()获取一个Process对象
-            FlowNode flowNode = (FlowNode) bpmnModel.getMainProcess().getFlowElement(historicActivityInstance.getActivityId(), true);
+        while(var5.hasNext()) {
+            HistoricActivityInstance historicActivityInstance = (HistoricActivityInstance)var5.next();
+            FlowNode flowNode = (FlowNode)bpmnModel.getMainProcess().getFlowElement(historicActivityInstance.getActivityId(), true);
             allHistoricActivityNodeList.add(flowNode);
         }
-        // 循环活动节点
-        for (FlowNode flowNode : allHistoricActivityNodeList) {
-            // 获取每个活动节点的输入线
-            List<SequenceFlow> incomingFlows = flowNode.getIncomingFlows();
 
-            // 循环输入线，如果输入线的源头处于全部活动节点中，则将其包含在内
-            for (SequenceFlow sequenceFlow : incomingFlows) {
-                if (allHistoricActivityNodeList.stream().map(BaseElement::getId).collect(Collectors.toList()).contains(sequenceFlow.getSourceFlowElement().getId())){
+        var5 = allHistoricActivityNodeList.iterator();
+
+        while(var5.hasNext()) {
+            FlowNode flowNode = (FlowNode)var5.next();
+            List<SequenceFlow> incomingFlows = flowNode.getIncomingFlows();
+            Iterator var8 = incomingFlows.iterator();
+
+            while(var8.hasNext()) {
+                SequenceFlow sequenceFlow = (SequenceFlow)var8.next();
+                if (((List)allHistoricActivityNodeList.stream().map(BaseElement::getId).collect(Collectors.toList())).contains(sequenceFlow.getSourceFlowElement().getId())) {
                     highFlows.add(sequenceFlow.getId());
                 }
             }
         }
+
         return highFlows;
     }
 
-
     private List<String> getRunningActivityFlowsIds(BpmnModel bpmnModel, List<String> runningActivityIdList, List<HistoricActivityInstance> historicActivityInstanceList) {
-        List<String> runningActivityFlowsIds = new ArrayList<>();
-        List<String> runningActivityIds = new ArrayList<>(runningActivityIdList);
-        // 逆序寻找，因为historicActivityInstanceList有序
+        List<String> runningActivityFlowsIds = new ArrayList();
+        List<String> runningActivityIds = new ArrayList(runningActivityIdList);
         if (CollectionUtils.isEmpty(runningActivityIds)) {
             return runningActivityFlowsIds;
-        }
-        for (int i = historicActivityInstanceList.size() - 1; i >= 0; i--) {
-            HistoricActivityInstance historicActivityInstance = historicActivityInstanceList.get(i);
-            FlowNode flowNode = (FlowNode) bpmnModel.getMainProcess().getFlowElement(historicActivityInstance.getActivityId(), true);
-            // 如果当前节点是未完成的节点
-            if (runningActivityIds.contains(flowNode.getId())) {
-                continue;
-            }
-            // 当前节点的所有流出线
-            List<SequenceFlow> outgoingFlowList = flowNode.getOutgoingFlows();
-            // 遍历所有的流出线
-            for (SequenceFlow outgoingFlow : outgoingFlowList) {
-                // 获取当前节点流程线对应的下一级节点
-                FlowNode targetFlowNode = (FlowNode) bpmnModel.getMainProcess().getFlowElement(outgoingFlow.getTargetRef(), true);
-                // 如果找到流出线的目标是runningActivityIdList中的，那么添加后将其移除，避免找到重复的都指向runningActivityIdList的流出线
-                if (runningActivityIds.contains(targetFlowNode.getId())) {
-                    runningActivityFlowsIds.add(outgoingFlow.getId());
-                    runningActivityIds.remove(targetFlowNode.getId());
-                }
-            }
+        } else {
+            for(int i = historicActivityInstanceList.size() - 1; i >= 0; --i) {
+                HistoricActivityInstance historicActivityInstance = (HistoricActivityInstance)historicActivityInstanceList.get(i);
+                FlowNode flowNode = (FlowNode)bpmnModel.getMainProcess().getFlowElement(historicActivityInstance.getActivityId(), true);
+                if (!runningActivityIds.contains(flowNode.getId())) {
+                    List<SequenceFlow> outgoingFlowList = flowNode.getOutgoingFlows();
+                    Iterator var10 = outgoingFlowList.iterator();
 
-        }
-        return runningActivityFlowsIds;
-    }
-
-    /**
-     * 解决getRunningActivityFlowsIds对于并行网关不适用的问题
-     * 提供者：孙之峰（CSDN)
-     */
-    public List<String> getRunningActivityFlowIdsByIcommingFlows(BpmnModel bpmnModel, List<String> runningActivityIdList, List<HistoricActivityInstance> historicActivityInstanceList){
-        List<String> runningActivityFlowsIds = new ArrayList<>();
-        List<String> runningActivityIds = new ArrayList<>(runningActivityIdList);
-        // 逆序寻找，因为historicActivityInstanceList有序
-        if (CollectionUtils.isEmpty(runningActivityIds)) {
-            return runningActivityFlowsIds;
-        }
-
-        // 全部活动节点(包括正在执行的和未执行的)
-        List<FlowNode> allHistoricActivityNodeList = new ArrayList<>();
-
-        for (HistoricActivityInstance historicActivityInstance : historicActivityInstanceList) {
-            // 获取流程节点
-            // bpmnModel.getMainProcess()获取一个Process对象
-            FlowNode flowNode = (FlowNode) bpmnModel.getMainProcess().getFlowElement(historicActivityInstance.getActivityId(), true);
-            allHistoricActivityNodeList.add(flowNode);
-        }
-
-        for (int i = historicActivityInstanceList.size() - 1; i >= 0; i--) {
-            HistoricActivityInstance historicActivityInstance = historicActivityInstanceList.get(i);
-            FlowNode flowNode = (FlowNode) bpmnModel.getMainProcess().getFlowElement(historicActivityInstance.getActivityId(), true);
-            // 如果当前节点是未完成的节点
-            if (runningActivityIds.contains(flowNode.getId())) {
-                // 获取每个活动节点的输入线
-                List<SequenceFlow> incomingFlows = flowNode.getIncomingFlows();
-
-                // 循环输入线，如果输入线的源头处于全部活动节点中，则将其包含在内
-                for (SequenceFlow sequenceFlow : incomingFlows) {
-                    if (allHistoricActivityNodeList.stream().map(BaseElement::getId).collect(Collectors.toList()).contains(sequenceFlow.getSourceFlowElement().getId())){
-                        runningActivityFlowsIds.add(sequenceFlow.getId());
+                    while(var10.hasNext()) {
+                        SequenceFlow outgoingFlow = (SequenceFlow)var10.next();
+                        FlowNode targetFlowNode = (FlowNode)bpmnModel.getMainProcess().getFlowElement(outgoingFlow.getTargetRef(), true);
+                        if (runningActivityIds.contains(targetFlowNode.getId())) {
+                            runningActivityFlowsIds.add(outgoingFlow.getId());
+                            runningActivityIds.remove(targetFlowNode.getId());
+                        }
                     }
                 }
             }
 
+            return runningActivityFlowsIds;
         }
-        return runningActivityFlowsIds;
     }
 
+    public List<String> getRunningActivityFlowIdsByIcommingFlows(BpmnModel bpmnModel, List<String> runningActivityIdList, List<HistoricActivityInstance> historicActivityInstanceList) {
+        List<String> runningActivityFlowsIds = new ArrayList();
+        List<String> runningActivityIds = new ArrayList(runningActivityIdList);
+        if (CollectionUtils.isEmpty(runningActivityIds)) {
+            return runningActivityFlowsIds;
+        } else {
+            List<FlowNode> allHistoricActivityNodeList = new ArrayList();
+            Iterator var7 = historicActivityInstanceList.iterator();
+
+            HistoricActivityInstance historicActivityInstance;
+            FlowNode flowNode;
+            while(var7.hasNext()) {
+                historicActivityInstance = (HistoricActivityInstance)var7.next();
+                flowNode = (FlowNode)bpmnModel.getMainProcess().getFlowElement(historicActivityInstance.getActivityId(), true);
+                allHistoricActivityNodeList.add(flowNode);
+            }
+
+            for(int i = historicActivityInstanceList.size() - 1; i >= 0; --i) {
+                historicActivityInstance = (HistoricActivityInstance)historicActivityInstanceList.get(i);
+                flowNode = (FlowNode)bpmnModel.getMainProcess().getFlowElement(historicActivityInstance.getActivityId(), true);
+                if (runningActivityIds.contains(flowNode.getId())) {
+                    List<SequenceFlow> incomingFlows = flowNode.getIncomingFlows();
+                    Iterator var11 = incomingFlows.iterator();
+
+                    while(var11.hasNext()) {
+                        SequenceFlow sequenceFlow = (SequenceFlow)var11.next();
+                        if (((List)allHistoricActivityNodeList.stream().map(BaseElement::getId).collect(Collectors.toList())).contains(sequenceFlow.getSourceFlowElement().getId())) {
+                            runningActivityFlowsIds.add(sequenceFlow.getId());
+                        }
+                    }
+                }
+            }
+
+            return runningActivityFlowsIds;
+        }
+    }
 }
