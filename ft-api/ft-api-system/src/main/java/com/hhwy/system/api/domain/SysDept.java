@@ -94,7 +94,7 @@ public class SysDept extends BaseEntity {
     private List<SysDept> children = new ArrayList<SysDept>();
 
     /**
-     * 是否叶子节点
+     * 是否叶子结点
      */
     private  String isLeaf;
 

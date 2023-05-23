@@ -60,7 +60,7 @@ public class SysDictType extends BaseEntity {
     private List<SysDictType> children = new ArrayList<>();
 
     /**
-     * 是否叶子节点
+     * 是否叶子结点
      */
     private  String isLeaf;
 
