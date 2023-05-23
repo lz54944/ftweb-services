@@ -22,6 +22,7 @@ import java.util.List;
  */
 @Service
 public class SysDictTypeServiceImpl implements ISysDictTypeService {
+
     @Autowired
     private SysDictTypeMapper dictTypeMapper;
 
@@ -123,7 +124,8 @@ public class SysDictTypeServiceImpl implements ISysDictTypeService {
     public void loadingDictCache() {
         List<SysDictType> dictTypeList = dictTypeMapper.selectDictTypeAll();
         for (SysDictType dictType : dictTypeList) {
-            List<SysDictData> dictDatas = dictDataMapper.selectDictDataByType(dictType.getDictType());
+            List<SysDictData> dictDatas = dictDataMapper
+                .selectDictDataByType(dictType.getDictType());
             DictUtils.setDictCache(dictType.getDictType(), dictDatas);
         }
     }
@@ -187,9 +189,34 @@ public class SysDictTypeServiceImpl implements ISysDictTypeService {
     public String checkDictTypeUnique(SysDictType dict) {
         Long dictId = StringUtils.isNull(dict.getDictId()) ? -1L : dict.getDictId();
         SysDictType dictType = dictTypeMapper.checkDictTypeUnique(dict.getDictType());
-        if (StringUtils.isNotNull(dictType) && dictType.getDictId().longValue() != dictId.longValue()) {
+        if (StringUtils.isNotNull(dictType) && dictType.getDictId().longValue() != dictId
+            .longValue()) {
             return UserConstants.NOT_UNIQUE;
         }
         return UserConstants.UNIQUE;
+    }
+
+    /**
+     * 懒加载列表查询
+     *
+     * @param dictType 字典类型信息
+     * @return 字典类型集合信息
+     */
+    @Override
+    public List<SysDictType> dictLazyList(SysDictType dictType) {
+
+        List<SysDictType> dictTypeList;
+        if (StringUtils.isNotEmpty(dictType.getDictName())) {
+            dictTypeList = dictTypeMapper.selectAllDictTypeList(dictType);
+        } else {
+            if (dictType.getDictId() == null) {
+                // 查询一级列表
+                dictTypeList = dictTypeMapper.selectOneLevelDictTypeList(dictType);
+            } else {
+                // 查询下级列表
+                dictTypeList = dictTypeMapper.selectChildrenDictList(dictType);
+            }
+        }
+        return dictTypeList;
     }
 }

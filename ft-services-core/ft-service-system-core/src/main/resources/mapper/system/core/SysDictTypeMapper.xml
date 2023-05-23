@@ -105,5 +105,87 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			sysdate()
  		)
 	</insert>
+
+	<select id="selectOneLevelDictTypeList" parameterType="com.hhwy.system.core.domain.SysDictType" resultMap="SysDictTypeResult">
+		select
+			*,
+			case hasChild is null when true then '1' else '0' end as isLeaf
+		from
+		(
+		select
+			a.*,
+			b.dict_id as hasChild
+		from
+		(select * from sys_dict_type
+		 where parent_id = 0
+		    or parent_id is null
+		) a
+		left join
+		(
+			select dict_id from sys_dict_type
+			where (parent_id = 0 or parent_id is null)
+				and dict_id in (select parent_id from sys_dict_type)
+		) b on
+			a.dict_id = b.dict_id
+		) c
+	</select>
+
+	<select id="selectAllDictTypeList" parameterType="com.hhwy.system.core.domain.SysDictType" resultMap="SysDictTypeResult">
+		select
+			*,
+			case hasChild is null when true then '1' else '0' end as isLeaf
+		from
+		(
+		select
+			a.*,
+			b.dict_id as hasChild
+		from
+		(select * from sys_dict_type
+		 where 1 = 1
+			<if test="dictId != null">
+				and parent_id = #{dictId}
+			</if>
+			<if test="dictName != null and dictName != ''">
+				and dict_name like concat('%', #{dictName}, '%')
+			</if>
+		) a
+		left join
+		(
+			select dict_id,parent_id from sys_dict_type
+			where dict_id in (select parent_id from sys_dict_type)
+			<if test="dictId != null">
+				and parent_id = #{dictId}
+			</if>
+			<if test="dictName != null and dictName != ''">
+				and dict_name like concat('%', #{dictName}, '%')
+			</if>
+		) b on
+			a.dict_id = b.dict_id
+		) c
+	</select>
+
+	<select id="selectChildrenDictList" parameterType="com.hhwy.system.core.domain.SysDictType" resultMap="SysDictTypeResult">
+		select
+			*,
+			case hasChild is null when true then '1' else '0' end as isLeaf
+		from
+		(
+		select
+			a.*,
+			b.dict_id as hasChild
+		from
+		(select * from sys_dict_type
+		 where parent_id = #{dictId}
+		) a
+		left join
+		(
+			select dict_id from sys_dict_type
+			where parent_id = #{dictId}
+				and dict_id in (
+				select parent_id from sys_dict_type)
+		) b on
+			a.dict_id = b.dict_id
+		) c
+	</select>
 	
 </mapper> 

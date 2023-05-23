@@ -95,4 +95,12 @@ public interface ISysDictTypeService {
      * @return 结果
      */
     String checkDictTypeUnique(SysDictType dictType);
+
+    /**
+     * 懒加载列表查询
+     *
+     * @param dictType 字典类型信息
+     * @return 字典类型集合信息
+     */
+    List<SysDictType> dictLazyList(SysDictType dictType);
 }

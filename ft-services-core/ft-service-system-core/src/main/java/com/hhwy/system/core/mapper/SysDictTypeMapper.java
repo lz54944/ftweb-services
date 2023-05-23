@@ -81,4 +81,28 @@ public interface SysDictTypeMapper {
      * @return 结果
      */
     SysDictType checkDictTypeUnique(String dictType);
+
+    /**
+     * 查询一级字典类型
+     *
+     * @param dictType 字典类型信息
+     * @return 字典类型集合信息
+     */
+    List<SysDictType> selectOneLevelDictTypeList(SysDictType dictType);
+
+    /**
+     * 查询所有字典类型
+     *
+     * @param dictType 字典类型信息
+     * @return 字典类型集合信息
+     */
+    List<SysDictType> selectAllDictTypeList(SysDictType dictType);
+
+    /**
+     * 查询下级字典类型
+     *
+     * @param dictType 字典类型信息
+     * @return 字典类型集合信息
+     */
+    List<SysDictType> selectChildrenDictList(SysDictType dictType);
 }
