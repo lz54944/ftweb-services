@@ -32,7 +32,7 @@ public class SysDictTypeController extends BaseController {
     @Autowired
     private ISysDictTypeService dictTypeService;
 
-        @PreAuthorize(hasPermi = "system:dict:query")
+    @PreAuthorize(hasPermi = "system:dict:query")
     @GetMapping("/list")
     public TableDataInfo list(SysDictType dictType) {
         startPage();

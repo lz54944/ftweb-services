@@ -75,10 +75,29 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
 	<select id="selectOneLevelDeptList" resultMap="SysDeptResult">
-		select d.dept_id, d.parent_id, d.ancestors, d.dept_name, d.order_num, d.leader, d.phone, d.email, d.status, d.del_flag, d.tenant_key, d.dept_type, d.create_user, d.create_time
-		from sys_dept d
-		LEFT JOIN sys_dept sd ON d.parent_id = sd.dept_id
-        where d.del_flag = '0' and (sd.dept_id is null or sd.dept_id = '0' ) and
+		select
+		*,
+		case hasChild is null when true then '1' else '0' end as isLeaf
+		from
+		(
+		select
+		a.*,
+		b.dept_id as hasChild
+		from
+		(select * from sys_dept
+		where del_flag = '0'
+		and (parent_id = 0 or parent_id is null)
+		) a
+		left join
+		(
+		select * from sys_dept
+		where dept_id in (select parent_id from sys_dept where del_flag = '0')
+		and (parent_id = 0 or parent_id is null)
+		and del_flag = '0'
+		) b on
+		a.dept_id = b.dept_id
+		) d
+		where 1=1 and
 		(
 		<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
 			d.tenant_key = #{tenantKey}
@@ -99,9 +118,29 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
 	<select id="selectChildrenDeptList" resultMap="SysDeptResult">
-		select d.dept_id, d.parent_id, d.ancestors, d.dept_name, d.order_num, d.leader, d.phone, d.email, d.status, d.del_flag, d.tenant_key, d.dept_type, d.create_user, d.create_time
-		from sys_dept d
-        where d.del_flag = '0' and d.parent_id = #{dept.deptId} and
+		select
+		*,
+		case hasChild is null when true then '1' else '0' end as isLeaf
+		from
+		(
+		select
+		a.*,
+		b.dept_id as hasChild
+		from
+		(select * from sys_dept
+		where del_flag = '0'
+		and parent_id =  #{deptId}
+		) a
+		left join
+		(
+		select * from sys_dept
+		where dept_id in (select parent_id from sys_dept where del_flag = '0')
+		and parent_id =  #{deptId}
+		and del_flag = '0'
+		) b on
+		a.dept_id = b.dept_id
+		) d
+		where 1=1 and
 		(
 		<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
 			d.tenant_key = #{tenantKey}
@@ -306,5 +345,58 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			#{deptId}
 		</foreach>
 	</delete>
+
+	<select id="selectAllDeptList" resultMap="SysDeptResult">
+		select
+		*,
+		case hasChild is null when true then '1' else '0' end as isLeaf
+		from
+		(
+		select
+		a.*,
+		b.dept_id as hasChild
+		from
+		(select * from sys_dept
+		where del_flag = '0'
+		<if test="deptId != null">
+			and parent_id = #{deptId}
+		</if>
+		<if test="dictName != null and dictName != ''">
+			and dict_name like concat('%', #{dictName}, '%')
+		</if>
+		) a
+		left join
+		(
+		select dept_id,parent_id from sys_dept
+		where dept_id in (select parent_id from sys_dept where del_flag = '0')
+		  and del_flag = '0'
+		<if test="deptId != null">
+			and parent_id = #{deptId}
+		</if>
+		<if test="dictName != null and dictName != ''">
+			and dict_name like concat('%', #{dictName}, '%')
+		</if>
+		) b on
+		a.dept_id = b.dept_id
+		) d
+		where 1=1 and
+		(
+		<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
+			d.tenant_key = #{tenantKey}
+		</foreach>
+		)
+		<if test="dept.parentId != null and dept.parentId != 0">
+			AND parent_id = #{dept.parentId}
+		</if>
+		<if test="dept.deptName != null and dept.deptName != ''">
+			AND dept_name like concat('%', #{dept.deptName}, '%')
+		</if>
+		<if test="dept.status != null and dept.status != ''">
+			AND status = #{dept.status}
+		</if>
+		<!-- 数据范围过滤 -->
+		${dept.params.dataScope}
+		order by d.parent_id, d.order_num
+	</select>
 
 </mapper> 

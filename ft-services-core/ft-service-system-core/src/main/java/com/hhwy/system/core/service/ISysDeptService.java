@@ -117,4 +117,6 @@ public interface ISysDeptService {
      * @return
      */
     List<SysDept> getLoginUserNestDept();
+
+    List<SysDept> selectAllDeptList(SysDept dept);
 }

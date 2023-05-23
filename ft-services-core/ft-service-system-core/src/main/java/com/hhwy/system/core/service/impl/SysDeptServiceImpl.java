@@ -359,4 +359,10 @@ public class SysDeptServiceImpl implements ISysDeptService {
         }
         root.setChildren(childDeptList);
     }
+
+    @Override
+    @DataScope(deptAlias = "d")
+    public List<SysDept> selectAllDeptList(SysDept dept) {
+        return deptMapper.selectAllDeptList(dept, tokenService.getTenantKeyListForDept());
+    }
 }

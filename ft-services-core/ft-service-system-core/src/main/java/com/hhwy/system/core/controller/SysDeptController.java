@@ -51,7 +51,7 @@ public class SysDeptController extends BaseController {
             if(count>=200){
                 return AjaxResult.error("查询结果集超过了200条，请精确查询条件");
             }
-            depts = deptService.selectDeptList(dept);
+            depts = deptService.selectAllDeptList(dept);
         }else {
             if (dept.getDeptId()==null) {
                 //查询一级列表

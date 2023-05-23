@@ -133,4 +133,6 @@ public interface SysDeptMapper {
 
     List<SysDept> selectDeptListByTenantKey(String tenantKey);
 
+    List<SysDept> selectAllDeptList(@Param("dept") SysDept dept, @Param("tenantKeyList") List<String> tenantKeyList);
+
 }
