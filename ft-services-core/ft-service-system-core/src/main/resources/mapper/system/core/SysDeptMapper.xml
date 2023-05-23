@@ -129,13 +129,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		from
 		(select * from sys_dept
 		where del_flag = '0'
-		and parent_id =  #{deptId}
+		and parent_id = #{dept.deptId}
 		) a
 		left join
 		(
 		select * from sys_dept
 		where dept_id in (select parent_id from sys_dept where del_flag = '0')
-		and parent_id =  #{deptId}
+		and parent_id = #{dept.deptId}
 		and del_flag = '0'
 		) b on
 		a.dept_id = b.dept_id
@@ -359,10 +359,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		(select * from sys_dept
 		where del_flag = '0'
 		<if test="deptId != null">
-			and parent_id = #{deptId}
+			and parent_id = #{dept.deptId}
 		</if>
 		<if test="dictName != null and dictName != ''">
-			and dict_name like concat('%', #{dictName}, '%')
+			and dict_name like concat('%', #{dept.dictName}, '%')
 		</if>
 		) a
 		left join
@@ -371,10 +371,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		where dept_id in (select parent_id from sys_dept where del_flag = '0')
 		  and del_flag = '0'
 		<if test="deptId != null">
-			and parent_id = #{deptId}
+			and parent_id = #{dept.deptId}
 		</if>
 		<if test="dictName != null and dictName != ''">
-			and dict_name like concat('%', #{dictName}, '%')
+			and dict_name like concat('%', #{dept.dictName}, '%')
 		</if>
 		) b on
 		a.dept_id = b.dept_id
