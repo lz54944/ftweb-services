@@ -361,8 +361,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<if test="dept.deptId != null">
 			and parent_id = #{dept.deptId}
 		</if>
-		<if test="dept.dictName != null and dept.dictName != ''">
-			and dict_name like concat('%', #{dept.dictName}, '%')
+		<if test="dept.deptName != null and dept.deptName != ''">
+			and dept_name like concat('%', #{dept.deptName}, '%')
+		</if>
+		<if test="dept.status != null and dept.status != ''">
+			AND status = #{dept.status}
 		</if>
 		) a
 		left join
@@ -373,8 +376,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<if test="dept.deptId != null">
 			and parent_id = #{dept.deptId}
 		</if>
-		<if test="dept.dictName != null and dept.dictName != ''">
-			and dict_name like concat('%', #{dept.dictName}, '%')
+		<if test="dept.deptName != null and dept.deptName != ''">
+			and dept_name like concat('%', #{dept.deptName}, '%')
+		</if>
+		<if test="dept.status != null and dept.status != ''">
+			AND status = #{dept.status}
 		</if>
 		) b on
 		a.dept_id = b.dept_id
@@ -385,15 +391,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			d.tenant_key = #{tenantKey}
 		</foreach>
 		)
-		<if test="dept.parentId != null and dept.parentId != 0">
-			AND parent_id = #{dept.parentId}
-		</if>
-		<if test="dept.deptName != null and dept.deptName != ''">
-			AND dept_name like concat('%', #{dept.deptName}, '%')
-		</if>
-		<if test="dept.status != null and dept.status != ''">
-			AND status = #{dept.status}
-		</if>
 		<!-- 数据范围过滤 -->
 		${dept.params.dataScope}
 		order by d.parent_id, d.order_num
