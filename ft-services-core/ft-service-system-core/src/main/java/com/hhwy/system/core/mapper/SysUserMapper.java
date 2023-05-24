@@ -145,4 +145,11 @@ public interface SysUserMapper {
     List<SysUser> selectUserListByOriginalUserIdList(@Param("originalUserIdList") List<String> originalUserIdList, @Param("tenantKey") String tenantKey);
 
     List<SysUser> selectUserListByNickName(@Param("nickName") String nickName, @Param("tenantKeyList")List<String> tenantKeyList);
+
+    /**
+     * 通过租户查用户总数
+     * @param tenantKey
+     * @return
+     */
+    int selectCountByTenantKey(String tenantKey);
 }

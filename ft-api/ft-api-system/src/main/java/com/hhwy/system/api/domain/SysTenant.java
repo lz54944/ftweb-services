@@ -104,6 +104,11 @@ public class SysTenant extends BaseEntity {
     //选中节点的父级id，多个用","隔开
     private String checkedDeptParent;
 
+    /**
+     * 使用人数上限
+     */
+    private int usersNumLimit;
+
     //与checkedDeptParent对应
     private List<String> checkedDeptParentList;
 
@@ -331,6 +336,14 @@ public class SysTenant extends BaseEntity {
 
     public void setCheckedDeptParentList(List<String> checkedDeptParentList) {
         this.checkedDeptParentList = checkedDeptParentList;
+    }
+
+    public int getUsersNumLimit() {
+        return usersNumLimit;
+    }
+
+    public void setUsersNumLimit(int usersNumLimit) {
+        this.usersNumLimit = usersNumLimit;
     }
 
     public static SysTenant master(){

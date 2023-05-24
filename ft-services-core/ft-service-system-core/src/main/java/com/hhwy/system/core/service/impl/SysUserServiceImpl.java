@@ -2,6 +2,7 @@ package com.hhwy.system.core.service.impl;
 
 import com.hhwy.common.core.constant.Constants;
 import com.hhwy.common.core.constant.UserConstants;
+import com.hhwy.common.core.exception.BaseException;
 import com.hhwy.common.core.exception.CustomException;
 import com.hhwy.common.core.utils.StringUtils;
 import com.hhwy.common.datascope.annotation.DataScope;
@@ -305,7 +306,19 @@ public class SysUserServiceImpl implements ISysUserService {
     @Override
     @Transactional
     public int insertUser(SysUser user) {
-        user.setTenantKey(tokenService.getTenantKey());
+        String tenantKey = tokenService.getTenantKey();
+        // 根据租户标志 查询该租户使用人数上限
+        SysTenant sysTenant = tenantMapper.selectSysTenantByTenantKey(tenantKey);
+        Assert.notNull(sysTenant, "租户(" + tenantKey + ")不存在");
+        int usersNumLimit = sysTenant.getUsersNumLimit();
+
+        // 根据租户查询已有用户数
+        int count = userMapper.selectCountByTenantKey(tenantKey);
+        if(count >= usersNumLimit) {
+            throw new BaseException("当前系统使用人数已达上限！");
+        }
+
+        user.setTenantKey(tenantKey);
         if (StringUtils.isBlank(user.getPassword())) {
             String password = configService.selectConfigByKey("sys.user.initPassword");
             user.setPassword(password);//默认密码为用户账号
