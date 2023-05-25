@@ -145,7 +145,7 @@ public class ActImageServiceImpl implements IActImageService {
                 List<String> highLightedFlowsIds = this.getHighLightedFlowsByIncomingFlows(bpmnModel, historicActivityInstanceList);
                 List<String> runningActivityFlowsIds = this.getRunningActivityFlowsIds(bpmnModel, runningActivityIdList, historicActivityInstanceList);
 //                imageStream = processDiagramGenerator.generateDiagramCustom(bpmnModel, highLightedActivityIdList, runningActivityIdList, highLightedFlowsIds, runningActivityFlowsIds, "宋体", "微软雅黑", "黑体");
-                imageStream = processDiagramGenerator.generateDiagramCustom(bpmnModel, highLightedActivityIdList, runningActivityIdList, highLightedFlowsIds, runningActivityFlowsIds, "Courier New", "Courier New", "Courier New");
+                imageStream = processDiagramGenerator.generateDiagramCustom(bpmnModel, highLightedActivityIdList, runningActivityIdList, highLightedFlowsIds, runningActivityFlowsIds, "黑体", "黑体", "黑体");
                 var15 = imageStream;
             } catch (Exception var19) {
                 throw new Exception("通过流程实例ID" + procInstId + "获取流程图时出现异常！", var19);
