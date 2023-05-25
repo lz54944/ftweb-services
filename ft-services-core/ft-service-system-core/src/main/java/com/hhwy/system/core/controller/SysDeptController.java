@@ -46,7 +46,7 @@ public class SysDeptController extends BaseController {
     @GetMapping("/lazyList")
     public AjaxResult lazyList(SysDept dept) {
         List<SysDept> depts;
-        if (StringUtils.isNotEmpty(dept.getDeptName())||StringUtils.isNotEmpty(dept.getStatus())) {
+        if (StringUtils.isNotBlank(dept.getDeptName())||StringUtils.isNotBlank(dept.getStatus())) {
             int count = deptService.selectDeptListCount(dept);
             if(count>=200){
                 return AjaxResult.error("查询结果集超过了200条，请精确查询条件");

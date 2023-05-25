@@ -206,7 +206,7 @@ public class SysDictTypeServiceImpl implements ISysDictTypeService {
     public List<SysDictType> dictLazyList(SysDictType dictType) {
 
         List<SysDictType> dictTypeList;
-        if (StringUtils.isNotEmpty(dictType.getDictName())) {
+        if (StringUtils.isNotBlank(dictType.getDictName())) {
             dictTypeList = dictTypeMapper.selectAllDictTypeList(dictType);
         } else {
             if (dictType.getDictId() == null) {

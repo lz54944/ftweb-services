@@ -14,6 +14,7 @@ import com.hhwy.system.core.domain.SysDictType;
 import com.hhwy.system.core.service.ISysDictTypeService;
 import com.hhwy.system.core.utils.DictTypeTreeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
@@ -44,8 +45,12 @@ public class SysDictTypeController extends BaseController {
     @GetMapping("/treeList")
     public AjaxResult treeList(SysDictType dictType) {
         List<SysDictType> list = dictTypeService.selectDictTypeList(dictType);
-        List<SysDictType> sysDictTypeTreeList = new DictTypeTreeUtils().dictTypeList(list);
-        return AjaxResult.success(sysDictTypeTreeList);
+        if (!CollectionUtils.isEmpty(list) && list.size() != 1) {
+            List<SysDictType> sysDictTypeTreeList = new DictTypeTreeUtils().dictTypeList(list);
+            return AjaxResult.success(sysDictTypeTreeList);
+        } else {
+            return AjaxResult.success(list);
+        }
     }
 
     @Log(title = "字典类型", businessType = BusinessType.EXPORT)
