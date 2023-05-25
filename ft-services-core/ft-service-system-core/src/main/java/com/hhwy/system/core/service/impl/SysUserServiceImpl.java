@@ -87,6 +87,7 @@ public class SysUserServiceImpl implements ISysUserService {
     @Override
     @DataScope(deptAlias = "d", userAlias = "u")
     public List<SysUser> selectUserList(SysUser user) {
+        log.info("用户管理-租户：" + tokenService.getTenantKeyListForUser().toString());
         return userMapper.selectUserList(user, tokenService.getTenantKeyListForUser());
     }
 

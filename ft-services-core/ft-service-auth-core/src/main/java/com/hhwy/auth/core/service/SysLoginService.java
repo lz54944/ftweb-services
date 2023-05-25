@@ -1,5 +1,6 @@
 package com.hhwy.auth.core.service;
 
+import com.hhwy.auth.core.util.RsaUtils;
 import com.hhwy.common.core.constant.Constants;
 import com.hhwy.common.core.constant.UserConstants;
 import com.hhwy.common.core.domain.R;
@@ -67,6 +68,7 @@ public class SysLoginService {
      * 登录
      */
     public LoginUser login(String tenantKey, String username, String password, String redisKey, String verificationCode) {
+        password = RsaUtils.aesDecryptForFront(password,RsaUtils.KEY_DES);
         // 租户标识为空 错误
         if (StringUtils.isBlank(tenantKey)) {
             remoteLogService.saveLogininfor(tenantKey, username, Constants.LOGIN_FAIL, "租户标识不能为空");
