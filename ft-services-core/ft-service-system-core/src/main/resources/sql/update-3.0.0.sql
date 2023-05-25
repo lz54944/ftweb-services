@@ -1,0 +1,1 @@
+ALTER TABLE sys_tenant ADD `users_num_limit` int COMMENT '使用人数上限';

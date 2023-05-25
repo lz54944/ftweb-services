@@ -17,6 +17,7 @@
         <module>ft-service-file</module>
         <module>ft-service-canal</module>
         <module>ft-service-demo</module>
+        <module>ft-service-report</module>
     </modules>
 
     <artifactId>ft-services</artifactId>
