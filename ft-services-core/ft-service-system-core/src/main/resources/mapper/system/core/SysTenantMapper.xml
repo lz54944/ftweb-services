@@ -57,7 +57,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="userStatus != null  and userStatus != ''"> and `user_status` = #{userStatus}</if>
             <if test="createUser != null  and createUser != ''"> and `create_user` = #{createUser}</if>
             <if test="updateUser != null  and updateUser != ''"> and `update_user` = #{updateUser}</if>
-            <if test="usersNumLimit != null"> and `users_num_limit` = #{usersNumLimit}</if>
         </where>
         order by `tenant_id` desc
     </select>
