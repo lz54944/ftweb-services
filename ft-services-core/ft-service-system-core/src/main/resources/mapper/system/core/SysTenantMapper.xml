@@ -88,7 +88,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         	t.`update_user`,
         	t.`update_time`,
         	t.`remark`,
-        	t.`usersNumLimit`
+        	t.`users_num_limit`
         FROM
         	`sys_tenant` t
         LEFT JOIN sys_user u ON t.tenant_key = u.tenant_key AND t.administrator_user_name = u.user_name
