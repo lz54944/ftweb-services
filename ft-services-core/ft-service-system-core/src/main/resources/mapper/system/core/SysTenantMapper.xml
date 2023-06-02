@@ -87,7 +87,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         	t.`create_time`,
         	t.`update_user`,
         	t.`update_time`,
-        	t.`remark`
+        	t.`remark`,
         	t.`usersNumLimit`
         FROM
         	`sys_tenant` t
