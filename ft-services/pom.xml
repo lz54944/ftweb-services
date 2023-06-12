@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.hhwy</groupId>
         <artifactId>ft-cloud</artifactId>
-        <version>3.0.0</version>
+        <version>3.0.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -16,7 +16,7 @@
         <module>ft-service-job</module>
         <module>ft-service-file</module>
         <module>ft-service-canal</module>
-        <module>ft-service-demo</module>
+<!--        <module>ft-service-demo</module>-->
         <module>ft-service-report</module>
     </modules>
 
