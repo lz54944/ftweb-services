@@ -51,6 +51,7 @@
 			<if test="menu.params.excludeTenant != null and menu.params.excludeTenant != ''">
 				AND menu_name not like concat('%', #{menu.params.excludeTenant}, '%')
 			</if>
+			and `del_flag` = 0
 		</where>
 		order by parent_id, order_num
 	</select>
@@ -68,7 +69,7 @@
 		from sys_menu m
 		left join sys_role_menu rm on m.menu_id = rm.menu_id
 		left join sys_user_role ur on rm.role_id = ur.role_id
-		where rm.tenant_key = #{tenantKey} and ur.tenant_key = #{tenantKey} and ur.user_id = #{params.userId}  and rm.misty_flag = '0' and
+		where rm.tenant_key = #{tenantKey} and ur.tenant_key = #{tenantKey} and ur.user_id = #{params.userId}  and rm.misty_flag = '0' and m.`del_flag` = 0 and
 		<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
 			m.tenant_key = #{tenantKey}
 		</foreach>
@@ -90,7 +91,7 @@
 		from sys_menu m
 		left join sys_role_menu rm on m.menu_id = rm.menu_id
 		left join sys_user_role ur on rm.role_id = ur.role_id
-		where rm.tenant_key = #{tenantKey} and ur.tenant_key = #{tenantKey} and ur.user_id = #{menu.params.userId} and
+		where rm.tenant_key = #{tenantKey} and ur.tenant_key = #{tenantKey} and ur.user_id = #{menu.params.userId} and m.`del_flag` = 0 and
 		<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
 			m.tenant_key = #{tenantKey}
 		</foreach>
@@ -115,6 +116,7 @@
 		WHERE
 			r.tenant_key = #{tenantKey}
 		AND r.resource_table = 'sys_menu'
+		and m.`del_flag` = 0
 		order by m.parent_id, m.order_num
 	</select>
 
@@ -129,6 +131,7 @@
 		<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
 			m.tenant_key = #{tenantKey}
 		</foreach>
+		and m.`del_flag` = 0
 		order by m.parent_id, m.order_num
 	</select>
 	
@@ -136,12 +139,12 @@
 		select m.menu_id
 		from sys_menu m
         left join sys_role_menu rm on m.menu_id = rm.menu_id
-        where rm.role_id = #{roleId} and rm.tenant_key = #{tenantKey} and rm.misty_flag = '0' and
+        where rm.role_id = #{roleId} and rm.tenant_key = #{tenantKey} and rm.misty_flag = '0' and m.`del_flag` = 0 and
 		<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
 			m.tenant_key = #{tenantKey}
 		</foreach>
 		<if test="menuCheckStrictly">
-		  and m.menu_id not in (select m.parent_id from sys_menu m inner join sys_role_menu rm on m.menu_id = rm.menu_id and rm.role_id = #{roleId}  and rm.tenant_key = #{tenantKey})
+		  and m.menu_id not in (select m.parent_id from sys_menu m inner join sys_role_menu rm on m.menu_id = rm.menu_id and rm.role_id = #{roleId}  and rm.tenant_key = #{tenantKey} and m.`del_flag` = 0)
 		</if>
 		order by m.parent_id, m.order_num
 	</select>
@@ -155,7 +158,7 @@
 			m.tenant_key = #{tenantKey}
 		</foreach>
 		<if test="menuCheckStrictly">
-		  and m.menu_id not in (select m.parent_id from sys_menu m inner join sys_role_menu rm on m.menu_id = rm.menu_id and rm.role_id = #{roleId} and rm.tenant_key = #{tenantKey})
+		  and m.menu_id not in (select m.parent_id from sys_menu m inner join sys_role_menu rm on m.menu_id = rm.menu_id and rm.role_id = #{roleId} and rm.tenant_key = #{tenantKey} and m.`del_flag` = 0)
 		</if>
 		order by m.parent_id, m.order_num
 	</select>
@@ -174,7 +177,7 @@
 		left join sys_role_menu rm on m.menu_id = rm.menu_id
 		left join sys_user_role ur on rm.role_id = ur.role_id
 		left join sys_role r on r.role_id = ur.role_id
-		where m.status = '0' and rm.tenant_key = #{tenantKey} and ur.tenant_key = #{tenantKey} and r.status = '0'  and rm.misty_flag = '0' and ur.user_id = #{userId} and
+		where m.status = '0' and rm.tenant_key = #{tenantKey} and ur.tenant_key = #{tenantKey} and r.status = '0'  and rm.misty_flag = '0' and ur.user_id = #{userId} and m.`del_flag` = 0 and
 		<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
 			m.tenant_key = #{tenantKey}
 		</foreach>
@@ -186,7 +189,7 @@
 		left join sys_role_menu rm on m.menu_id = rm.menu_id
 		left join sys_user_role ur on rm.role_id = ur.role_id
 		left join sys_role r on r.role_id = ur.role_id
-		where m.status = '0' and rm.tenant_key = #{tenantKey} and ur.tenant_key = #{tenantKey} and r.status = 'F' and r.status = '0' and rm.misty_flag = '0' and ur.user_id = #{userId} and
+		where m.status = '0' and rm.tenant_key = #{tenantKey} and ur.tenant_key = #{tenantKey} and r.status = 'F' and r.status = '0' and rm.misty_flag = '0' and ur.user_id = #{userId} and m.`del_flag` = 0 and
 		<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
 			m.tenant_key = #{tenantKey}
 		</foreach>
@@ -194,16 +197,16 @@
 
 	<select id="selectMenuById" parameterType="Long" resultMap="SysMenuResult">
 		<include refid="selectMenuVo"/>
-		where menu_id = #{menuId}
+		where menu_id = #{menuId} and m.`del_flag` = 0
 	</select>
 	
 	<select id="hasChildByMenuId" resultType="Integer">
-	    select count(1) from sys_menu where parent_id = #{menuId}  
+	    select count(1) from sys_menu where parent_id = #{menuId} and m.`del_flag` = 0
 	</select>
 	
 	<select id="checkMenuNameUnique" resultMap="SysMenuResult">
 		<include refid="selectMenuVo"/>
-		where menu_name=#{menuName} and parent_id = #{parentId} and
+		where menu_name=#{menuName} and parent_id = #{parentId} and m.`del_flag` = 0 and
 		<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
 			tenant_key = #{tenantKey}
 		</foreach>
@@ -212,7 +215,7 @@
 
 	<select id="checkRouterPathUnique" resultMap="SysMenuResult">
 		<include refid="selectMenuVo"/>
-		where router_path=#{routerPath} and
+		where router_path=#{routerPath} and m.`del_flag` = 0 and
 		<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
 			tenant_key = #{tenantKey}
 		</foreach>
@@ -238,6 +241,7 @@
 			<if test="remark != null and remark != ''">remark = #{remark},</if>
 			<if test="updateUser != null and updateUser != ''">update_user = #{updateUser},</if>
 			<if test="tenantKey != null and tenantKey != ''">tenant_key = #{tenantKey},</if>
+			<if test="delFlag != null and delFlag != ''">del_flag = {delFlag},</if>
 			update_time = sysdate()
 		</set>
 		where menu_id = #{menuId}
@@ -262,6 +266,7 @@
 		<if test="icon != null and icon != ''">icon,</if>
 		<if test="remark != null and remark != ''">remark,</if>
 		<if test="createUser != null and createUser != ''">create_user,</if>
+		<if test="delFlag != null and delFlag != ''">del_flag,</if>
 		create_time
 		)values(
 		<if test="menuId != null and menuId != 0">#{menuId},</if>
@@ -281,6 +286,7 @@
 		<if test="icon != null and icon != ''">#{icon},</if>
 		<if test="remark != null and remark != ''">#{remark},</if>
 		<if test="createUser != null and createUser != ''">#{createUser},</if>
+		<if test="delFlag != null and delFlag != ''">#{delFlag},</if>
 		sysdate()
 		)
 	</insert>

@@ -98,6 +98,9 @@ public class SysMenu extends BaseEntity {
      */
     private String mistyFlag;
 
+    /** 删除标记，0 未删除 1 已删除 不可为空 */
+    private String delFlag;
+
     /**
      * 子菜单
      */
@@ -238,6 +241,14 @@ public class SysMenu extends BaseEntity {
         this.mistyFlag = mistyFlag;
     }
 
+    public String getDelFlag() {
+        return delFlag;
+    }
+
+    public void setDelFlag(String delFlag) {
+        this.delFlag = delFlag;
+    }
+
     public List<SysMenu> getChildren() {
         return children;
     }
@@ -267,6 +278,7 @@ public class SysMenu extends BaseEntity {
                 .append("createTime", getCreateTime())
                 .append("updateUser", getUpdateUser())
                 .append("updateTime", getUpdateTime())
+                .append("delFlag",getDelFlag())
                 .append("remark", getRemark())
                 .toString();
     }
