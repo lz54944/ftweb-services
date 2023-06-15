@@ -30,10 +30,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateTime"    column="update_time"    />
         <result property="remark"    column="remark"    />
         <result property="usersNumLimit"    column="users_num_limit"    />
+        <result property="productVersion"    column="product_version"    />
     </resultMap>
 
     <sql id="selectSysTenantVo">
-        select `tenant_id`, `tenant_name`, `tenant_key`, `tenant_status`, `validity_status`, `effective_date`, `expiry_date`, `contact_user`, `contact_number`, `administrator_user_name`, `administrator_nick_name`, `menu_status`, `dept_status`, `role_status`, `post_status`, `user_status`, `menu_check_strictly`, `dept_check_strictly`, `checked_dept_parent`, `del_flag`, `create_user`, `create_time`, `update_user`, `update_time`, `remark`, `users_num_limit` from `sys_tenant`
+        select `tenant_id`, `tenant_name`, `tenant_key`, `tenant_status`, `validity_status`, `effective_date`, `expiry_date`, `contact_user`, `contact_number`, `administrator_user_name`, `administrator_nick_name`, `menu_status`, `dept_status`, `role_status`, `post_status`, `user_status`, `menu_check_strictly`, `dept_check_strictly`, `checked_dept_parent`, `del_flag`, `create_user`, `create_time`, `update_user`, `update_time`, `remark`, `users_num_limit`, `product_version` from `sys_tenant`
     </sql>
 
     <select id="selectSysTenantList" parameterType="com.hhwy.system.api.domain.SysTenant" resultMap="SysTenantResult">
@@ -57,6 +58,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="userStatus != null  and userStatus != ''"> and `user_status` = #{userStatus}</if>
             <if test="createUser != null  and createUser != ''"> and `create_user` = #{createUser}</if>
             <if test="updateUser != null  and updateUser != ''"> and `update_user` = #{updateUser}</if>
+            <if test="productVersion != null  and productVersion != ''"> and `product_version` = #{productVersion}</if>
         </where>
         order by `tenant_id` desc
     </select>
@@ -88,7 +90,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         	t.`update_user`,
         	t.`update_time`,
         	t.`remark`,
-        	t.`users_num_limit`
+        	t.`users_num_limit`,
+        	t.`product_version`
         FROM
         	`sys_tenant` t
         LEFT JOIN sys_user u ON t.tenant_key = u.tenant_key AND t.administrator_user_name = u.user_name
@@ -129,7 +132,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null">`update_time`,</if>
             <if test="remark != null">`remark`,</if>
             <if test="usersNumLimit != null">`users_num_limit`,</if>
-         </trim>
+            <if test="productVersion != null">`product_version`,</if>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="tenantName != null and tenantName != ''">#{tenantName},</if>
             <if test="tenantKey != null">#{tenantKey},</if>
@@ -156,6 +160,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null">#{updateTime},</if>
             <if test="remark != null">#{remark},</if>
             <if test="usersNumLimit != null">#{usersNumLimit},</if>
+            <if test="productVersion != null">#{productVersion},</if>
          </trim>
     </insert>
 
@@ -187,6 +192,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null">`update_time` = #{updateTime},</if>
             <if test="remark != null">`remark` = #{remark},</if>
             <if test="usersNumLimit != null">`users_num_limit` = #{usersNumLimit},</if>
+            <if test="productVersion != null">`product_version` = #{productVersion},</if>
         </trim>
         where `tenant_id` = #{tenantId}
     </update>

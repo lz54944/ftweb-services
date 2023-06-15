@@ -109,6 +109,11 @@ public class SysTenant extends BaseEntity {
      */
     private int usersNumLimit;
 
+    /**
+     * 产品版本：01-体验版、02基础版、03加强版、04企业版、05到期版
+     */
+    private String productVersion;
+
     //与checkedDeptParent对应
     private List<String> checkedDeptParentList;
 
@@ -344,6 +349,14 @@ public class SysTenant extends BaseEntity {
 
     public void setUsersNumLimit(int usersNumLimit) {
         this.usersNumLimit = usersNumLimit;
+    }
+
+    public String getProductVersion() {
+        return productVersion;
+    }
+
+    public void setProductVersion(String productVersion) {
+        this.productVersion = productVersion;
     }
 
     public static SysTenant master(){
