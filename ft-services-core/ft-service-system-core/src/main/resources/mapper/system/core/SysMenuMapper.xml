@@ -26,10 +26,11 @@
 		<result property="updateUser"       column="update_user"      />
 		<result property="remark"         column="remark"         />
 		<result property="tenantKey"         column="tenant_key"         />
+		<result property="delFlag"         column="del_flag"        />
 	</resultMap>
 
 	<sql id="selectMenuVo">
-        select menu_id, menu_name, parent_id, order_num, router_path, component_path, is_external_link, is_cache, is_iframe, menu_type, visible, status, tenant_key, ifnull(perms,'') as perms, icon, create_time
+        select menu_id, menu_name, parent_id, order_num, router_path, component_path, is_external_link, is_cache, is_iframe, menu_type, visible, status, tenant_key,del_flag, ifnull(perms,'') as perms, icon, create_time
 		from sys_menu
     </sql>
 
@@ -241,7 +242,7 @@
 			<if test="remark != null and remark != ''">remark = #{remark},</if>
 			<if test="updateUser != null and updateUser != ''">update_user = #{updateUser},</if>
 			<if test="tenantKey != null and tenantKey != ''">tenant_key = #{tenantKey},</if>
-			<if test="delFlag != null and delFlag != ''">del_flag = {delFlag},</if>
+			<if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
 			update_time = sysdate()
 		</set>
 		where menu_id = #{menuId}
