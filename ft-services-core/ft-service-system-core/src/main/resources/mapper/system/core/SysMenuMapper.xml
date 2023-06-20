@@ -198,16 +198,16 @@
 
 	<select id="selectMenuById" parameterType="Long" resultMap="SysMenuResult">
 		<include refid="selectMenuVo"/>
-		where menu_id = #{menuId} and m.`del_flag` = 0
+		where menu_id = #{menuId} and `del_flag` = 0
 	</select>
 	
 	<select id="hasChildByMenuId" resultType="Integer">
-	    select count(1) from sys_menu where parent_id = #{menuId} and m.`del_flag` = 0
+	    select count(1) from sys_menu where parent_id = #{menuId} and `del_flag` = 0
 	</select>
 	
 	<select id="checkMenuNameUnique" resultMap="SysMenuResult">
 		<include refid="selectMenuVo"/>
-		where menu_name=#{menuName} and parent_id = #{parentId} and m.`del_flag` = 0 and
+		where menu_name=#{menuName} and parent_id = #{parentId} and `del_flag` = 0 and
 		<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
 			tenant_key = #{tenantKey}
 		</foreach>
@@ -216,7 +216,7 @@
 
 	<select id="checkRouterPathUnique" resultMap="SysMenuResult">
 		<include refid="selectMenuVo"/>
-		where router_path=#{routerPath} and m.`del_flag` = 0 and
+		where router_path=#{routerPath} and `del_flag` = 0 and
 		<foreach item="tenantKey" collection="tenantKeyList" open="(" separator="or" close=")">
 			tenant_key = #{tenantKey}
 		</foreach>
