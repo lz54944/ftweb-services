@@ -7,37 +7,37 @@
 
     <groupId>com.hhwy</groupId>
     <artifactId>ft-cloud-dependencies</artifactId>
-    <version>3.0.1</version>
+    <version>3.0.2</version>
 
     <packaging>pom</packaging>
 
     <description>ft-cloud Dependencies</description>
 
     <properties>
-        <ft-api-activiti.version>3.0.1</ft-api-activiti.version>
-        <ft-api-auth.version>3.0.1</ft-api-auth.version>
-        <ft-api-file.version>3.0.1</ft-api-file.version>
-        <ft-api-system.version>3.0.1</ft-api-system.version>
+        <ft-api-activiti.version>3.0.2</ft-api-activiti.version>
+        <ft-api-auth.version>3.0.2</ft-api-auth.version>
+        <ft-api-file.version>3.0.2</ft-api-file.version>
+        <ft-api-system.version>3.0.2</ft-api-system.version>
 
-        <ft-common-core.version>3.0.1</ft-common-core.version>
-        <ft-common-datascope.version>3.0.1</ft-common-datascope.version>
-        <ft-common-datasource.version>3.0.1</ft-common-datasource.version>
-        <ft-common-i18n.version>3.0.1</ft-common-i18n.version>
-        <ft-common-log.version>3.0.1</ft-common-log.version>
-        <ft-common-netty.version>3.0.1</ft-common-netty.version>
-        <ft-common-redis.version>3.0.1</ft-common-redis.version>
-        <ft-common-security.version>3.0.1</ft-common-security.version>
-        <ft-common-socket.version>3.0.1</ft-common-socket.version>
-        <ft-common-swagger.version>3.0.1</ft-common-swagger.version>
-        <ft-common-tenant.version>3.0.1</ft-common-tenant.version>
+        <ft-common-core.version>3.0.2</ft-common-core.version>
+        <ft-common-datascope.version>3.0.2</ft-common-datascope.version>
+        <ft-common-datasource.version>3.0.2</ft-common-datasource.version>
+        <ft-common-i18n.version>3.0.2</ft-common-i18n.version>
+        <ft-common-log.version>3.0.2</ft-common-log.version>
+        <ft-common-netty.version>3.0.2</ft-common-netty.version>
+        <ft-common-redis.version>3.0.2</ft-common-redis.version>
+        <ft-common-security.version>3.0.2</ft-common-security.version>
+        <ft-common-socket.version>3.0.2</ft-common-socket.version>
+        <ft-common-swagger.version>3.0.2</ft-common-swagger.version>
+        <ft-common-tenant.version>3.0.2</ft-common-tenant.version>
 
-        <ft-service-activiti-core.version>3.0.1</ft-service-activiti-core.version>
-        <ft-service-auth-core.version>3.0.1</ft-service-auth-core.version>
-        <ft-service-canal-core.version>3.0.1</ft-service-canal-core.version>
-        <ft-service-file-core.version>3.0.1</ft-service-file-core.version>
-        <ft-service-gen-core.version>3.0.1</ft-service-gen-core.version>
-        <ft-service-job-core.version>3.0.1</ft-service-job-core.version>
-        <ft-service-system-core.version>3.0.1</ft-service-system-core.version>
+        <ft-service-activiti-core.version>3.0.2</ft-service-activiti-core.version>
+        <ft-service-auth-core.version>3.0.2</ft-service-auth-core.version>
+        <ft-service-canal-core.version>3.0.2</ft-service-canal-core.version>
+        <ft-service-file-core.version>3.0.2</ft-service-file-core.version>
+        <ft-service-gen-core.version>3.0.2</ft-service-gen-core.version>
+        <ft-service-job-core.version>3.0.2</ft-service-job-core.version>
+        <ft-service-system-core.version>3.0.2</ft-service-system-core.version>
     </properties>
 
     <dependencyManagement>
