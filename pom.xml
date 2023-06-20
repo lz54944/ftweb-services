@@ -487,9 +487,9 @@
     <modules>
         <module>ft-api</module>
         <module>ft-common</module>
-<!--        <module>ft-gateway</module>-->
-<!--        <module>ft-monitor</module>-->
-<!--        <module>ft-services</module>-->
+        <module>ft-gateway</module>
+        <module>ft-monitor</module>
+        <module>ft-services</module>
         <module>ft-services-core</module>
     </modules>
     <packaging>pom</packaging>
