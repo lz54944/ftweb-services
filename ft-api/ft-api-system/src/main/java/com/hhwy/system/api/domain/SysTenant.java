@@ -119,6 +119,8 @@ public class SysTenant extends BaseEntity {
 
     private List<SysMenu> menuList;
 
+    private List<Long> menuIdList;
+
     private List<SysDept> deptList;
 
     private List<SysRole> roleList;
@@ -277,6 +279,14 @@ public class SysTenant extends BaseEntity {
 
     public void setMenuList(List<SysMenu> menuList) {
         this.menuList = menuList;
+    }
+
+    public List<Long> getMenuIdList() {
+        return menuIdList;
+    }
+
+    public void setMenuIdList(List<Long> menuIdList) {
+        this.menuIdList = menuIdList;
     }
 
     public List<SysDept> getDeptList() {

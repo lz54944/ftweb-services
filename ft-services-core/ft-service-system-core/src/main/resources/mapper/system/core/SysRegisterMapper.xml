@@ -24,6 +24,11 @@
         <include refid="selectSql"></include>
         order by create_time desc
     </select>
+
+    <select id="selectCountByCreateTime" resultType="int">
+        select count(id) from sys_register where create_time like concat(#{createTime},'%')
+    </select>
+
     <insert id="insertSysRegister" parameterType="com.hhwy.system.core.register.domain.SysRegister">
         insert into `sys_register`
         <trim prefix="(" suffix=")" suffixOverrides=",">
